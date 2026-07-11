@@ -5,13 +5,18 @@
    ============================================================ */
 
 :root {
-  /* Velvet night (from the brand film) */
-  --velvet-0: #170F26;
-  --velvet-1: #221737;
-  --velvet-2: #2C1E45;
-  --velvet-3: #3A2A55;
-  --velvet-line: rgba(214, 186, 128, 0.26);
+  /* Velvet night (from the brand film) — lavender-rich */
+  --velvet-0: #17102A;
+  --velvet-1: #241A3E;
+  --velvet-2: #2F2250;
+  --velvet-3: #3F2F66;
+  --velvet-line: rgba(214, 186, 128, 0.38);
   --star: #F7EFDF;
+
+  /* Premium lavender */
+  --lavender: #B9A5E3;
+  --lavender-deep: #8E76C4;
+  --lavender-soft: #DCD0F2;
 
   /* Ivory day */
   --ivory: #FAF5EC;
@@ -47,7 +52,8 @@
   --shadow-velvet: 0 28px 64px -26px rgba(10, 5, 20, 0.55);
   --glow-gold: 0 0 30px rgba(201, 167, 94, 0.16);
 
-  --font-display: 'Baloo Bhaijaan 2', 'El Messiri', 'Almarai', sans-serif;
+  --font-display: 'Amiri', 'El Messiri', serif;      /* classical, expensive — the film's voice */
+  --font-soft: 'Baloo Bhaijaan 2', 'Almarai', sans-serif; /* rounded — Rebuild covers, app echoes */
   --font-messiri: 'El Messiri', 'Almarai', serif;
   --font-kufi: 'Reem Kufi', 'El Messiri', sans-serif;
   --font-body: 'Almarai', 'Segoe UI', Tahoma, sans-serif;
@@ -119,24 +125,24 @@ button { font-family: inherit; cursor: pointer; }
 .flower.fl-l { inset-inline-start: -12px; width: clamp(120px, 16vw, 220px); }
 .flower.fl-r { inset-inline-end: -10px; width: clamp(130px, 17vw, 240px); }
 
-.velvet h1, .velvet h2, .velvet h3 { color: #F6EEDF; }
-.velvet .muted { color: rgba(239, 231, 218, 0.72); }
+.velvet h1, .velvet h2, .velvet h3 { color: #F8F1E3; }
+.velvet .muted { color: rgba(240, 233, 222, 0.8); }
 
-/* Glass card on velvet */
+/* Glass card on velvet — crisp, well-cut */
 .glass {
-  background: linear-gradient(165deg, rgba(255, 250, 240, 0.07), rgba(255, 250, 240, 0.03));
+  background: linear-gradient(165deg, rgba(255, 250, 240, 0.075), rgba(185, 165, 227, 0.045));
   border: 1px solid var(--velvet-line);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-velvet);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-velvet), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* ============================================================
    TYPOGRAPHY
    ============================================================ */
 
-h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height: 1.55; color: var(--ink); }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.75; color: var(--ink); }
 
 .kicker {
   display: inline-flex; align-items: center; gap: 0.65rem;
@@ -285,8 +291,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 }
 
 .hero h1 {
-  font-size: clamp(1.9rem, 4.2vw, 2.9rem);
-  line-height: 1.6;
+  font-size: clamp(2rem, 4.4vw, 3.1rem);
+  line-height: 1.8;
   margin-bottom: 1.3rem;
   font-weight: 700;
 }
@@ -410,9 +416,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
   text-align: center;
   color: #F0E8DA;
   background:
-    radial-gradient(120% 80% at 50% 0%, rgba(227, 168, 172, 0.14), transparent 55%),
+    radial-gradient(120% 80% at 50% 0%, rgba(185, 165, 227, 0.2), transparent 55%),
     linear-gradient(170deg, var(--velvet-3), var(--velvet-1) 70%, var(--velvet-0));
-  box-shadow: var(--shadow-velvet);
+  box-shadow: var(--shadow-velvet), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   overflow: hidden;
   transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.55s ease;
 }
@@ -924,7 +930,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 .bar-row { display: grid; grid-template-columns: 132px 1fr 46px; align-items: center; gap: 0.85rem; font-size: 0.88rem; }
 .bar-row span:first-child { color: rgba(239, 231, 218, 0.7); }
 .bar-bg { height: 8px; border-radius: var(--radius-pill); background: rgba(255, 250, 240, 0.1); overflow: hidden; }
-.bar-fill { display: block; height: 100%; border-radius: var(--radius-pill); background: linear-gradient(90deg, var(--gold-soft), var(--gold)); width: 0; }
+.bar-fill { display: block; height: 100%; border-radius: var(--radius-pill); background: linear-gradient(90deg, var(--lavender-soft), var(--lavender)); width: 0; }
 .bar-row b { color: var(--gold-soft); text-align: end; }
 .bar-row.dominant .bar-fill { background: linear-gradient(90deg, var(--gold), #F4CFC9); }
 .bar-row.dominant span:first-child { color: #F6EEDF; font-weight: 700; }
