@@ -76,25 +76,23 @@ window.NIZAMOK = {
   // nothing is hosted on the site.
 
   mailerLite: {
-    // Flip to true ONLY after the owner confirms which form belongs to
-    // which pattern below — a wrong mapping sends the wrong free report.
-    enabled: false,
+    enabled: true,
     mode: 'pattern-forms',
     accountId: '2429254',
 
     // Quiz email-gate: one MailerLite form per dominant pattern.
     // Only the form matching the calculated result is ever submitted.
-    // TODO(owner): CONFIRM this pattern ↔ form mapping. The four form
-    // action URLs below were provided 2026-07-11; embed ids in comments.
+    // Mapping confirmed 2026-07-11 from the owner's dashboard (forms were
+    // pasted top-down in dashboard order):
     formEndpoints: {
-      // المبدعة المشتتة — embed mlb2-42544303
-      mubdia:     'https://assets.mailerlite.com/jsonp/2429254/forms/190097714494571916/subscribe',
-      // أسيرة الكمال — embed mlb2-42544259
-      asira:      'https://assets.mailerlite.com/jsonp/2429254/forms/190097591447324569/subscribe',
-      // المتفادية الذكية — embed mlb2-42544139
-      mutafadiya: 'https://assets.mailerlite.com/jsonp/2429254/forms/190097355657184971/subscribe',
-      // الكفؤة المنهكة — embed mlb2-42543723
-      kafua:      'https://assets.mailerlite.com/jsonp/2429254/forms/190096444701541996/subscribe'
+      // quiz-kufua-munhaka — الكفؤة المنهكة (embed mlb2-42544303)
+      kafua:      'https://assets.mailerlite.com/jsonp/2429254/forms/190097714494571916/subscribe',
+      // quiz-mutafadia-thakia — المتفادية الذكية (embed mlb2-42544259)
+      mutafadiya: 'https://assets.mailerlite.com/jsonp/2429254/forms/190097591447324569/subscribe',
+      // quiz-asirat-al-kamal — أسيرة الكمال (embed mlb2-42544139)
+      asira:      'https://assets.mailerlite.com/jsonp/2429254/forms/190097355657184971/subscribe',
+      // quiz-mubdia-mushattata — المبدعة المشتتة (embed mlb2-42543723)
+      mubdia:     'https://assets.mailerlite.com/jsonp/2429254/forms/190096444701541996/subscribe'
     },
 
     // Interdash waiting-list form (owner to provide its action URL).

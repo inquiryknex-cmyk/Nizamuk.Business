@@ -121,7 +121,8 @@
 
     const payload = {
       email: email.trim(),
-      fields: { first_name: name.trim(), pattern: pattern, source: 'interdash_waitlist' }
+      // MailerLite's default "name" field = first name → usable as {$name} in emails.
+      fields: { name: name.trim(), pattern: pattern, source: 'interdash_waitlist' }
     };
 
     const ml = CONFIG.mailerLite || {};
