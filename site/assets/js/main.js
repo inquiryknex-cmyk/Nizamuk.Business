@@ -57,6 +57,12 @@
         { strokeDashoffset: 0, duration: 2.6, ease: 'power2.inOut', delay: 0.3 });
     }
 
+    // The hero phone floats, slowly.
+    const phone = document.querySelector('.hero-phone img');
+    if (phone) {
+      gsap.to(phone, { y: -12, duration: 3.6, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+    }
+
     // Gold swoosh in the logo draws itself.
     document.querySelectorAll('.logo-swoosh').forEach(sw => {
       const len = sw.getTotalLength ? sw.getTotalLength() : 0;

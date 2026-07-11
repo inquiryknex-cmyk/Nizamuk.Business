@@ -192,6 +192,16 @@ Decided (2026-07-11, second round):
 6. Interdash film received (25.3 MB → recompressed to 16.5 MB, 864×1080,
    faststart) and self-hosted at `site/assets/video/interdash.mp4`.
 
+Design v2 (2026-07-11, after owner feedback "not premium enough"):
+**«مخمل وعاج» / Velvet & Ivory** — velvet-plum brand chambers (hero, quiz,
+Interdash, final CTA — matching the film, covers, and app) framing ivory
+editorial reading sections. Real brand assets extracted from the film
+(luminance-keyed transparent seal + NizamOK script wordmark, two app phone
+shots). Self-hosted fonts: El Messiri (headlines), Almarai (body),
+Aref Ruqaa (editorial quotes), Reem Kufi (pattern names, matches covers),
+Great Vibes (Latin accents). Rose-bloom buttons from the app UI. Ecosystem
+strip in the hero so the whole path reads at first glance.
+
 Still needed from owner:
 - The 12 cover JPGs as files (see `site/assets/covers/README.md`).
 - The mandala seal as `site/assets/img/seal.png`.
