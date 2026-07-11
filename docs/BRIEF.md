@@ -107,12 +107,13 @@ Series footer: «نظامك · نظام إعادة البناء»
   بقيت محميّةً من كل عين. نقص العمل لا يعني نقصًا فيكِ. · Pull-quote: الكمال هنا
   ليس معيارًا عاليًا؛ إنه خوفٌ مهذّب من أن يراكِ أحدٌ قبل أن تشعري أنكِ كاملة.
 
-### Lamhat cover copy (2 of 4 received)
+### Lamhat cover copy (all four received)
 Kicker: «لمحة» · **deep green + gold covers**
 
-- **الكفؤة المنهَكة** — خريطة النمط الذي يُعطّل يومكِ وطاقتكِ وقراراتكِ
+- **المبدعة المشتّتة** — خريطة النمط الذي يبدأ كل شيء، ويترك أجملها بلا نهاية
+- **أسيرة الكمال** — خريطة النمط الذي يحبس أفضل ما فيكِ قبل أن يُرى
 - **المتفادية الذكية** — خريطة النمط الذي يجعلكِ تدورين حول المهم دون أن تدخليه
-- المبدعة المشتتة / أسيرة الكمال — not yet received.
+- **الكفؤة المنهَكة** — خريطة النمط الذي يُعطّل يومكِ وطاقتكِ وقراراتكِ
 
 ### Tier color system (discovered from covers — use in product cards)
 - **لمحات = deep emerald green** + gold
@@ -185,6 +186,6 @@ Pending (asked, awaiting owner):
    vs. Lamhat only.
 4. Quiz redesign depth: cinematic two-act (recommended) vs. copy-elevation
    vs. radical day-simulation.
-5. Covers: Juthur ×4, Rebuild ×4, Lamhat ×2 received as chat images — need all
-   as actual files; do Lamhat mubdia/asira covers exist?
+5. Covers: complete set received (Lamhat ×4, Juthur ×4, Rebuild ×4) as chat
+   images — still need all 12 as actual image files for `assets/covers/`.
 6. Confirm URLs: landing at `/`, quiz at `/ikhtibar/`, waitlist at `/interdash/`.
