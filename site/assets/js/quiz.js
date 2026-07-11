@@ -1,7 +1,10 @@
 /* ============================================================
-   اختبار نظامك — cinematic two-act quiz engine.
-   Mechanic: per scene, choose الأقرب then الأبعد (+2 / −1),
-   normalized to percentages across the four patterns.
+   اختبار نظامك — cinematic two-act quiz engine, v2.
+   Mechanic per scene: choose الأقرب ثم الأبعد.
+   Scoring: closest +2 (Act I) / +3 (Act II — the inner voice
+   outweighs the visible day), farthest −1. Options are shuffled
+   per session to kill position bias. Results include tie
+   handling, a clarity marker, and computed precision mirrors.
    ============================================================ */
 (function () {
   'use strict';
@@ -14,171 +17,175 @@
   const patterns = {
     mubdia: {
       name: 'المبدعة المشتّتة',
-      short: 'تشتعلين بفكرة جديدة قبل أن تحمي الفكرة التي كانت قريبة من الوصول.',
       truth: 'أنتِ لا تنقصكِ الأفكار؛ تنقصكِ فكرة واحدة تصل.',
-      headline: 'يبدو أنكِ تتحركين بقوة مع البدايات. الفكرة الجديدة تعطيكِ شعورًا جميلًا بالاتساع، لكنها أحيانًا تسحبكِ من الشيء الذي كان قريبًا من الوصول.',
-      wound: 'ما يتكرر هنا ليس نقصًا في القدرة، بل صعوبة في البقاء مع منتصف الطريق عندما يصبح أقل لمعانًا وأكثر طلبًا للصبر.',
-      step: 'اختاري فكرة واحدة لهذا الأسبوع. لا تلغي باقي الأفكار؛ فقط اتركيها في مكان آمن حتى تعطين فكرة واحدة حقها في الوصول.'
+      headline: 'أنتِ لا تهربين من الإنجاز — أنتِ تهربين من منتصف الطريق. البداية تعطيكِ نسخة جديدة منكِ، لكنها تسحبكِ من الشيء الذي كان على وشك الوصول.',
+      wound: 'الذي يتكرر ليس نقص قدرة، بل صعوبة البقاء مع الفكرة عندما يبهت بريقها وتطلب صبرًا بدل حماس.',
+      step: 'اختاري مشروعًا واحدًا تركتِه وهو يستاهل، واحميه من أي فكرة جديدة سبعة أيام فقط. لا تلغي الأفكار — أوقفيها في الموقف.'
     },
     asira: {
       name: 'أسيرة الكمال',
-      short: 'تؤجلين الظهور لأن العمل لم يصل بعد إلى الصورة التي لا تُنتقد.',
       truth: 'نقص العمل لا يعني نقصًا فيكِ.',
-      headline: 'يبدو أنكِ لا تخافين من العمل نفسه، بل من ظهوره ناقصًا أمام عين أخرى. لذلك يصبح التعديل طريقة لتهدئة القلق، لا دائمًا لتحسين النتيجة.',
-      wound: 'ما يتكرر هنا أن جودة العمل تختلط بقيمتكِ الشخصية. كأن كل ملاحظة على العمل ستصبح ملاحظة عليكِ أنتِ.',
-      step: 'قبل أي تعديل جديد، اسألي: هل هذا يخدم العمل فعلًا، أم يخفف قلقي فقط؟ ثم أخرجي نسخة قابلة للتحسين.'
+      headline: 'أنتِ لا تخافين من العمل — تخافين من لحظة ظهوره أمام عين أخرى. لذلك صار التعديل بيتًا آمنًا تسكنين فيه بدل التسليم.',
+      wound: 'الذي يتكرر أن جودة الشغل التصقت بقيمتكِ أنتِ؛ فصارت كل ملاحظة محتملة على العمل تهديدًا لكِ شخصيًا.',
+      step: 'أرسلي نسخة «جيدة» من شغلكِ لشخص واحد تثقين به — قبل أن تصير مثالية. راقبي: العالم لن ينهار.'
     },
     mutafadiya: {
       name: 'المتفادية الذكية',
-      short: 'تعرفين الباب الذي يجب فتحه، لكن الشعور خلفه يبدو أثقل من المهمة نفسها.',
       truth: 'أنتِ لا تتجنبين المهمة، بل الشعور الذي خلفها.',
-      headline: 'يبدو أنكِ تعرفين غالبًا ما يجب فعله، لكن الاقتراب من المهمة يفتح شعورًا غير مريح؛ فتبدين منشغلة، بينما الباب الأساسي يبقى كما هو.',
-      wound: 'ما يتكرر هنا أن الشعور يكبر قبل المهمة نفسها: توتر، غموض، احتمال رفض، أو لحظة مواجهة لا تريدينها الآن.',
-      step: 'افتحي الباب دقيقة واحدة فقط. رسالة، ملف، مكالمة، أو قرار. المطلوب ليس إنهاء كل شيء؛ المطلوب أن يصغر الشعور قليلًا.'
+      headline: 'أنتِ لستِ كسولة — يومكِ مليء بالإنجاز الصغير. لكن الباب الواحد المهم يكبر في الخيال كل يوم تأجيل، حتى صار أكبر من حجمه.',
+      wound: 'الذي يتكرر أن الشعور خلف المهمة — توتر، حكم، مواجهة — يصل قبلها، فتشترين هدنة يومية بثمن أسبوع.',
+      step: 'افتحي الباب عشر دقائق فقط: الرسالة، الملف، المكالمة. المطلوب ليس الإنهاء — المطلوب أن يعود الواقع إلى حجمه.'
     },
     kafua: {
       name: 'الكفؤة المنهَكة',
-      short: 'يحملكِ الجميع لأنكِ قادرة، فتغيبين أنتِ عن نهاية يومكِ.',
       truth: 'أن تكوني قادرة لا يعني أن تكوني متاحة دائمًا.',
-      headline: 'يبدو أنكِ تعوّدتِ أن تكوني الشخص الذي يعرف ماذا يفعل. هذا جميل، لكنه يصبح مرهقًا حين تتحول القدرة إلى توفر دائم.',
-      wound: 'ما يتكرر هنا أن قول «نعم» يريح العلاقة لحظة، لكنه يأخذ من وقتكِ وطاقتكِ وما يخصكِ أنتِ.',
-      step: 'قبل الموافقة التالية، اسألي بهدوء: ما ثمن هذه «النعم»؟ وهل هذا دوري فعلًا؟'
+      headline: 'الجميع يظن أنكِ بخير لأنكِ دائمًا تتصرفين. لكن قدرتكِ صارت تصريح دخول مفتوحًا للجميع — إلا أنتِ.',
+      wound: 'الذي يتكرر أن كل «نعم» سريعة تشتري راحة العلاقة لحظة، وتدفع ثمنها من طاقتكِ ومشروعكِ وما يخصكِ.',
+      step: 'قبل الموافقة القادمة، اسألي بصمت: ما ثمن هذه النعم؟ واحجزي ساعة أسبوعية لكِ وحدكِ — موعدًا لا يُلغى.'
     }
   };
 
-  /* ---------- The twelve scenes, arranged in two acts ----------
-     Act I  — مشاهد يراها الجميع (outer scenes)
-     Act II — الصوت الداخلي (the inner voice)                    */
+  /* ---------- Twelve scenes, two acts ---------- */
   const questions = [
-    // ---- Act I ----
+    // ---- الفصل الأول: مشاهد من يومكِ ----
     {
-      act: 1, scene: 'البداية',
-      text: 'تبدئين شيئًا جديدًا بحماس. بعد الأيام الأولى، ما الذي يحدث غالبًا؟',
+      act: 1, scene: 'بعد ما يهدأ البيت',
+      text: 'هدأ البيت أخيرًا، وصارت عندكِ ساعة كاملة لكِ وحدكِ. بصراحة… كيف تنتهي هذه الساعة غالبًا؟',
       options: [
-        { p: 'mubdia',     t: 'تظهر فكرة ثانية، وأشعر أنها أقرب لما أريد فعله فعلًا.' },
-        { p: 'asira',      t: 'أبقى أعدّل لأن النسخة لا تطمئنني بعد.' },
-        { p: 'mutafadiya', t: 'أترك الجزء الأثقل، وأشغل نفسي بشيء أسهل.' },
-        { p: 'kafua',      t: 'ينسحب وقتي على طلبات الناس، ويختفي مشروعي بهدوء.' }
+        { p: 'mubdia',     t: 'أفتحها بحماس على مشروعي، ثم أخرج منها بفكرة جديدة أحلى من المشروع نفسه — وأنام وأنا أخطط لها.' },
+        { p: 'asira',      t: 'أشتغل فعلًا… لكن أقضيها كلها في تحسين شيء شبه جاهز؛ أرتّب وأجمّل ولا «أنهي».' },
+        { p: 'mutafadiya', t: 'أقول أبدأ بالشيء المهم، وأنتهي بإنجاز أشياء صغيرة كثيرة — والمهم ما فتحته.' },
+        { p: 'kafua',      t: 'تذوب على رسالة «محتاجينك شوي» أو طلب طارئ؛ تصير ساعة الآخرين، مو ساعتي.' }
       ]
     },
     {
-      act: 1, scene: 'الرسالة',
-      text: 'تصلكِ رسالة تحتاج ردًا واضحًا. ما الذي يحصل عادة؟',
+      act: 1, scene: 'مجموعة العائلة',
+      text: 'في مجموعة الواتساب، طُلب منكِ ترتيب مناسبة قريبة — والكل واثق أنكِ «ما تقصّرين». ماذا يحدث داخلكِ؟',
       options: [
-        { p: 'mutafadiya', t: 'أؤجل الرد حتى أهدأ أو أعرف ماذا أقول بالضبط.' },
-        { p: 'asira',      t: 'أكتب الرد ثم أعدله أكثر من مرة، حتى لا أبدو ناقصة أو قاسية.' },
-        { p: 'kafua',      t: 'أرد بسرعة حتى لا ينتظرني أحد أو يزعل مني.' },
-        { p: 'mubdia',     t: 'أفتح شيئًا آخر فجأة، وكأن الرد قطع عليّ مزاجي.' }
+        { p: 'kafua',      t: 'أكتب «أبشروا» في نفس الدقيقة… وأحس بثقلها بعد ما أرسلها.' },
+        { p: 'asira',      t: 'أقبل، وأُتعب نفسي في التفاصيل حتى تطلع مثالية — وأي ملاحظة صغيرة تجرحني أكثر مما تستحق.' },
+        { p: 'mutafadiya', t: 'أتأخر في الرد وأنا أعرف أني سأقبل؛ صار التأجيل طريقتي في تأخير الحسم.' },
+        { p: 'mubdia',     t: 'أتحمس وأقترح أفكارًا تجعلها مناسبة مختلفة… ثم يخف حماسي قبل التنفيذ ويبقى الحمل عليّ.' }
       ]
     },
     {
-      act: 1, scene: 'المديح',
-      text: 'عندما يقولون لكِ: «ما شاء الله عليكِ، دائمًا تتصرفين»، ماذا تشعرين؟',
+      act: 1, scene: 'الدورة المدفوعة',
+      text: 'دفعتِ من مالكِ الخاص لدورة أو برنامج، وقلتِ: «هذه المرة جد». أين انتهى بكِ الحال معها؟',
       options: [
-        { p: 'kafua',      t: 'أفرح قليلًا، ثم أشعر أنني صرت مسؤولة أكثر.' },
-        { p: 'asira',      t: 'أخاف أن أخيب الصورة التي أخذوها عني، فأرفع المعيار أكثر.' },
-        { p: 'mutafadiya', t: 'أستخدم الانشغال كسبب مقبول لتأجيل ما يخصني.' },
-        { p: 'mubdia',     t: 'أفكر في شيء جديد يثبت أنني لست محصورة في هذا الدور.' }
+        { p: 'mubdia',     t: 'وصلتُ الدرس الثالث… ثم لمعَت دورة أو فكرة ثانية، وانتقل الحماس لها.' },
+        { p: 'asira',      t: 'أعدتُ الدرس الواحد أكثر من مرة، وما سمحت لنفسي أتقدم قبل أن «أتقن» الذي فات.' },
+        { p: 'mutafadiya', t: 'أجّلت أول واجب فيها؛ وكل ما كبر التأجيل، صار فتح المنصة نفسها أثقل.' },
+        { p: 'kafua',      t: 'انحشرت بين التزاماتي؛ وكل أسبوع أقول «من الأسبوع الجاي أرجع لها».' }
       ]
     },
     {
-      act: 1, scene: 'المهمة الأهم',
-      text: 'أمام مهمة تعرفين أنها مهمة فعلًا، أين يذهب تركيزكِ؟',
+      act: 1, scene: 'الساعة 11 ليلًا',
+      text: 'قبل النوم، تفتحين إنستغرام فتجدين امرأة بعمركِ أطلقت مشروعًا يشبه الذي في رأسكِ. ما الجملة الأصدق التي تمر داخلكِ؟',
       options: [
-        { p: 'mutafadiya', t: 'إلى الترتيب والتحضير والبحث، بدل فتح الجزء الأصعب.' },
-        { p: 'mubdia',     t: 'إلى فكرة جديدة تبدو أذكى وأخف من المهمة الحالية.' },
-        { p: 'asira',      t: 'إلى التعديل؛ أحتاج أن أطمئن أكثر قبل أن أُخرجها.' },
-        { p: 'kafua',      t: 'إلى طلب آخر من أحد، ثم أقول لنفسي إن اليوم انتهى.' }
+        { p: 'asira',      t: '«شغلي أجمل من هذا… بس مو جاهز، وما راح أنزل شيئًا ناقصًا يتكلمون عليه.»' },
+        { p: 'mubdia',     t: '«أنا عندي أفكار أقوى بكثير؛ المشكلة مو الأفكار…» — وأفتح ملاحظاتي المليئة، إثباتًا.' },
+        { p: 'mutafadiya', t: 'أطفئ الجوال بسرعة؛ منظرها قرّب مني شعورًا ما أبغى أواجهه الليلة.' },
+        { p: 'kafua',      t: '«هي فاضية لنفسها… أنا وقتي موزَّع على الكل إلا نفسي.» — وأكمل التصفح وأنا متعبة.' }
       ]
     },
     {
-      act: 1, scene: 'اليوم المزدحم',
-      text: 'في اليوم المزدحم، ما أول شيء يسقط من حسابكِ؟',
+      act: 1, scene: 'الموسم',
+      text: 'يقترب موسم مزدحم — رمضان، أعراس، اختبارات، ضغط دوام. ماذا يحدث لمشروعكِ أنتِ؟',
       options: [
-        { p: 'kafua',      t: 'راحتي وما يخصني، لأن طلبات الآخرين تدخل قبلهما.' },
-        { p: 'mutafadiya', t: 'المهمة التي فيها توتر أو مواجهة، حتى لو كانت الأهم.' },
-        { p: 'asira',      t: 'التسليم النهائي؛ يظل العمل قريبًا من النهاية ولا يخرج.' },
-        { p: 'mubdia',     t: 'الاستمرار في الشيء القديم، لأن الجديد يعيد لي الطاقة.' }
+        { p: 'kafua',      t: 'يُلغى تلقائيًا؛ أنا «مسؤولة الموسم» عند الجميع، والكل يعتمد عليّ.' },
+        { p: 'mutafadiya', t: 'أقول «بعد الموسم أبدأ بقوة»؛ صارت المواسم مواعيد مؤجلة تلد بعضها.' },
+        { p: 'mubdia',     t: 'أدخل الموسم بمشروع… وأخرج منه متحمسة لمشروع ثاني مختلف تمامًا.' },
+        { p: 'asira',      t: 'أكمل فيه بصمت لكن لا أُري أحدًا؛ «مو وقته، وما هو جاهز».' }
       ]
     },
     {
-      act: 1, scene: 'المرآة',
-      text: 'أي مشهد من هذه المشاهد يشبهكِ أكثر؟',
+      act: 1, scene: 'دفتر بداية السنة',
+      text: 'عندكِ دفتر أنيق — أو ملاحظات في الجوال — فيه خطط بدايات السنوات. لو فتحتيه الآن، ماذا سيحكي عنكِ؟',
       options: [
-        { p: 'mubdia',     t: 'مجلدات وأسماء وأفكار كثيرة، ولا شيء وصل للناس بوضوح.' },
-        { p: 'asira',      t: 'ملف مفتوح لأيام لأن النسخة الأخيرة لم تطمئنني.' },
-        { p: 'mutafadiya', t: 'رسالة أو قرار أؤجله، وكل يوم يصبح أثقل.' },
-        { p: 'kafua',      t: 'أقول «عادي» وأنا أعرف أنني سأدفع الثمن من طاقتي لاحقًا.' }
+        { p: 'mubdia',     t: 'خمس خطط لخمسة مشاريع مختلفة، كل واحدة بحماس البداية… وأول صفحة فقط.' },
+        { p: 'asira',      t: 'خطة واحدة مُعادة بصياغة «أدق» كل مرة؛ صار التخطيط نفسه هو مشروعي.' },
+        { p: 'mutafadiya', t: 'خطة واضحة وممتازة… والخطوة الأولى فيها بالذات هي التي ما بدأت.' },
+        { p: 'kafua',      t: 'أهدافي مكتوبة في آخر الصفحة — بعد قائمة أهداف البيت والأهل والدوام.' }
       ]
     },
-    // ---- Act II ----
+    // ---- الفصل الثاني: الصوت الذي لا يسمعه أحد ----
     {
-      act: 2, scene: 'العقد الصامت',
-      text: 'أي جملة تشبه العقد غير المعلن بينكِ وبين نفسك؟',
+      act: 2, scene: 'الجملة التي تحكمكِ',
+      text: 'لو أنصتِّ للصوت العميق الذي يوقفكِ كل مرة، أي جملة تشبه ما يقوله؟',
       options: [
-        { p: 'asira',      t: 'إذا ظهر النقص في عملي، سيحسبونه نقصًا فيّ.' },
-        { p: 'mutafadiya', t: 'إذا اقتربت الآن، سأضطر لمواجهة شعور لا أريده.' },
-        { p: 'mubdia',     t: 'إذا اخترت طريقًا واحدًا، سأخسر باقي الاحتمالات.' },
-        { p: 'kafua',      t: 'إذا لم أتحمل، سأخذلهم أو تتغير مكانتي عندهم.' }
-      ]
-    },
-    {
-      act: 2, scene: 'بعد الحماس',
-      text: 'عندما يخف الحماس، كيف تفسرين الأمر؟',
-      options: [
-        { p: 'mubdia',     t: 'أقول ربما هذه ليست الفكرة الصحيحة، وهناك شيء أوسع ينتظرني.' },
-        { p: 'asira',      t: 'أشعر أن العمل ليس بالمستوى الذي يليق بي بعد.' },
-        { p: 'mutafadiya', t: 'أقول الوقت غير مناسب، وسأعود عندما تتضح الصورة.' },
-        { p: 'kafua',      t: 'أقول لا وقت للحماس الآن؛ هناك أشياء يجب أن أتحملها أولًا.' }
+        { p: 'asira',      t: '«إذا طلع شغلي ناقصًا… أنا التي ستطلع ناقصة في عيونهم.»' },
+        { p: 'mutafadiya', t: '«إذا فتحتُ هذا الباب الآن، سيجيئني شعور أثقل مني.»' },
+        { p: 'mubdia',     t: '«إذا التزمتُ بشيء واحد، دفنتُ كل النسخ الممكنة مني.»' },
+        { p: 'kafua',      t: '«إذا قلتُ لا… تهتز المكانة التي تعبتُ عليها عندهم.»' }
       ]
     },
     {
-      act: 2, scene: 'المقارنة',
-      text: 'عندما ترين من سبقكِ أو ظهر قبلكِ، ما ردّكِ الداخلي؟',
+      act: 2, scene: 'منتصف الطريق',
+      text: 'في منتصف أي مشروع تأتي لحظة يبهت فيها البريق. ماذا تفعل هذه اللحظة بكِ؟',
       options: [
-        { p: 'asira',      t: 'أصمت أكثر؛ لأن نسختي لا تبدو جاهزة أمام صورتهم المكتملة.' },
-        { p: 'mubdia',     t: 'أبحث عن فكرة مختلفة تجعلني أتجاوز الطريق العادي.' },
-        { p: 'mutafadiya', t: 'أؤجل الخطوة حتى لا أواجه شعور التأخر.' },
-        { p: 'kafua',      t: 'أقول لنفسي إن وقتي ليس لي أصلًا، فلا داعي للمقارنة الآن.' }
+        { p: 'mubdia',     t: 'أفسّرها إشارة أن الفكرة «مو هي» — وأصدّق فجأة أن فكرتي القادمة هي الصح.' },
+        { p: 'asira',      t: 'أفسّرها دليلًا أني يجب أن أرفع المستوى أكثر… قبل أن يراه أحد.' },
+        { p: 'mutafadiya', t: 'أحوّلها إلى انشغال منطقي بأشياء أخف، وأؤجل قلب المشروع نفسه.' },
+        { p: 'kafua',      t: 'ألوم نفسي على «الترف»: الحماس رفاهية، والواجبات أولى.' }
       ]
     },
     {
-      act: 2, scene: 'النصيحة',
-      text: 'أي نصيحة يكررونها عليكِ وتشعرين أنها لا ترى ما يحدث فعلًا؟',
+      act: 2, scene: 'الراحة المُرّة',
+      text: 'تجلسين أخيرًا لتستريحي بلا هدف — شاي، هدوء، لا أحد يطلب شيئًا. من الداخل… متى تنقطع الراحة؟',
       options: [
-        { p: 'mutafadiya', t: '«نظمي وقتكِ»؛ بينما المشكلة في الشعور الذي يسبق المهمة.' },
-        { p: 'asira',      t: '«سلّمي وخلاص»؛ كأن الخوف من الحكم عليكِ أمر بسيط.' },
-        { p: 'mubdia',     t: '«ركزي على شيء واحد»؛ كأن الفكرة الجديدة لا تسحبكِ فعلًا.' },
-        { p: 'kafua',      t: '«ضعي حدودًا»؛ كأن الذنب بعد الحد لا يأخذ منكِ شيئًا.' }
+        { p: 'kafua',      t: 'بإحساس أن أحدًا قد يحتاجني الآن؛ أرتاح «بأذنٍ واحدة صاحية».' },
+        { p: 'asira',      t: 'بتذكُّر الشيء غير المكتمل؛ ما أعرف أرتاح وفي البال شيء «مو تمام».' },
+        { p: 'mutafadiya', t: 'براحة يشوبها ذنب خفيف: أعرف أني أستريح من شيء أتهرّب منه أصلًا.' },
+        { p: 'mubdia',     t: 'بفكرة جديدة تقفز وسط الهدوء وتشعل رأسي؛ تتحول الراحة إلى جلسة عصف.' }
       ]
     },
     {
-      act: 2, scene: 'الحلقة',
-      text: 'ما الراحة القصيرة التي تعيدكِ إلى نفس الحلقة؟',
+      act: 2, scene: 'كلامهم عنكِ',
+      text: 'أي عبارة قيلت عنكِ وظلمتكِ — لأن قائلها لم يرَ القصة كاملة؟',
       options: [
-        { p: 'asira',      t: 'راحة صغيرة بعد تعديل جديد يجعل القلق يهدأ قليلًا.' },
-        { p: 'mutafadiya', t: 'هدوء مؤقت عندما أبتعد عن الشيء الثقيل.' },
-        { p: 'mubdia',     t: 'نشوة البداية الجديدة قبل أن يأتي ثقل المنتصف.' },
-        { p: 'kafua',      t: 'هدوء العلاقة عندما أقول نعم بسرعة.' }
+        { p: 'mubdia',     t: '«ما تكمّلين شي» — وما شافوا كم أحمل من بدايات صادقة تتجاذبني.' },
+        { p: 'asira',      t: '«معقّدة وتدققين» — وما حسّوا أن الذي يهزني هو حكمهم لو ظهر فيه خطأ.' },
+        { p: 'mutafadiya', t: '«كسل وتسويف» — وما دروا كم مرة اقتربتُ… وانسحبتُ من ثقل ما خلف الباب.' },
+        { p: 'kafua',      t: '«قوية وما ينكسر لها خاطر» — وما انتبهوا أني أنكسر بصمت من كثرة ما أُحمَّل.' }
       ]
     },
     {
-      act: 2, scene: 'الخطوة الأصدق',
-      text: 'لو احتجتِ خطوة واحدة اليوم، أي خطوة تبدو أصدق؟',
+      act: 2, scene: 'المكسب الخفي',
+      text: 'لكل عادة مكسبٌ خفي يبقيها حية. لو صدقتِ تمامًا: ما الذي تشترينه سرًّا بهذه العادة؟',
       options: [
-        { p: 'mubdia',     t: 'أحمي فكرة واحدة من بريق الأفكار الأخرى حتى تصل.' },
-        { p: 'asira',      t: 'أُخرج نسخة يمكن تحسينها بدل أن أبقيها مخفية.' },
-        { p: 'mutafadiya', t: 'أقترب دقيقة واحدة من الباب الذي أؤجله.' },
-        { p: 'kafua',      t: 'أرى ثمن «نعم» قبل أن أقولها.' }
+        { p: 'mubdia',     t: 'لحظة البداية تعطيني نسخة جديدة مني؛ أبقى «واعدة»… بلا امتحان النهاية.' },
+        { p: 'asira',      t: 'ما دام العمل في يدي، لم يُقيِّمه أحد؛ التعديل يحميني من ساعة الحكم.' },
+        { p: 'mutafadiya', t: 'كل يوم تأجيل يشتري لي هدنة قصيرة من شعورٍ واحدٍ ثقيل.' },
+        { p: 'kafua',      t: 'كل «نعم» أقولها تثبّت مكاني عندهم؛ صار التعب نفسه عملة حب.' }
+      ]
+    },
+    {
+      act: 2, scene: 'لو صدقتِ مع نفسكِ',
+      text: 'بعيدًا عن الخطط الكبيرة: أي خطوة صغيرة، لو فعلتِها هذا الأسبوع، ستشعرين أنكِ كنتِ صادقة مع نفسكِ؟',
+      options: [
+        { p: 'mubdia',     t: 'أرجع لمشروع واحد تركته وهو يستاهل — وأحميه من أي فكرة جديدة، سبعة أيام فقط.' },
+        { p: 'asira',      t: 'أرسل نسخة «جيدة» من شغلي لشخص واحد… قبل أن تصير مثالية.' },
+        { p: 'mutafadiya', t: 'أفتح الملف — أو الرسالة — التي أدور حولها من أسابيع. عشر دقائق فقط.' },
+        { p: 'kafua',      t: 'أحجز ساعة لي وحدي في الأسبوع، وأُعلمهم أنها موعد «ما ينلغي».' }
       ]
     }
   ];
 
+  /* ---------- Session-stable option shuffle (kills primacy bias) ---------- */
+  questions.forEach(q => {
+    const order = [0, 1, 2, 3];
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+    q.order = order; // display position -> original option index
+  });
+
   /* ---------- State ---------- */
   const state = {
     index: 0,
-    phase: 'closest',          // 'closest' | 'farthest'
-    answers: [],               // [{closest: i, farthest: i}]
+    phase: 'closest',
+    answers: [],               // per question: {closest, farthest} — ORIGINAL indices
     actBreakShown: false,
     lastResult: null
   };
@@ -208,7 +215,7 @@
     }
     const q = questions[state.index];
     if ($('currentQuestion')) $('currentQuestion').textContent = state.index + 1;
-    if ($('actLabel')) $('actLabel').textContent = q.act === 1 ? 'الفصل الأول — مشاهد من يومكِ' : 'الفصل الثاني — الصوت الداخلي';
+    if ($('actLabel')) $('actLabel').textContent = q.act === 1 ? 'الفصل الأول — مشاهد من يومكِ' : 'الفصل الثاني — الصوت الذي لا يسمعه أحد';
   }
 
   /* ---------- Question rendering ---------- */
@@ -224,16 +231,17 @@
 
     const wrap = $('options');
     wrap.innerHTML = '';
-    q.options.forEach((opt, i) => {
+    q.order.forEach(origIdx => {
+      const opt = q.options[origIdx];
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'option';
-      if (saved.closest === i) btn.classList.add('closest');
-      if (saved.farthest === i) btn.classList.add('farthest');
+      if (saved.closest === origIdx) btn.classList.add('closest');
+      if (saved.farthest === origIdx) btn.classList.add('farthest');
       btn.innerHTML = '<span class="mark">' +
-        (saved.closest === i ? 'الأقرب إليّ' : saved.farthest === i ? 'الأبعد عني' : '') +
+        (saved.closest === origIdx ? 'الأقرب إليّ' : saved.farthest === origIdx ? 'الأبعد عني' : '') +
         '</span>' + opt.t;
-      btn.addEventListener('click', () => choose(i));
+      btn.addEventListener('click', () => choose(origIdx));
       wrap.appendChild(btn);
     });
 
@@ -257,27 +265,19 @@
   function choose(i) {
     const saved = state.answers[state.index] || { closest: null, farthest: null };
 
-    // Re-answering a completed question starts it over with a new closest.
     if (state.phase === 'done') {
       state.answers[state.index] = { closest: i, farthest: null };
       state.phase = 'farthest';
-      refreshMarks();
-      setPrompt();
-      updateProgress();
+      refreshMarks(); setPrompt(); updateProgress();
       return;
     }
-
     if (state.phase === 'closest') {
-      saved.closest = i;
-      saved.farthest = null;
+      saved.closest = i; saved.farthest = null;
       state.answers[state.index] = saved;
       state.phase = 'farthest';
-      refreshMarks();
-      setPrompt();
+      refreshMarks(); setPrompt();
       return;
     }
-
-    // phase === 'farthest'
     if (saved.closest === i) {
       $('quizMsg').textContent = 'اختاري إجابة مختلفة عن الأقرب.';
       return;
@@ -285,25 +285,24 @@
     saved.farthest = i;
     state.answers[state.index] = saved;
     state.phase = 'done';
-    refreshMarks();
-    updateProgress();
+    refreshMarks(); updateProgress();
     setTimeout(advance, reduced ? 120 : 480);
   }
 
   function refreshMarks() {
+    const q = questions[state.index];
     const saved = state.answers[state.index] || {};
-    const opts = $('options').children;
-    Array.from(opts).forEach((el, i) => {
-      el.classList.toggle('closest', saved.closest === i);
-      el.classList.toggle('farthest', saved.farthest === i);
+    Array.from($('options').children).forEach((el, pos) => {
+      const origIdx = q.order[pos];
+      el.classList.toggle('closest', saved.closest === origIdx);
+      el.classList.toggle('farthest', saved.farthest === origIdx);
       el.querySelector('.mark').textContent =
-        saved.closest === i ? 'الأقرب إليّ' : saved.farthest === i ? 'الأبعد عني' : '';
+        saved.closest === origIdx ? 'الأقرب إليّ' : saved.farthest === origIdx ? 'الأبعد عني' : '';
     });
     $('quizMsg').textContent = '';
   }
 
   function advance() {
-    // Act break after the last Act-I scene.
     const lastActOne = questions.map(q => q.act).lastIndexOf(1);
     if (state.index === lastActOne && !state.actBreakShown) {
       state.actBreakShown = true;
@@ -324,14 +323,27 @@
     renderQuestion();
   }
 
-  /* ---------- Scoring (blueprint-faithful) ---------- */
+  /* ---------- Scoring & signature analysis ---------- */
   function calculateResult() {
     const scores = { mubdia: 0, asira: 0, mutafadiya: 0, kafua: 0 };
+    const closeCount = { mubdia: 0, asira: 0, mutafadiya: 0, kafua: 0 };
+    const farCount = { mubdia: 0, asira: 0, mutafadiya: 0, kafua: 0 };
+    const closeByAct = { 1: {}, 2: {} };
+
     state.answers.forEach((ans, qi) => {
       const q = questions[qi];
       if (!ans) return;
-      if (ans.closest != null) scores[q.options[ans.closest].p] += 2;
-      if (ans.farthest != null) scores[q.options[ans.farthest].p] -= 1;
+      if (ans.closest != null) {
+        const p = q.options[ans.closest].p;
+        scores[p] += (q.act === 2 ? 3 : 2);       // the inner voice weighs more
+        closeCount[p]++;
+        closeByAct[q.act][p] = (closeByAct[q.act][p] || 0) + 1;
+      }
+      if (ans.farthest != null) {
+        const p = q.options[ans.farthest].p;
+        scores[p] -= 1;
+        farCount[p]++;
+      }
     });
 
     const min = Math.min.apply(null, Object.values(scores));
@@ -340,9 +352,50 @@
     const total = Object.values(shifted).reduce((a, b) => a + b, 0);
     const pcts = {};
     Object.keys(shifted).forEach(k => (pcts[k] = Math.round((shifted[k] / total) * 100)));
-    const order = Object.keys(pcts).sort((a, b) => pcts[b] - pcts[a]);
+    const order = Object.keys(pcts).sort((a, b) =>
+      pcts[b] - pcts[a] || closeCount[b] - closeCount[a] || farCount[a] - farCount[b]);
     pcts[order[0]] += 100 - Object.values(pcts).reduce((a, b) => a + b, 0);
-    return { scores, pcts, order };
+
+    const dominant = order[0];
+    const gap = pcts[order[0]] - pcts[order[1]];
+    return {
+      scores, pcts, order,
+      closeCount, farCount, closeByAct,
+      coLead: gap <= 4,                     // two patterns share the lead
+      highClarity: pcts[dominant] >= 45,    // unusually decisive profile
+      gap
+    };
+  }
+
+  /* ---------- Precision mirrors — computed, never invented ---------- */
+  function buildMirrors(r) {
+    const dom = r.order[0];
+    const mirrors = [];
+
+    // 1) Tension: a pattern she both touches and pushes away.
+    const tension = Object.keys(patterns).find(p =>
+      p !== dom && r.closeCount[p] >= 2 && r.farCount[p] >= 3);
+    if (tension) {
+      mirrors.push('علاقتكِ بنمط «' + patterns[tension].name + '» متوترة: اخترتِه قريبًا ورفضتِه بعيدًا في مشاهد مختلفة — غالبًا هذا نمط قديم بدأتِ تخرجين منه، وما زال يشدّكِ من طرف ثوبكِ.');
+    }
+
+    // 2) Inner/outer split for the dominant pattern.
+    const inner = (r.closeByAct[2][dom] || 0);
+    const outer = (r.closeByAct[1][dom] || 0);
+    if (inner - outer >= 2) {
+      mirrors.push('يومكِ من الخارج لا يفضحكِ — لكن في «الصوت الداخلي» كانت إجاباتكِ محسومة. نمطكِ يسكن قراراتكِ الصامتة أكثر من سلوككِ الظاهر، ولهذا لا يلاحظه مَن حولكِ.');
+    } else if (outer - inner >= 2) {
+      mirrors.push('اللافت أن نمطكِ ظاهر في تفاصيل يومكِ أكثر مما تعترف به قناعاتكِ الداخلية — جسدكِ ويومكِ يعرفان قبل أن يقتنع رأسكِ.');
+    }
+
+    // 3) The anti-pattern: her most-rejected door (never the tension pattern —
+    //    the two mirrors would contradict each other about the same door).
+    const anti = Object.keys(patterns).sort((a, b) => r.farCount[b] - r.farCount[a])[0];
+    if (anti && r.farCount[anti] >= 4 && anti !== dom && anti !== tension) {
+      mirrors.push('أبعد الأنماط عنكِ: «' + patterns[anti].name + '» — هذا الباب ليس معركتكِ أصلًا. لا تصرفي طاقتكِ على نصائح كُتبت لامرأة أخرى.');
+    }
+
+    return mirrors.slice(0, 3);
   }
 
   /* ---------- Calculation → staged reveal ---------- */
@@ -355,24 +408,35 @@
   function renderReveal() {
     const r = state.lastResult;
     const dom = r.order[0];
+    const sec = r.order[1];
+
     $('revealName').textContent = patterns[dom].name;
     $('revealTruth').textContent = patterns[dom].truth;
-    $('mixTeaser').innerHTML =
-      'ظهر نمطكِ الغالب بنسبة <b>' + r.pcts[dom] + '٪</b> — ومعه نمط خفي يعمل في الخلفية. ' +
-      'قراءتكِ الكاملة تكشفه، مع خريطة مزيجكِ عبر الأنماط الأربعة.';
+
+    let teaser;
+    if (r.coLead) {
+      teaser = 'نتيجتكِ نادرة: نمطان يتقاسمان قيادتكِ هذه الفترة — <b>' + patterns[dom].name +
+        '</b> و<b>' + patterns[sec].name + '</b> يعملان معًا. قراءتكِ الكاملة تفكك هذا التحالف.';
+    } else if (r.highClarity) {
+      teaser = 'نمطكِ واضح بدرجة عالية — ظهر بنسبة <b>' + r.pcts[dom] +
+        '٪</b>، وهذا وضوح لا يظهر عند الكثيرات. ومعه نمط خفي يعمل في الظل… قراءتكِ الكاملة تكشفه.';
+    } else {
+      teaser = 'ظهر نمطكِ الغالب بنسبة <b>' + r.pcts[dom] +
+        '٪</b> — ومعه نمط خفي يعمل في الخلفية. قراءتكِ الكاملة تكشفه، مع خريطة مزيجكِ ومرايا دقيقة من إجاباتكِ أنتِ.';
+    }
+    $('mixTeaser').innerHTML = teaser;
     showPanel('revealPanel');
 
     if (!reduced && typeof gsap !== 'undefined') {
       gsap.fromTo('#revealName', { opacity: 0, y: 18, scale: 0.96 },
         { opacity: 1, y: 0, scale: 1, duration: 1.4, ease: 'power3.out' });
-      gsap.fromTo('#revealTruth', { opacity: 0 },
-        { opacity: 1, duration: 1.2, delay: 0.7 });
+      gsap.fromTo('#revealTruth', { opacity: 0 }, { opacity: 1, duration: 1.2, delay: 0.7 });
       gsap.fromTo('#mixTeaser, #toEmailBtn', { opacity: 0, y: 14 },
         { opacity: 1, y: 0, duration: 1, delay: 1.2, stagger: 0.15 });
     }
   }
 
-  /* ---------- Email gate ---------- */
+  /* ---------- Email gate → MailerLite (per-pattern form) ---------- */
   async function submitEmail(e) {
     e.preventDefault();
     const email = $('email').value.trim();
@@ -381,52 +445,48 @@
       return;
     }
     if (!state.lastResult) state.lastResult = calculateResult();
-    $('emailMsg').textContent = 'نفتح القراءة ونجهّز التقرير الأول...';
+    $('emailMsg').textContent = 'نفتح القراءة ونجهّز تقريركِ الأول...';
     await sendPayload(email, state.lastResult);
     renderResult(email);
   }
 
   async function sendPayload(email, result) {
     const dominant = result.order[0];
-    const payload = {
-      email: email,
-      fields: {
-        dominant_pattern: dominant,
-        dominant_pattern_name: patterns[dominant].name,
-        secondary_pattern: result.order[1],
-        secondary_pattern_name: patterns[result.order[1]].name,
-        mubdia_percent: String(result.pcts.mubdia),
-        asira_percent: String(result.pcts.asira),
-        mutafadiya_percent: String(result.pcts.mutafadiya),
-        kafua_percent: String(result.pcts.kafua),
-        dominant_percent: String(result.pcts[dominant]),
-        result_url: location.origin + location.pathname + '?result=' + dominant
-      }
+    const fields = {
+      dominant_pattern: dominant,
+      dominant_pattern_name: patterns[dominant].name,
+      secondary_pattern: result.order[1],
+      secondary_pattern_name: patterns[result.order[1]].name,
+      mubdia_percent: String(result.pcts.mubdia),
+      asira_percent: String(result.pcts.asira),
+      mutafadiya_percent: String(result.pcts.mutafadiya),
+      kafua_percent: String(result.pcts.kafua),
+      dominant_percent: String(result.pcts[dominant]),
+      result_clarity: result.coLead ? 'colead' : result.highClarity ? 'high' : 'normal',
+      result_url: location.origin + location.pathname + '?result=' + dominant
     };
 
     const ml = CONFIG.mailerLite || {};
+    // Only the form matching HER pattern is ever used — never all four.
     const endpoint = (ml.formEndpoints || {})[dominant] || ml.endpoint || '';
     try {
       if (ml.enabled && endpoint) {
         const fd = new FormData();
-        fd.append('fields[email]', payload.email);
-        Object.entries(payload.fields).forEach(([k, v]) => fd.append('fields[' + k + ']', v));
+        fd.append('fields[email]', email);
+        Object.entries(fields).forEach(([k, v]) => fd.append('fields[' + k + ']', v));
+        fd.append('ml-submit', '1');
+        fd.append('anticsrf', 'true');
         await fetch(endpoint, { method: 'POST', body: fd, mode: 'no-cors' });
       }
-    } catch (err) {
-      if (ml.backupEndpoint) {
-        try {
-          await fetch(ml.backupEndpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-        } catch (e2) { /* keep the visitor moving */ }
-      }
-    }
+    } catch (err) { /* keep the visitor moving; result still renders */ }
+
     try {
       localStorage.setItem('nizamok_last_result', JSON.stringify({
-        payload: payload, pcts: result.pcts, order: result.order,
+        payload: { email: email, fields: fields },
+        pcts: result.pcts, order: result.order,
+        closeCount: result.closeCount, farCount: result.farCount,
+        closeByAct: result.closeByAct, coLead: result.coLead,
+        highClarity: result.highClarity,
         at: new Date().toISOString()
       }));
     } catch (e) { /* private mode */ }
@@ -441,15 +501,22 @@
 
     $('resultName').textContent = P.name;
     $('resultTruth').textContent = P.truth;
-    $('hiddenPattern').innerHTML =
-      '✦ نمطكِ الخفي: <b>' + patterns[sec].name + '</b> بنسبة ' + r.pcts[sec] +
-      '٪ — لذلك قد تشعرين أحيانًا أن النمطين يعملان معًا.';
+
+    if (r.coLead) {
+      $('hiddenPattern').innerHTML =
+        '✦ نتيجة نادرة: <b>' + patterns[sec].name + '</b> تقاسمكِ القيادة بنسبة ' + r.pcts[sec] +
+        '٪ — النمطان يعملان معًا هذه الفترة.';
+    } else {
+      $('hiddenPattern').innerHTML =
+        '✦ نمطكِ الخفي: <b>' + patterns[sec].name + '</b> بنسبة ' + r.pcts[sec] +
+        '٪ — يعمل في الظل عندما يتعب نمطكِ الغالب.';
+    }
 
     const bars = $('bars');
     bars.innerHTML = '';
     r.order.forEach(k => {
       const row = document.createElement('div');
-      row.className = 'bar-row' + (k === dom ? ' dominant' : '');
+      row.className = 'bar-row' + (k === dom || (r.coLead && k === sec) ? ' dominant' : '');
       row.innerHTML =
         '<span>' + patterns[k].name + '</span>' +
         '<span class="bar-bg"><span class="bar-fill" data-w="' + r.pcts[k] + '"></span></span>' +
@@ -462,7 +529,20 @@
     $('readingStep').textContent = P.step;
     $('sentTo').textContent = email || 'بريدكِ';
 
-    // Personalized product path (per-pattern Dodo links).
+    // Precision mirrors — computed from her actual answer signature.
+    const mirrors = buildMirrors(r);
+    const mWrap = $('resultMirrors');
+    if (mWrap) {
+      if (mirrors.length) {
+        mWrap.innerHTML = '<h3>مرايا دقيقة — من إجاباتكِ أنتِ</h3>' +
+          mirrors.map(m => '<p>' + m + '</p>').join('');
+        mWrap.style.display = '';
+      } else {
+        mWrap.style.display = 'none';
+      }
+    }
+
+    // Personalized product path.
     const links = (CONFIG.products || {})[dom] || {};
     const prices = CONFIG.pricing || {};
     $('resultPath').innerHTML =
@@ -487,7 +567,6 @@
 
     showPanel('resultPanel');
 
-    // Draw the mix bars.
     const fills = bars.querySelectorAll('.bar-fill');
     if (!reduced && typeof gsap !== 'undefined') {
       fills.forEach(f => gsap.to(f, { width: f.dataset.w + '%', duration: 1.4, ease: 'power2.out', delay: 0.4 }));
@@ -515,7 +594,12 @@
     try {
       const saved = JSON.parse(localStorage.getItem('nizamok_last_result') || 'null');
       if (saved && saved.order && saved.order[0] === m[1]) {
-        state.lastResult = { pcts: saved.pcts, order: saved.order };
+        state.lastResult = {
+          pcts: saved.pcts, order: saved.order,
+          closeCount: saved.closeCount || {}, farCount: saved.farCount || {},
+          closeByAct: saved.closeByAct || { 1: {}, 2: {} },
+          coLead: !!saved.coLead, highClarity: !!saved.highClarity
+        };
         renderResult(saved.payload && saved.payload.email);
         return true;
       }
@@ -529,10 +613,7 @@
     if ($('totalQuestions')) $('totalQuestions').textContent = questions.length;
 
     $('startBtn').addEventListener('click', () => { state.index = 0; renderQuestion(); });
-    $('actContinueBtn').addEventListener('click', () => {
-      state.index++;
-      renderQuestion();
-    });
+    $('actContinueBtn').addEventListener('click', () => { state.index++; renderQuestion(); });
     $('prevBtn').addEventListener('click', prev);
     $('toEmailBtn').addEventListener('click', () => showPanel('emailPanel'));
     $('emailForm').addEventListener('submit', submitEmail);

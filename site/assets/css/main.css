@@ -927,7 +927,26 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .bar-row.dominant .bar-fill { background: linear-gradient(90deg, var(--gold), #F4CFC9); }
 .bar-row.dominant span:first-child { color: #F6EEDF; font-weight: 700; }
 
-.reading { border-top: 1px dashed rgba(214, 186, 128, 0.3); padding-top: 1.9rem; margin-top: 0.4rem; }
+/* Precision mirrors — the "how did it know" panel */
+.mirrors {
+  margin-top: 1.8rem;
+  border: 1px solid rgba(185, 165, 227, 0.35);
+  background: linear-gradient(160deg, rgba(185, 165, 227, 0.1), rgba(255, 250, 240, 0.03));
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.7rem;
+}
+.mirrors h3 {
+  font-size: 1.08rem; font-weight: 700; color: var(--lavender-soft);
+  margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.6rem;
+}
+.mirrors h3::before { content: '✦'; color: var(--lavender); font-size: 0.85rem; }
+.mirrors p {
+  color: rgba(239, 231, 218, 0.88); font-size: 0.95rem; line-height: 2;
+  margin-bottom: 0.9rem;
+}
+.mirrors p:last-child { margin-bottom: 0; }
+
+.reading { border-top: 1px dashed rgba(214, 186, 128, 0.3); padding-top: 1.9rem; margin-top: 1.6rem; }
 .reading h3 { font-size: 1.12rem; font-weight: 700; color: var(--gold-soft); margin: 1.5rem 0 0.5rem; display: flex; align-items: center; gap: 0.6rem; }
 .reading h3::before { content: '✦'; color: var(--gold); font-size: 0.8rem; }
 .reading p { color: rgba(239, 231, 218, 0.85); font-size: 0.98rem; }
