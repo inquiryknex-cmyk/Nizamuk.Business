@@ -86,14 +86,44 @@ Series kicker: «كتابٌ في أصلِ النمط» · series title: «جذو
 - **أسيرة الكمال** — لماذا تراجعين، وتراجعين، وتراجعين، حتى يبقى العمل آمنًا من
   العيون؟ كتابٌ في الجذر الخفيّ بين الجودة، والخجل، والصورة التي لا تريدين أن تهتزّ.
 
-### Rebuild cover copy (mubdia cover uploaded)
-- **احمي فكرة واحدة حتى تصل** — نظام عملي يساعدكِ على حماية مشروع واحد من بريق
-  الأفكار الجديدة، حتى يكتمل ويصل إلى العالم بدل أن يبقى فكرة في رأسكِ.
-- Pull-quote: الفكرة اللامعة ليست دائمًا نداء؛ أحيانًا هي باب خروج من منتصف فقد بريقه.
+### Rebuild cover copy (all four received)
+Series footer: «نظامك · نظام إعادة البناء»
 
-Cover image files still needed from owner (were pasted as chat images):
-expected at `assets/covers/juthur-{mubdia,mutafadiya,kafua,asira}.jpg`,
-`assets/covers/rebuild-mubdia.jpg`; Lamhat covers TBD (may not exist).
+- **المبدعة المشتّتة** — «احمي فكرة واحدة حتى تصل» — نظام عملي يساعدكِ على حماية
+  مشروع واحد من بريق الأفكار الجديدة، حتى يكتمل ويصل إلى العالم بدل أن يبقى
+  فكرة في رأسكِ. · Pull-quote: الفكرة اللامعة ليست دائمًا نداء؛ أحيانًا هي باب
+  خروج من منتصف فقد بريقه.
+- **المتفادية الذكية** — «اقتربي من الباب الذي صار أكبر من حجمه» — نظام عملي
+  يساعدكِ على فتح الرسالة المؤجّلة، والمكالمة الثقيلة، والقرار الذي بقي معلّقًا؛
+  باقترابٍ صغير يعيد الواقع إلى حجمه قبل أن يكبر في الخيال. · Pull-quote: أنتِ
+  لا تتجنّبين المهمة، بل الشعور الذي خلفها.
+- **الكفؤة المنهكة** — «أن تكوني قادرة لا يعني أن تكوني متاحة دائمًا» — قدرتكِ
+  ليست تصريحًا مفتوحًا للجميع. نظام عملي للمرأة التي يحمّلها الجميع لأنها
+  «قادرة»، حتى نسيت أن قدرتها نفسها تحتاج من يحميها. يساعدكِ أن تعطي دون أن
+  تختفي، وأن تحمي ما يبقى منكِ في نهاية اليوم. · Pull-quote: أحيانًا لا يكون
+  المدح مكافأة؛ يكون طريقةً مهذّبة لترك التحمّل عليكِ.
+- **أسيرة الكمال** — «سلّمي قبل أن تقعي في فخّ الكمال» — نظام عملي يساعدكِ على
+  الخروج من دوّامة «التعديل الأخير»، وتسليم نسخةٍ تتحسّن لأنها خرجت، لا لأنها
+  بقيت محميّةً من كل عين. نقص العمل لا يعني نقصًا فيكِ. · Pull-quote: الكمال هنا
+  ليس معيارًا عاليًا؛ إنه خوفٌ مهذّب من أن يراكِ أحدٌ قبل أن تشعري أنكِ كاملة.
+
+### Lamhat cover copy (2 of 4 received)
+Kicker: «لمحة» · **deep green + gold covers**
+
+- **الكفؤة المنهَكة** — خريطة النمط الذي يُعطّل يومكِ وطاقتكِ وقراراتكِ
+- **المتفادية الذكية** — خريطة النمط الذي يجعلكِ تدورين حول المهم دون أن تدخليه
+- المبدعة المشتتة / أسيرة الكمال — not yet received.
+
+### Tier color system (discovered from covers — use in product cards)
+- **لمحات = deep emerald green** + gold
+- **جذور نمطك = deep burgundy** + gold
+- **نظام إعادة البناء = deep plum** + gold
+This reconciles the design doc's "deep green" with the identity doc's "deep
+plum": each product line owns a jewel tone; the page itself stays ivory.
+
+Cover image files still needed from owner as actual files (all arrived as
+pasted chat images): expected at `assets/covers/{lamhat,juthur,rebuild}-{mubdia,mutafadiya,kafua,asira}.jpg`.
+Lamhat mubdia + asira covers may not exist yet.
 
 ## 4. Quiz (الاختبار) — nizamok.com/ikhtibar/
 
@@ -155,6 +185,6 @@ Pending (asked, awaiting owner):
    vs. Lamhat only.
 4. Quiz redesign depth: cinematic two-act (recommended) vs. copy-elevation
    vs. radical day-simulation.
-5. Lamhat covers: exist? (Juthur ×4 + Rebuild ×1 received as chat images —
-   need actual files.)
+5. Covers: Juthur ×4, Rebuild ×4, Lamhat ×2 received as chat images — need all
+   as actual files; do Lamhat mubdia/asira covers exist?
 6. Confirm URLs: landing at `/`, quiz at `/ikhtibar/`, waitlist at `/interdash/`.
