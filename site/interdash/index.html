@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لوحة نظامك التفاعلية — قريبًا | نظامك</title>
+  <meta name="description" content="لوحة نظامك التفاعلية: المساحة العملية القادمة لتنظيم المهام والطاقة والراحة حسب نمطكِ. شاهدي الفكرة وانضمي إلى قائمة الانتظار.">
+  <link rel="canonical" href="https://nizamok.com/interdash/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_SA">
+  <meta property="og:title" content="لوحة نظامك التفاعلية — من قراءة النمط إلى تنظيم اليوم">
+  <meta property="og:description" content="ليست تطبيق مهام آخر، بل مساحة هادئة تنظّم يومكِ بحسب نمطكِ وطاقتكِ. انضمي إلى قائمة الانتظار.">
+  <meta property="og:url" content="https://nizamok.com/interdash/">
+  <meta property="og:image" content="https://nizamok.com/assets/video/interdash-poster.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/">
+      <img class="seal" src="/assets/img/seal.png" alt="" onerror="this.remove()">
+      <span class="brand-text">
+        <span class="brand-ar">نظامك</span>
+        <span class="brand-en">NizamOk</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-label="القائمة"><span></span><span></span><span></span></button>
+    <nav class="nav-links">
+      <a href="/">الرئيسية</a>
+      <a href="/#lamhat">لمحات</a>
+      <a href="#waitlist">قائمة الانتظار</a>
+      <a class="btn btn-primary" href="/ikhtibar/">ابدئي الاختبار</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ======================= HERO + VIDEO + WAITLIST ======================= -->
+  <section class="hero" style="padding-bottom:clamp(3rem,6vw,5rem)">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="container">
+      <div class="section-head" style="margin-bottom:clamp(2rem,4vw,3rem)">
+        <span class="kicker">قريبًا: لوحة نظامك التفاعلية</span>
+        <h1 style="font-size:clamp(1.8rem,4.2vw,2.7rem);margin-bottom:1rem">من قراءة النمط إلى تنظيم اليوم</h1>
+        <p>نظامك ليس تطبيق مهام، بل منظومة اكتشاف ذاتي تبدأ من نمطكِ — واللوحة هي المساحة العملية التي تحوّل هذا الفهم إلى يومٍ أوضح: مهام، طاقة، نوافذ راحة، ومؤشرات تكرار.</p>
+      </div>
+
+      <div class="interdash-grid" id="waitlist">
+        <div class="video-frame reveal">
+          <span class="label">العرض التشويقي</span>
+          <div class="video-shell" data-video-shell>
+            <div class="video-poster">
+              <p class="display">لوحة نظامك</p>
+              <p>العرض التشويقي قريبًا</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="waitlist-card reveal">
+          <h3>انضمي إلى قائمة انتظار لوحة نظامك</h3>
+          <p>سنرسل لكِ التحديثات الأولى عند فتح التجربة المبكرة، مع لمحات من طريقة استخدام اللوحة لتنظيم يومكِ بحسب نمطكِ وطاقتكِ.</p>
+          <form class="form-grid" data-waitlist novalidate>
+            <div class="field">
+              <label for="wl-name">الاسم الأول</label>
+              <input id="wl-name" name="first_name" type="text" autocomplete="given-name" placeholder="اسمكِ">
+            </div>
+            <div class="field">
+              <label for="wl-email">البريد الإلكتروني</label>
+              <input id="wl-email" name="email" type="email" required autocomplete="email" placeholder="name@email.com">
+            </div>
+            <div class="field">
+              <label for="wl-pattern">ما نمطكِ؟ <span style="color:var(--taupe)">اختياري</span></label>
+              <select id="wl-pattern" name="pattern">
+                <option value="">لم أختبر بعد</option>
+                <option value="mubdia">المبدعة المشتّتة</option>
+                <option value="asira">أسيرة الكمال</option>
+                <option value="mutafadiya">المتفادية الذكية</option>
+                <option value="kafua">الكفؤة المنهَكة</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" type="submit">انضمي إلى القائمة</button>
+            <div class="form-msg" aria-live="polite"></div>
+          </form>
+          <p class="form-note">لن نرسل لكِ رسائل مزعجة. فقط تحديثات مهمة عن إطلاق لوحة نظامك.</p>
+          <div class="subscription-hint">
+            <span>عند الإطلاق: اشتراك شهري <b>29 ريالًا</b> — والمنضمّات إلى القائمة يصلهنّ باب التجربة المبكرة أولًا.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= WHAT'S INSIDE ======================= -->
+  <section class="section tinted">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">ماذا في اللوحة؟</span>
+        <h2>مساحة هادئة تعرف نمطكِ</h2>
+        <p>ليست قائمة مهام لا نهائية، بل يوم واحد واضح — مقروء بعدسة نمطكِ أنتِ.</p>
+      </div>
+      <div class="intro-cards" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.4rem" data-reveal-group>
+        <div class="intro-card reveal" style="padding:1.6rem 1.4rem">
+          <strong style="font-size:1.05rem">حالتكِ اليوم</strong>
+          <p>قراءة يومية هادئة: الطاقة، التركيز، الضغط الداخلي، وقابلية الإنجاز — قبل أن تقرري ماذا تفعلين.</p>
+        </div>
+        <div class="intro-card reveal" style="padding:1.6rem 1.4rem">
+          <strong style="font-size:1.05rem">مهمة الآن</strong>
+          <p>جلسة تركيز واحدة بقاعدة نمطكِ — حماية خطوة واحدة من التشتت بدل مطاردة كل شيء.</p>
+        </div>
+        <div class="intro-card reveal" style="padding:1.6rem 1.4rem">
+          <strong style="font-size:1.05rem">موقف الأفكار والمشاعر</strong>
+          <p>اركني الفكرة الجديدة أو الشعور الطارئ في مكان آمن، بدل أن يقود يومكِ أو يسرق مهمتكِ الحالية.</p>
+        </div>
+        <div class="intro-card reveal" style="padding:1.6rem 1.4rem">
+          <strong style="font-size:1.05rem">بوصلة اليوم</strong>
+          <p>اتجاه واحد صادق ليومكِ، وتنبيه لطيف حين يقترب النمط القديم — بلا لوم، وبلا أوسمة زائفة.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= START WITH QUIZ ======================= -->
+  <section class="section">
+    <div class="container">
+      <div class="final-cta reveal">
+        <span class="kicker" style="border-color:rgba(231,215,174,0.4);color:var(--gold-soft);background:rgba(231,215,174,0.08)">حتى يفتح الباب</span>
+        <h2>ابدئي بمعرفة نمطكِ الآن</h2>
+        <p>اللوحة ستُقرأ بنمطكِ — لذلك أفضل استعداد لها هو أن تعرفي نمطكِ اليوم، وتبدئي المسار من قراءته.</p>
+        <div class="actions">
+          <a class="btn btn-gold" href="/ikhtibar/">ابدئي الاختبار المجاني</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <strong>نظامك · NizamOk</strong>
+        <span>مسار عربي للفهم الذاتي والتنظيم العملي.</span>
+      </div>
+      <nav class="footer-links">
+        <a href="/ikhtibar/">الاختبار</a>
+        <a href="/#lamhat">لمحات</a>
+        <a href="/privacy/">سياسة الخصوصية</a>
+        <a href="/terms/">الشروط والأحكام</a>
+        <a href="/refund/">سياسة الاسترجاع</a>
+      </nav>
+    </div>
+    <p class="disclaimer">محتوى نظامك مخصص للفهم الذاتي والتنظيم العملي، ولا يُعدّ تشخيصًا نفسيًا أو بديلًا عن مختص. · © <span data-year></span> نظامك</p>
+  </div>
+</footer>
+
+<script src="/assets/js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+<script src="/assets/js/main.js" defer></script>
+</body>
+</html>

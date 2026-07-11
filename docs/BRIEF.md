@@ -71,8 +71,9 @@ Dodo checkout links (provided by owner, 2026-07-11):
 
 Note: rebuild uses `munhaka` for الكفؤة المنهكة; all other tiers use `kafua`.
 
-**Pricing — UNRESOLVED.** Design doc: Lamhat 19 / Juthur 49. Live site:
-Lamhat 29 / Juthur 39 / Rebuild 109 (+ bundle 131 in config). Awaiting owner.
+**Pricing (decided 2026-07-11):** Lamhat **19 ريال** · Juthur **49 ريال** ·
+Rebuild **109 ريال** · Interdash **29 ريال/شهريًا** at launch. Dodo checkout
+pages carry the authoritative Saudi pricing.
 
 ### Juthur cover copy (extracted from uploaded covers)
 Series kicker: «كتابٌ في أصلِ النمط» · series title: «جذورُ نمطكِ»
@@ -178,14 +179,21 @@ Decided:
 - Quiz base: owner's blueprint = live 12-question quiz; elevate it (2026-07-11)
 - Interdash video: placeholder now, owner pastes YouTube link later (2026-07-11)
 
-Pending (asked, awaiting owner):
-1. Team section: real team (names/photos) vs. anonymous-but-real vs. honest
-   philosophy section instead.
-2. Pricing: 19/49/? vs 29/39/109 vs new.
-3. Purchasable now: all tiers everywhere vs. Lamhat-on-landing + all-on-result
-   vs. Lamhat only.
-4. Quiz redesign depth: cinematic two-act (recommended) vs. copy-elevation
-   vs. radical day-simulation.
-5. Covers: complete set received (Lamhat ×4, Juthur ×4, Rebuild ×4) as chat
-   images — still need all 12 as actual image files for `assets/covers/`.
-6. Confirm URLs: landing at `/`, quiz at `/ikhtibar/`, waitlist at `/interdash/`.
+Decided (2026-07-11, second round):
+1. Team section: **real team, anonymous** — collective truthful description
+   (seven Arab women; psychology, literature, certified coaching), no invented
+   names/faces. Built as the «من نحن» section on the landing page.
+2. Pricing: **19 / 49 / 109 + Interdash 29/mo** (see §3).
+3. Purchasable: **Lamhat promoted on landing; all three tiers offered
+   personalized on the quiz result page** (Juthur/Rebuild framed as
+   "يُفتح بعد نتيجتكِ" on landing).
+4. Quiz: **cinematic two-act** — built at `site/ikhtibar/`.
+5. URLs confirmed: `/` landing · `/ikhtibar/` quiz · `/interdash/` waitlist.
+6. Interdash film received (25.3 MB → recompressed to 16.5 MB, 864×1080,
+   faststart) and self-hosted at `site/assets/video/interdash.mp4`.
+
+Still needed from owner:
+- The 12 cover JPGs as files (see `site/assets/covers/README.md`).
+- The mandala seal as `site/assets/img/seal.png`.
+- MailerLite form endpoints (4 quiz forms + 1 waitlist form) → `config.js`.
+- Free-report PDFs carried over to `/reports/…`.
