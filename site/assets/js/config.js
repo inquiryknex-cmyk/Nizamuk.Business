@@ -14,6 +14,14 @@ window.NIZAMOK = {
     supportEmail: 'support@nizamok.com'
   },
 
+  social: {
+    tiktok: 'https://www.tiktok.com/@nizamuk_ar',
+    // TODO(owner): confirm the exact YouTube channel URL.
+    youtube: 'https://www.youtube.com/@nizamuk_ar',
+    email: 'support@nizamok.com'
+    // instagram: added later by owner
+  },
+
   urls: {
     quiz: '/ikhtibar/',
     interdash: '/interdash/'

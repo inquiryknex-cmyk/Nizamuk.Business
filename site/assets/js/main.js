@@ -63,6 +63,20 @@
       gsap.to(phone, { y: -12, duration: 3.6, ease: 'sine.inOut', yoyo: true, repeat: -1 });
     }
 
+    // The wordmark writes itself; the OK resolves into the golden swoosh.
+    const sw = document.querySelector('.logo-anim .l-swoosh');
+    if (sw && sw.getTotalLength) {
+      const len = sw.getTotalLength();
+      const tl = gsap.timeline({ delay: 0.35 });
+      tl.from('.logo-anim .l-nizam', { opacity: 0, x: -16, duration: 1.1, ease: 'power2.out' })
+        .from('.logo-anim .l-o', { opacity: 0, duration: 0.7 }, '-=0.55')
+        .from('.logo-anim .l-k', { opacity: 0, duration: 0.7 }, '-=0.45')
+        .fromTo(sw,
+          { strokeDasharray: len, strokeDashoffset: len },
+          { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut' }, '-=0.25')
+        .to('.logo-anim .l-o', { opacity: 0.45, duration: 1, ease: 'sine.inOut' }, '-=0.6');
+    }
+
     // Gold swoosh in the logo draws itself.
     document.querySelectorAll('.logo-swoosh').forEach(sw => {
       const len = sw.getTotalLength ? sw.getTotalLength() : 0;
