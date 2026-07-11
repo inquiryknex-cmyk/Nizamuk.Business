@@ -274,20 +274,12 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .hero-brandmark .seal-img { width: clamp(84px, 10vw, 116px); }
 .hero-brandmark .brand-line { font-size: 0.78rem; letter-spacing: 0.5em; color: rgba(230, 211, 163, 0.75); margin-top: 0.2rem; }
 
-/* Animated wordmark — the OK resolves into the golden swoosh */
-.logo-anim { width: clamp(230px, 26vw, 320px); height: auto; overflow: visible; direction: ltr; }
-.logo-anim text {
-  font-family: var(--font-script);
-  fill: #F2E9DA;
-  font-size: 74px;
-}
-.logo-anim .l-o { fill: #EDDFC4; }
-.logo-anim .l-swoosh {
-  fill: none;
-  stroke: url(#goldGrad);
-  stroke-width: 4.2;
-  stroke-linecap: round;
-  filter: drop-shadow(0 0 6px rgba(201, 167, 94, 0.45));
+/* The real signature wordmark, breathing softly */
+.hero-brandmark .hero-wordmark {
+  height: clamp(48px, 6vw, 68px);
+  width: auto;
+  margin-top: 2px;
+  filter: drop-shadow(0 0 14px rgba(201, 167, 94, 0.25));
 }
 
 .hero h1 {

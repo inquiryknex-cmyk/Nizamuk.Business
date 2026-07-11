@@ -71,13 +71,9 @@ window.NIZAMOK = {
     }
   },
 
-  // Free first-report PDFs (already hosted on the live site).
-  reports: {
-    mubdia:     '/reports/free-mubdia-mushtatta.pdf',
-    asira:      '/reports/free-asirat-alkamal.pdf',
-    mutafadiya: '/reports/free-mutafadiya-thakiya.pdf',
-    kafua:      '/reports/free-kafua-munhaka.pdf'
-  },
+  // Free first reports are delivered by MailerLite automations (attached
+  // to the quiz form below, branched on the dominant_pattern field) —
+  // nothing is hosted on the site.
 
   mailerLite: {
     enabled: false,          // flip to true once endpoints are pasted

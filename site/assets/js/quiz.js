@@ -400,8 +400,7 @@
         mutafadiya_percent: String(result.pcts.mutafadiya),
         kafua_percent: String(result.pcts.kafua),
         dominant_percent: String(result.pcts[dominant]),
-        result_url: location.origin + location.pathname + '?result=' + dominant,
-        free_report_url: (CONFIG.reports || {})[dominant] || ''
+        result_url: location.origin + location.pathname + '?result=' + dominant
       }
     };
 
@@ -462,12 +461,6 @@
     $('readingWound').textContent = P.wound;
     $('readingStep').textContent = P.step;
     $('sentTo').textContent = email || 'بريدكِ';
-
-    const freeReport = (CONFIG.reports || {})[dom];
-    const dl = $('freeReportLink');
-    if (dl) {
-      if (freeReport) dl.href = freeReport; else dl.style.display = 'none';
-    }
 
     // Personalized product path (per-pattern Dodo links).
     const links = (CONFIG.products || {})[dom] || {};
