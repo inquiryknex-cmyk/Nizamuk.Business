@@ -681,8 +681,10 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .cover.mini .cover-sub { font-size: 0.52rem; margin-top: 0.4rem; line-height: 1.8; }
 .cover.mini .cover-foot { display: none; }
 .coming-card::before { content: ''; position: absolute; inset: 10px; border: 1px solid rgba(220, 192, 134, 0.4); border-radius: 12px; pointer-events: none; }
-.coming-card.juthur  { background: radial-gradient(120% 90% at 50% 0%, #61202F, var(--tier-juthur) 55%, #2A0A12); }
-.coming-card.rebuild { background: radial-gradient(120% 90% at 50% 0%, #4A3566, var(--tier-rebuild) 55%, #1D1229); }
+/* Backdrops deliberately swapped against the covers for contrast:
+   the burgundy book sits on velvet plum; the plum book sits on burgundy. */
+.coming-card.juthur  { background: radial-gradient(120% 90% at 50% 0%, #4A3566, var(--tier-rebuild) 55%, #1D1229); }
+.coming-card.rebuild { background: radial-gradient(120% 90% at 50% 0%, #61202F, var(--tier-juthur) 55%, #2A0A12); }
 .coming-card .when {
   font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
   border: 1px solid rgba(220, 192, 134, 0.55); color: var(--gold-soft);

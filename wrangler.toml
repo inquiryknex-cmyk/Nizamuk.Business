@@ -1,0 +1,5 @@
+# Cloudflare Pages configuration for NizamOk (نظامك)
+# Static site — no framework, no build step. All deployable files live in ./site
+name = "nizamok"
+compatibility_date = "2026-07-01"
+pages_build_output_dir = "site"

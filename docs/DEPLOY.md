@@ -1,19 +1,30 @@
 # Deploying nizamok.com
 
-The site is fully static — everything lives in `site/`.
+The site is fully static (vanilla HTML/CSS/JS + GSAP — no framework).
+Everything deployable lives in `site/`. `wrangler.toml` at the repo root
+carries the Pages config (`pages_build_output_dir = "site"`).
 
-## Cloudflare Pages (recommended, matches current setup)
+## Cloudflare Pages — exact settings
 
-Dashboard route:
-1. Cloudflare Dashboard → Workers & Pages → Create → Pages → Connect to Git.
-2. Repository: `inquiryknex-cmyk/Nizamuk.Business`, production branch: `main`.
-3. Build command: *(leave empty)* · Build output directory: `site`.
-4. Add the custom domain `nizamok.com` under the project's Custom Domains.
+| Setting | Value |
+|---|---|
+| Repository | `inquiryknex-cmyk/Nizamuk.Business` |
+| Production branch | `main` |
+| Framework preset | **None** (static HTML) |
+| Build command | `npm run build` *(validation only — or leave empty)* |
+| Build output directory | `site` |
+| Root directory | `/` (repo root — leave empty) |
+| Environment variables | **none required** |
+| Deploy command (CLI alt.) | `npx wrangler pages deploy site --project-name nizamok` |
 
-CLI route (Wrangler):
-```bash
-npx wrangler pages deploy site --project-name nizamok
-```
+Routing: every page is a real directory (`/`, `/ikhtibar/`, `/interdash/`,
+`/privacy/`, `/terms/`, `/refund/`) so refreshes can never 404 — no SPA
+fallback needed. `site/_redirects` maps the short alias `/quiz` → `/ikhtibar/`
+(301). `site/404.html` is the branded not-found page. `site/_headers` sets
+asset caching.
+
+After the first deploy: add the custom domain `nizamok.com` under the
+project's Custom Domains.
 
 ## Go-live checklist
 
