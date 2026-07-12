@@ -95,8 +95,9 @@ window.NIZAMOK = {
       mubdia:     'https://assets.mailerlite.com/jsonp/2429254/forms/190096444701541996/subscribe'
     },
 
-    // Interdash waiting-list form (owner to provide its action URL).
-    waitlistEndpoint: '',
+    // Interdash waiting-list form — «كوني من أوائل من يختبرن لوحة نمطك
+    // التفاعلية» (embed mlb2-43641817, provided 2026-07-12).
+    waitlistEndpoint: 'https://assets.mailerlite.com/jsonp/2429254/forms/192726401763247801/subscribe',
 
     // Generic fallbacks.
     endpoint: '',

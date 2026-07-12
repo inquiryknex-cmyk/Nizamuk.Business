@@ -988,6 +988,39 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .waitlist-banner b { color: var(--gold-soft); }
 
 /* ============================================================
+   LEGAL PAGES
+   ============================================================ */
+
+.legal-wrap { max-width: 760px; margin-inline: auto; }
+.legal-card {
+  background: var(--card);
+  border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-ivory);
+  padding: clamp(1.8rem, 5vw, 3rem);
+}
+.legal-card h1 {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  color: var(--plum-deep);
+  text-align: center;
+  margin-bottom: 0.4rem;
+}
+.legal-card h2 {
+  font-size: 1.15rem;
+  color: var(--plum);
+  margin: 1.8rem 0 0.5rem;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.legal-card h2::before {
+  content: ''; width: 7px; height: 7px; flex: none;
+  background: var(--gold); transform: rotate(45deg);
+}
+.legal-card p, .legal-card li { color: var(--ink-soft); font-size: 0.98rem; }
+.legal-card ul { padding-inline-start: 1.3rem; margin: 0.4rem 0; }
+.legal-card li { margin-bottom: 0.4rem; }
+.legal-card a { color: var(--gold-deep); text-decoration: underline; }
+
+/* ============================================================
    UTILITIES / MEDIA
    ============================================================ */
 

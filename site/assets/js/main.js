@@ -135,6 +135,8 @@
         const fd = new FormData();
         fd.append('fields[email]', payload.email);
         Object.entries(payload.fields).forEach(([k, v]) => fd.append('fields[' + k + ']', v));
+        fd.append('ml-submit', '1');
+        fd.append('anticsrf', 'true');
         await fetch(endpoint, { method: 'POST', body: fd, mode: 'no-cors' });
       } else {
         // MailerLite not wired yet — keep the signup safe locally.

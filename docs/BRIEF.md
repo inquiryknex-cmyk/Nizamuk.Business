@@ -202,8 +202,21 @@ Aref Ruqaa (editorial quotes), Reem Kufi (pattern names, matches covers),
 Great Vibes (Latin accents). Rose-bloom buttons from the app UI. Ecosystem
 strip in the hero so the whole path reads at first glance.
 
+Integration status (2026-07-12):
+- MailerLite LIVE: 4 per-pattern quiz forms + waitlist form
+  (192726401763247801) wired and enabled; only the matching form is ever
+  submitted. Free reports delivered by MailerLite automations.
+- Covers: generated in-house as real JPGs (print originals can replace them).
+- Seal + wordmark extracted from film (wordmark-dark.png for light surfaces;
+  lockup rule: seal and signature never separated).
+- Welcome email: docs/emails/waitlist-welcome.html (velvet, fluid/responsive,
+  style-strip-proof), delivered as MailerLite-importable ZIP.
+- Legal pages ported into the new design: /privacy/ /terms/ /refund/.
+
 Still needed from owner:
-- The 12 cover JPGs as files (see `site/assets/covers/README.md`).
-- The mandala seal as `site/assets/img/seal.png`.
-- MailerLite form endpoints (4 quiz forms + 1 waitlist form) → `config.js`.
-- Free-report PDFs carried over to `/reports/…`.
+- Exact YouTube channel URL (currently guessed @nizamuk_ar).
+- Cloudflare Pages connection (output dir `site`) + nizamok.com domain.
+- Optional: create MailerLite custom fields (pattern, source, dominant_*,
+  *_percent, result_url, result_clarity) to store the extra data the site
+  already sends.
+- Instagram link (later, per owner).
