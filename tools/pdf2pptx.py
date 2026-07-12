@@ -122,18 +122,19 @@ def edge_color(img):
     b = sum(px[p][2] for p in pts) // 4
     return RGBColor(r, g, b)
 
+SKIP_PAGES = {10, 11}          # 0-based: drop pages 11 and 12
+SW, SH = 960.0, 540.0          # 16:9 widescreen landscape (13.33 x 7.5 in)
+
 def main():
     doc = fitz.open(SRC)
-    # dominant page size -> slide size
-    from collections import Counter
-    cnt = Counter((round(p.rect.width, 1), round(p.rect.height, 1)) for p in doc)
-    (SW, SH), _ = cnt.most_common(1)[0]
     prs = Presentation()
     prs.slide_width = Emu(int(SW * EMU_PER_PT))
     prs.slide_height = Emu(int(SH * EMU_PER_PT))
     blank = prs.slide_layouts[6]
 
     for pno in range(len(doc)):
+        if pno in SKIP_PAGES:
+            continue
         page = doc[pno]
         pw, ph = page.rect.width, page.rect.height
         scale = min(SW / pw, SH / ph)
