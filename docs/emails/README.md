@@ -41,15 +41,16 @@ The matching preview/preheader text is already baked into each file (hidden
    `images/` **at its root** (no wrapper folder) so MailerLite's Custom-HTML ZIP
    import resolves the relative paths and re-hosts the two files to its CDN.
    Nothing depends on an untested public host.
-2. **Download button** — wired to the hosted MailerLite report PDFs, verified
-   per pattern by MD5 + PDF cover + live HTTP 200 (owner-confirmed 2026-07-13):
+2. **Download button** — wired to the hosted **v4** report PDFs, verified per
+   pattern by MD5-identity to the delivered v4 files + live HTTP 200
+   (owner-confirmed 2026-07-13):
 
-   | Pattern | Report PDF |
+   | Pattern | Report PDF (v4) |
    |---|---|
-   | Kafua | `…/mailerlite-uploads-prod/t2429254/DvhyDTlW…8uB8.pdf` |
-   | Mubdia | `…/mailerlite-uploads-prod/O2429254/U7iYbjTV…3GnH.pdf` |
-   | Mutafadiya | `…/mailerlite-uploads-prod/V2429254/23gYnHKd…PAAq.pdf` |
-   | Asira | `…/mailerlite-uploads-prod/b2429254/AlJn2cFi…B4GT.pdf` |
+   | Kafua | `…/mailerlite-uploads-prod/22429254/GmIP92p5…ODILX.pdf` |
+   | Mubdia | `…/mailerlite-uploads-prod/b2429254/yrlslIoz…4OqU.pdf` |
+   | Mutafadiya | `…/mailerlite-uploads-prod/a2429254/idiNbemJ…DIDCR.pdf` |
+   | Asira | `…/mailerlite-uploads-prod/E2429254/KmoGKs5o…PbhBm.pdf` |
 
    Button label (fixed, all four): **«حمّلي تقريركِ المجاني»**. No PDF is
    attached — every report is a hosted download link.
