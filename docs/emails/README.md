@@ -35,10 +35,12 @@ The matching preview/preheader text is already baked into each file (hidden
 
 ## Wiring before sending
 
-1. **Images** — bundled with each email as relative `images/seal.png` /
-   `images/wordmark.png` (in every ZIP and under `docs/emails/images/`). Nothing
-   depends on an untested public host; MailerLite re-hosts the two files to its
-   CDN when you import the ZIP into the Custom HTML editor.
+1. **Images** — bundled with each email as relative `images/nizamok-logo.png`
+   (mandala seal) / `images/nizamok-wordmark.png` (NizamOk wordmark), in every
+   ZIP and under `docs/emails/images/`. Each ZIP holds `index.html` and
+   `images/` **at its root** (no wrapper folder) so MailerLite's Custom-HTML ZIP
+   import resolves the relative paths and re-hosts the two files to its CDN.
+   Nothing depends on an untested public host.
 2. **Download button** — wired to the hosted MailerLite report PDFs, verified
    per pattern by MD5 + PDF cover + live HTTP 200 (owner-confirmed 2026-07-13):
 
