@@ -42,7 +42,29 @@ Routing (verified against the local Workers runtime, `wrangler dev`):
 `_headers` and `_redirects` must stay **inside `site/`** — that is the assets
 directory Workers reads. Do not move them to the repo root.
 
-After the first deploy: add the custom domain `nizamok.com` to the Worker.
+## Canonical domain — apex `nizamok.com`
+
+The single canonical production host is **`https://nizamok.com`** (apex). All
+in-repo canonical tags, Open Graph / Twitter URLs, `sitemap.xml`, `robots.txt`,
+and the email dashboard link use the apex domain.
+
+After the first deploy:
+1. Add the custom domain **`nizamok.com`** (apex) to the Worker as the primary host.
+2. Add **`www.nizamok.com`** as well.
+3. Configure a **Cloudflare Bulk Redirect** (host-level redirects are not
+   expressible in `site/_redirects` on Workers):
+   - Source hostname: `www.nizamok.com`
+   - Target: `https://nizamok.com`
+   - Status: **301 Permanent Redirect**
+   - Preserve query string: **enabled**
+   - Subpath matching: **enabled**
+   - Preserve path suffix: **enabled**
+   - So `https://www.nizamok.com/ikhtibar/?source=email` → `https://nizamok.com/ikhtibar/?source=email`.
+4. Verify: `curl -sI https://www.nizamok.com/` → `301`, `location: https://nizamok.com/`;
+   `curl -sI https://nizamok.com/` → `200`.
+5. After both hosts serve valid HTTPS and the redirect is verified, set
+   `workers_dev = false` (retire the public `*.workers.dev` route) and only then
+   consider enabling **HSTS** at Cloudflare (do not enable HSTS preload initially).
 
 ## Go-live checklist
 

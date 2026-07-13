@@ -1042,3 +1042,63 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ============================================================
+   PRE-LAUNCH: visible keyboard focus + Lamhat purchase guardrail
+   ============================================================ */
+
+/* Accessible focus ring — only for keyboard users (mouse clicks stay clean). */
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+.option:focus-visible,
+.nav-links a:focus-visible,
+.link-btn:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--gold-soft, #E7C88B);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+/* On the velvet/dark surfaces, add a soft halo so the ring reads on any background. */
+.velvet a:focus-visible,
+.velvet .btn:focus-visible,
+.velvet .option:focus-visible,
+.quiz-body .option:focus-visible,
+.quiz-body .btn:focus-visible {
+  box-shadow: 0 0 0 4px rgba(231, 200, 139, 0.28);
+}
+/* The scene heading receives focus after each auto-advance; keep it silent visually. */
+.question-title:focus { outline: none; }
+.question-title:focus-visible { outline: 2px dashed rgba(231, 200, 139, 0.6); outline-offset: 6px; }
+
+/* Lamhat guardrail — quiz stays the primary path; cards read as a shortcut. */
+.lamhat-guardrail {
+  max-width: 620px;
+  margin: 0 auto 2.4rem;
+  text-align: center;
+  padding: 1.6rem 1.4rem;
+  border: 1px solid rgba(166, 129, 60, 0.28);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(250,245,236,0.35));
+}
+.lamhat-guardrail h3 {
+  font-family: var(--font-display);
+  color: var(--plum-ink, #3a2140);
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.lamhat-guardrail p {
+  color: var(--taupe-ink, #5b5048);
+  font-size: 0.95rem;
+  line-height: 1.9;
+  margin-bottom: 1.1rem;
+}
+.lamhat-guardrail .btn-rose { font-size: 1rem; }
+.lamhat-guardrail .guardrail-hint {
+  display: block;
+  margin-top: 0.9rem;
+  font-size: 0.82rem;
+  color: var(--gold-deep, #A6813C);
+}

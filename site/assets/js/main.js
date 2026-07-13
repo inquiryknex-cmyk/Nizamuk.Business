@@ -95,10 +95,22 @@
         '<video controls playsinline preload="metadata"' +
         (v.poster ? ' poster="' + v.poster + '"' : '') +
         ' src="' + v.src + '"></video>';
+      const vid = shell.querySelector('video');
+      if (vid) {
+        let played = false;
+        vid.addEventListener('play', function () {
+          if (played) return; played = true; // once per page session
+          if (window.trackEvent) window.trackEvent('video_play', {
+            video_id: 'interdash',
+            page_path: location.pathname,
+            source_section: shell.closest('#interdash') ? 'home_interdash' : 'interdash_page'
+          });
+        });
+      }
     } else if (v.src && v.type === 'youtube') {
       shell.innerHTML =
         '<iframe src="https://www.youtube-nocookie.com/embed/' + v.src +
-        '?rel=0&modestbranding=1" title="لوحة نظامك التفاعلية" allowfullscreen ' +
+        '?rel=0&modestbranding=1" title="لوحة نمطكِ التفاعلية" allowfullscreen ' +
         'allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"></iframe>';
     }
     // else: keep the premium "coming soon" poster already in the markup.
@@ -147,9 +159,12 @@
       msg.textContent = 'انضممتِ إلى القائمة. سنراسلكِ عند فتح التجربة المبكرة.';
       msg.classList.add('ok');
       form.reset();
+      // Funnel event — status only, never the email or name.
+      if (window.trackEvent) window.trackEvent('waitlist_submit', { submission_status: 'success', page_path: location.pathname });
     } catch (err) {
       msg.textContent = 'تعذّر الإرسال الآن. حاولي مرة أخرى بعد قليل.';
       msg.classList.remove('ok');
+      if (window.trackEvent) window.trackEvent('waitlist_submit', { submission_status: 'error', page_path: location.pathname });
     }
   }
 

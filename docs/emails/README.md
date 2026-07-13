@@ -56,10 +56,9 @@ The matching preview/preheader text is already baked into each file (hidden
    attached — every report is a hosted download link.
 3. Lamhat shows **١٩ ريالًا** and links to the pattern's Dodo checkout. The
    لوحة نمطكِ التفاعلية waitlist is the lighter, tertiary CTA.
-4. **Waitlist button URL** is currently the live testing target
-   `https://nizamok.nizamuk.workers.dev/interdash/` (verified HTTP 200). **Before
-   public activation, swap it for the final intended URL
-   `https://nizamok.com/interdash/`** (set `DASH_URL` in `gen_reports.py`).
+4. **Waitlist button URL** is the production apex page
+   `https://nizamok.com/interdash/` (set `DASH_URL` in `gen_reports.py`). It goes
+   live once the custom domain is attached.
 5. Below the waitlist button, the secondary text link
    «شاهدي فكرة لوحة نظامكِ التفاعلية» points to the same Interdash page
    (`DASH_URL`) — the concept page, live and HTTP 200. It updates together with
