@@ -54,8 +54,15 @@ The matching preview/preheader text is already baked into each file (hidden
    Button label (fixed, all four): **«حمّلي تقريركِ المجاني»**. No PDF is
    attached — every report is a hosted download link.
 3. Lamhat shows **١٩ ريالًا** and links to the pattern's Dodo checkout. The
-   Interdash waitlist is the lighter, tertiary CTA.
-4. `{$unsubscribe}` is a MailerLite merge tag — leave as-is.
+   لوحة نمطكِ التفاعلية waitlist is the lighter, tertiary CTA.
+4. **Waitlist button URL** is currently the live testing target
+   `https://nizamok.nizamuk.workers.dev/interdash/` (verified HTTP 200). **Before
+   public activation, swap it for the final intended URL
+   `https://nizamok.com/interdash/`** (set `DASH_URL` in `gen_reports.py`).
+5. The interactive-board **video is not live yet**, so the old
+   «شاهدي كيف تعمل» link is replaced by plain text «فيديو اللوحة التفاعلية قريبًا»
+   (no hyperlink). Wire it to the real video URL once available.
+6. `{$unsubscribe}` is a MailerLite merge tag — leave as-is.
 
 Regenerate from `scratchpad/gen_reports.py` (writes the repo copies here and the
 identical relative-path ZIP packages, and drops `images/` into both).
