@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>اختبار نظامك — اكتشفي نمطكِ</title>
+  <meta name="description" content="اختبار نظامك: 12 مشهدًا من يومكِ الحقيقي تكشف مزيجكِ عبر الأنماط الأربعة — نتيجة فورية، ونمط خفي لا تتوقعينه.">
+  <link rel="canonical" href="https://nizamok.com/ikhtibar/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_SA">
+  <meta property="og:title" content="اختبار نظامك — اكتشفي النمط الذي يدير طاقتكِ">
+  <meta property="og:description" content="ليست مشكلتكِ في الانضباط. 12 مشهدًا في ثلاث دقائق تكشف نمطكِ الغالب ونمطكِ الخفي.">
+  <meta property="og:url" content="https://nizamok.com/ikhtibar/">
+  <meta property="og:image" content="https://nizamok.com/assets/video/interdash-poster.jpg">
+
+  <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/reem-kufi-600-arabic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/fonts/fonts.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body class="quiz-body velvet">
+
+<span class="k-star" style="top:6%;inset-inline-start:7%">✦</span>
+<span class="k-star" style="top:22%;inset-inline-end:5%;font-size:0.7rem">✦</span>
+<span class="k-star" style="bottom:18%;inset-inline-start:4%;font-size:0.65rem">✦</span>
+<img class="flower fl-r" src="/assets/img/flower-r.png" alt="" style="top:2%;opacity:0.45">
+<img class="flower fl-l" src="/assets/img/flower-l.png" alt="" style="bottom:8%;opacity:0.35">
+
+<div class="container">
+  <div class="quiz-topbar">
+    <a class="brand" href="/">
+      <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" style="width:42px;height:42px">
+      <img class="wordmark-img" src="/assets/img/wordmark.png" alt="NizamOk" style="height:30px">
+    </a>
+    <a class="back" href="/">الرئيسية</a>
+  </div>
+</div>
+
+<main class="quiz-main">
+  <div class="container quiz-stage">
+
+    <!-- Progress: the golden pattern line -->
+    <div class="progress-line" aria-hidden="true">
+      <svg viewBox="0 0 700 34" preserveAspectRatio="none">
+        <path class="track" d="M0 22 C 60 6, 120 30, 180 18 S 300 8, 360 20 S 480 32, 540 16 S 660 8, 700 18" />
+        <path class="drawn" id="progressPath" d="M0 22 C 60 6, 120 30, 180 18 S 300 8, 360 20 S 480 32, 540 16 S 660 8, 700 18" style="stroke-dashoffset:9999" />
+      </svg>
+      <div class="progress-meta">
+        <span id="actLabel">الفصل الأول — مشاهد من يومكِ</span>
+        <span>المشهد <b id="currentQuestion">1</b> من <b id="totalQuestions">12</b></span>
+      </div>
+    </div>
+
+    <!-- ============ INTRO ============ -->
+    <section class="panel intro-screen" id="introPanel">
+      <div class="quiz-card glass">
+        <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك">
+        <img class="wordmark-img" src="/assets/img/wordmark.png" alt="NizamOk">
+        <span class="kicker">اختبار الأنماط · ثلاث دقائق · الأقرب والأبعد</span>
+        <h1>ليست مشكلتكِ في الانضباط.</h1>
+        <p class="lead">هذا الاختبار لا يمدح الصورة التي تتمنين الظهور بها. يقرأ ردّكِ في اللحظات التي يصعب تجميلها — على فصلين: مشاهد يراها الجميع، ثم الصوت الذي لا تسمعينه إلا أنتِ.</p>
+        <div class="intro-cards">
+          <div class="intro-card"><strong>طريقة الاختيار</strong><p>في كل مشهد، اختاري الأقرب إليكِ ثم الأبعد عنكِ.</p></div>
+          <div class="intro-card"><strong>النتيجة</strong><p>مزيجكِ عبر أربعة أنماط — ونمط خفي يعمل في الخلفية.</p></div>
+          <div class="intro-card"><strong>تقريركِ المجاني</strong><p>تشخيص مصغّر يصل بريدكِ بعد الاختبار — لمحتكِ الأولى عن نمطكِ.</p></div>
+        </div>
+        <button class="btn btn-rose" id="startBtn">ابدئي الفصل الأول</button>
+        <p style="margin-top:1.2rem;font-size:0.84rem;color:rgba(239,231,218,0.6)">وإن أردتِ التحليل الكامل بعد التقرير، فسلسلة كتب نظامكِ بانتظاركِ — بمنهج يجمع علم النفس السلوكي والتحليل التحريري والتطبيق العملي.</p>
+      </div>
+    </section>
+
+    <!-- ============ QUESTION SCENE ============ -->
+    <section class="panel" id="quizPanel">
+      <div class="quiz-card glass">
+        <div class="scene-kicker" id="sceneKicker">المشهد 1</div>
+        <h2 class="question-title" id="questionText"></h2>
+        <span class="choose-prompt" id="choosePrompt">اختاري الأقرب إليكِ</span>
+        <div class="options" id="options"></div>
+        <div class="quiz-msg" id="quizMsg" aria-live="polite"></div>
+        <div class="quiz-controls">
+          <button type="button" class="link-btn" id="prevBtn">→ المشهد السابق</button>
+          <span class="hint">اختيارُ الأبعد ينقلكِ تلقائيًا للمشهد التالي</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ACT BREAK ============ -->
+    <section class="panel" id="actbreakPanel">
+      <div class="quiz-card glass actbreak">
+        <span class="act-kicker">نهاية الفصل الأول</span>
+        <div class="ornament">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/><circle cx="12" cy="12" r="2.6"/></svg>
+        </div>
+        <h2>انتهت المشاهد التي يراها الجميع.<br>ما تبقّى… الصوت الذي لا تسمعينه إلا أنتِ.</h2>
+        <button class="btn btn-rose" id="actContinueBtn">ادخلي الفصل الثاني</button>
+      </div>
+    </section>
+
+    <!-- ============ CALCULATING ============ -->
+    <section class="panel" id="calcPanel">
+      <div class="quiz-card glass calc-screen">
+        <img class="seal-img" src="/assets/img/seal.png" alt="">
+        <p>نقرأ مزيجكِ عبر الأنماط الأربعة…</p>
+      </div>
+    </section>
+
+    <!-- ============ REVEAL ============ -->
+    <section class="panel reveal-screen" id="revealPanel">
+      <div class="quiz-card glass">
+        <span class="rk">نمطكِ الغالب</span>
+        <h2 class="reveal-name" id="revealName"></h2>
+        <p class="reveal-truth" id="revealTruth"></p>
+        <div class="ornament">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/><circle cx="12" cy="12" r="2.6"/></svg>
+        </div>
+        <p class="mix-teaser" id="mixTeaser"></p>
+        <button class="btn btn-gold" id="toEmailBtn">افتحي قراءتكِ الكاملة</button>
+      </div>
+    </section>
+
+    <!-- ============ EMAIL GATE ============ -->
+    <section class="panel email-panel" id="emailPanel">
+      <div class="quiz-card glass center">
+        <span class="kicker">خطوة أخيرة</span>
+        <h2 style="margin-bottom:0.8rem">قراءتكِ الكاملة جاهزة</h2>
+        <p style="color:rgba(239,231,218,0.75);font-size:0.95rem">ضعي بريدكِ لنفتح لكِ القراءة هنا الآن، ونرسل تقريركِ الأول لتعودي إليه متى احتجتِ — مع نمطكِ الخفي وخريطة مزيجكِ.</p>
+        <form class="email-box" id="emailForm" novalidate>
+          <input id="email" type="email" required placeholder="name@email.com" autocomplete="email" aria-label="البريد الإلكتروني">
+          <button class="btn btn-rose" type="submit">افتحي القراءة وأرسلي التقرير</button>
+          <div class="quiz-msg" id="emailMsg" aria-live="polite"></div>
+        </form>
+        <p class="email-note">لا رسائل مزعجة. فقط نتيجتكِ، تقريركِ الأول، وما يتصل بهذا المسار.</p>
+      </div>
+    </section>
+
+    <!-- ============ FULL RESULT ============ -->
+    <section class="panel" id="resultPanel">
+      <div class="quiz-card glass">
+        <div class="result-head">
+          <span class="kicker">قراءة نمطكِ</span>
+          <h2 class="result-name" id="resultName"></h2>
+          <p class="result-truth" id="resultTruth"></p>
+          <div class="hidden-pattern" id="hiddenPattern"></div>
+        </div>
+
+        <div class="bars" id="bars"></div>
+
+        <div class="reading">
+          <h3>ما الذي يبدو أنه يحدث؟</h3>
+          <p id="readingHeadline"></p>
+          <h3>ما الذي يتكرر؟</h3>
+          <p id="readingWound"></p>
+          <h3>خطوة صغيرة اليوم</h3>
+          <p id="readingStep"></p>
+        </div>
+
+        <div class="mirrors" id="resultMirrors" style="display:none"></div>
+
+        <p class="sent-note">تقريركِ الأول في طريقه إلى: <strong id="sentTo"></strong> — يصلكِ خلال دقائق.</p>
+
+        <div class="result-path" id="resultPath"></div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer" style="margin-top:auto;padding:1.6rem 0">
+  <div class="container">
+    <p class="disclaimer" style="border:none;margin-top:0;padding-top:0">محتوى نظامك مخصص للفهم الذاتي والتنظيم العملي، ولا يُعدّ تشخيصًا نفسيًا أو بديلًا عن مختص. · © <span data-year></span> نظامك</p>
+  </div>
+</footer>
+
+<script src="/assets/js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="/assets/js/main.js" defer></script>
+<script src="/assets/js/quiz.js" defer></script>
+</body>
+</html>

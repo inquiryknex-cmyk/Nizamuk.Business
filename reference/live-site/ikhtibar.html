@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>اختبار نظامك — اكتشفي نمطكِ</title>
+  <meta name="description" content="اختبار نظامك يكشف مزيجكِ عبر الأنماط الأربعة بنتيجة فورية.">
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body class="quiz-body">
+  <div class="quiz-shell">
+    <header class="quiz-header">
+      <a class="quiz-brand" href="/">
+        <img src="/assets/logo.png" alt="نظامك">
+        <strong>نظامك</strong>
+      </a>
+      <a class="quiz-back" href="/">الرئيسية</a>
+    </header>
+
+    <main class="quiz-layout">
+      <aside class="quiz-side">
+        <span class="kicker">اختبار الأنماط — ٣ دقائق</span>
+        <h1>ليست مشكلتكِ في الانضباط.</h1>
+        <p>هذا الاختبار لا يمدح الصورة التي تتمنين الظهور بها. يقرأ ردّكِ في اللحظات التي يصعب تجميلها.</p>
+        <div class="side-cards">
+          <div class="side-card"><strong>طريقة الاختيار</strong><p>اختاري الأقرب إليكِ والأبعد عنكِ في كل موقف.</p></div>
+          <div class="side-card"><strong>النتيجة</strong><p>نسب عبر أربعة أنماط، لا خانة واحدة مغلقة.</p></div>
+          <div class="side-card"><strong>بعد النتيجة</strong><p>بعد الحساب يظهر ملخّص قصير، ثم يفتح البريد قراءة النمط والتقرير الأول.</p></div>
+        </div>
+      </aside>
+
+      <section class="quiz-card">
+        <div class="quiz-card-inner panel active" id="quizPanel">
+          <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+          <div class="quiz-meta">
+            <span>الموقف <b id="currentQuestion">1</b> من <b id="totalQuestions">12</b></span>
+            <span>الأقرب + الأبعد</span>
+          </div>
+          <h2 class="question-title" id="questionText"></h2>
+          <div class="options" id="options"></div>
+          <div class="quiz-msg" id="quizMsg"></div>
+          <div class="quiz-controls">
+            <button type="button" class="btn btn-dark" id="prevBtn">الموقف السابق</button>
+            <button type="button" class="btn btn-gold" id="nextBtn">الموقف التالي</button>
+          </div>
+        </div>
+
+        <div class="email-panel panel" id="emailPanel">
+          <span class="kicker">نتيجتكِ جاهزة</span>
+          <h2>حسبنا مزيجكِ عبر الأنماط الأربعة</h2>
+          <p>خطوة أخيرة: ضعي بريدكِ لنفتح لكِ قراءة النمط هنا، ونرسل التقرير الأول لتعودي إليه متى احتجتِ.</p>
+          <div id="emailPreview"></div>
+          <form class="email-box" id="emailForm">
+            <label for="email">البريد الإلكتروني</label>
+            <input id="email" type="email" required placeholder="name@email.com" autocomplete="email">
+            <button class="btn btn-gold" type="submit">افتحي القراءة وأرسلي التقرير</button>
+            <div class="quiz-msg" id="emailMsg"></div>
+          </form>
+          <p>لا رسائل مزعجة. فقط نتيجتكِ، تقريركِ الأول، وما يتصل بهذا المسار.</p>
+        </div>
+
+        <div class="result-panel panel" id="resultPanel">
+          <span class="kicker">نمطكِ الغالب</span>
+          <h2 id="dominantName"></h2>
+          <p id="dominantTruth"></p>
+          <p id="dominantSummary"></p>
+          <div class="bars" id="bars"></div>
+          <p>أرسلنا نسخة إلى: <strong id="sentTo"></strong></p>
+          <h3>الخطوة التالية حسب نمطكِ</h3>
+          <div class="offers" id="resultOffers"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/assets/config.js"></script>
+  <script src="/assets/quiz.js"></script>
+</body>
+</html>
