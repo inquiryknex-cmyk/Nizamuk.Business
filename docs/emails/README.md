@@ -35,17 +35,25 @@ The matching preview/preheader text is already baked into each file (hidden
 
 ## Wiring before sending
 
-1. **Images** — the production HTML references
-   `https://nizamok.com/assets/email/seal.png` and `…/wordmark.png`
-   (committed under `site/assets/email/`). They go live on the next deploy.
-   Alternatively, upload the two files from any ZIP's `images/` folder to
-   MailerLite's file manager and swap the two `src` URLs.
-2. **Download button** — each report links to
-   `https://nizamok.com/reports/<slug>.pdf` as a placeholder. Replace with the
-   actual hosted PDF URL (or the MailerLite file-download URL) per pattern. If
-   the automation attaches the PDF instead, point the button at the re-download
-   link or change its label.
-3. `{$unsubscribe}` is a MailerLite merge tag — leave as-is.
+1. **Images** — bundled with each email as relative `images/seal.png` /
+   `images/wordmark.png` (in every ZIP and under `docs/emails/images/`). Nothing
+   depends on an untested public host; MailerLite re-hosts the two files to its
+   CDN when you import the ZIP into the Custom HTML editor.
+2. **Download button** — wired to the hosted MailerLite report PDFs, verified
+   per pattern by MD5 + PDF cover + live HTTP 200 (owner-confirmed 2026-07-13):
 
-Regenerate from `scratchpad/gen_reports.py` (writes both the hosted-URL
-production copies here and the relative-path ZIP previews).
+   | Pattern | Report PDF |
+   |---|---|
+   | Kafua | `…/mailerlite-uploads-prod/t2429254/DvhyDTlW…8uB8.pdf` |
+   | Mubdia | `…/mailerlite-uploads-prod/O2429254/U7iYbjTV…3GnH.pdf` |
+   | Mutafadiya | `…/mailerlite-uploads-prod/V2429254/23gYnHKd…PAAq.pdf` |
+   | Asira | `…/mailerlite-uploads-prod/b2429254/AlJn2cFi…B4GT.pdf` |
+
+   Button label (fixed, all four): **«حمّلي تقريركِ المجاني»**. No PDF is
+   attached — every report is a hosted download link.
+3. Lamhat shows **١٩ ريالًا** and links to the pattern's Dodo checkout. The
+   Interdash waitlist is the lighter, tertiary CTA.
+4. `{$unsubscribe}` is a MailerLite merge tag — leave as-is.
+
+Regenerate from `scratchpad/gen_reports.py` (writes the repo copies here and the
+identical relative-path ZIP packages, and drops `images/` into both).
