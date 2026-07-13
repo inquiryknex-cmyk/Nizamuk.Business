@@ -1,5 +1,11 @@
-# Cloudflare Pages configuration for NizamOk (نظامك)
-# Static site — no framework, no build step. All deployable files live in ./site
+# Cloudflare Workers — Static Assets configuration for NizamOk (نظامك)
+# Assets-only Worker (no server script). Everything deployable lives in ./site.
+# _headers and _redirects inside ./site are honored by Workers Static Assets.
 name = "nizamok"
 compatibility_date = "2026-07-01"
-pages_build_output_dir = "site"
+preview_urls = true
+workers_dev = true
+
+[assets]
+directory = "./site"
+not_found_handling = "404-page"
