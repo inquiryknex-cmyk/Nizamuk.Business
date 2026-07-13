@@ -59,9 +59,10 @@ The matching preview/preheader text is already baked into each file (hidden
    `https://nizamok.nizamuk.workers.dev/interdash/` (verified HTTP 200). **Before
    public activation, swap it for the final intended URL
    `https://nizamok.com/interdash/`** (set `DASH_URL` in `gen_reports.py`).
-5. The interactive-board **video is not live yet**, so the old
-   «شاهدي كيف تعمل» link is replaced by plain text «فيديو اللوحة التفاعلية قريبًا»
-   (no hyperlink). Wire it to the real video URL once available.
+5. Below the waitlist button, the secondary text link
+   «شاهدي فكرة لوحة نظامكِ التفاعلية» points to the same Interdash page
+   (`DASH_URL`) — the concept page, live and HTTP 200. It updates together with
+   the waitlist button when `DASH_URL` is swapped for the production domain.
 6. `{$unsubscribe}` is a MailerLite merge tag — leave as-is.
 
 Regenerate from `scratchpad/gen_reports.py` (writes the repo copies here and the
