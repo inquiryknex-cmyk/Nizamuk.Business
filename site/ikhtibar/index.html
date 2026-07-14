@@ -14,6 +14,15 @@
   <meta property="og:url" content="https://nizamok.com/ikhtibar/">
   <meta property="og:image" content="https://nizamok.com/assets/video/interdash-poster.jpg">
 
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="اختبار نظامك — اكتشفي النمط الذي يدير طاقتكِ">
+  <meta name="twitter:description" content="ليست مشكلتكِ في الانضباط. 12 مشهدًا في ثلاث دقائق تكشف نمطكِ الغالب ونمطكِ الخفي.">
+  <meta name="twitter:image" content="https://nizamok.com/assets/video/interdash-poster.jpg">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/assets/img/seal.png">
+  <link rel="apple-touch-icon" href="/assets/img/seal.png">
+
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/reem-kufi-600-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
@@ -63,7 +72,7 @@
         <div class="intro-cards">
           <div class="intro-card"><strong>طريقة الاختيار</strong><p>في كل مشهد، اختاري الأقرب إليكِ ثم الأبعد عنكِ.</p></div>
           <div class="intro-card"><strong>النتيجة</strong><p>مزيجكِ عبر أربعة أنماط — ونمط خفي يعمل في الخلفية.</p></div>
-          <div class="intro-card"><strong>تقريركِ المجاني</strong><p>تشخيص مصغّر يصل بريدكِ بعد الاختبار — لمحتكِ الأولى عن نمطكِ.</p></div>
+          <div class="intro-card"><strong>تقريركِ المجاني</strong><p>قراءة أولى مركّزة عن نمطكِ تصل بريدكِ بعد الاختبار — لمحتكِ الأولى عن نمطكِ.</p></div>
         </div>
         <button class="btn btn-rose" id="startBtn">ابدئي الفصل الأول</button>
         <p style="margin-top:1.2rem;font-size:0.84rem;color:rgba(239,231,218,0.6)">وإن أردتِ التحليل الكامل بعد التقرير، فسلسلة كتب نظامكِ بانتظاركِ — بمنهج يجمع علم النفس السلوكي والتحليل التحريري والتطبيق العملي.</p>
@@ -126,7 +135,7 @@
         <h2 style="margin-bottom:0.8rem">قراءتكِ الكاملة جاهزة</h2>
         <p style="color:rgba(239,231,218,0.75);font-size:0.95rem">ضعي بريدكِ لنفتح لكِ القراءة هنا الآن، ونرسل تقريركِ الأول لتعودي إليه متى احتجتِ — مع نمطكِ الخفي وخريطة مزيجكِ.</p>
         <form class="email-box" id="emailForm" novalidate>
-          <input id="email" type="email" required placeholder="name@email.com" autocomplete="email" aria-label="البريد الإلكتروني">
+          <input id="email" type="email" dir="ltr" required placeholder="name@email.com" autocomplete="email" aria-label="البريد الإلكتروني">
           <button class="btn btn-rose" type="submit">افتحي القراءة وأرسلي التقرير</button>
           <div class="quiz-msg" id="emailMsg" aria-live="polite"></div>
         </form>
@@ -173,6 +182,7 @@
 </footer>
 
 <script src="/assets/js/config.js"></script>
+<script src="/assets/js/analytics.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="/assets/js/main.js" defer></script>
 <script src="/assets/js/quiz.js" defer></script>

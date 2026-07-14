@@ -1,4 +1,14 @@
-# Cloudflare Pages headers
+# Security headers (global) — conservative launch set.
+# HSTS is intentionally NOT set here; enable it at Cloudflare only after both
+# nizamok.com and www.nizamok.com serve valid HTTPS and the www→apex redirect
+# is verified. A Content-Security-Policy is deferred to a post-launch task.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Asset caching
 /assets/video/*
   Cache-Control: public, max-age=31536000, immutable
 /assets/covers/*

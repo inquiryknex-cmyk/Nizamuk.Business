@@ -238,6 +238,7 @@
       btn.className = 'option';
       if (saved.closest === origIdx) btn.classList.add('closest');
       if (saved.farthest === origIdx) btn.classList.add('farthest');
+      btn.setAttribute('aria-pressed', (saved.closest === origIdx || saved.farthest === origIdx) ? 'true' : 'false');
       btn.innerHTML = '<span class="mark">' +
         (saved.closest === origIdx ? 'الأقرب إليّ' : saved.farthest === origIdx ? 'الأبعد عني' : '') +
         '</span>' + opt.t;
@@ -249,6 +250,12 @@
     $('quizMsg').textContent = '';
     updateProgress();
     showPanel('quizPanel');
+    // Move focus to the new scene heading so keyboard/screen-reader users
+    // don't lose their place after each auto-advance.
+    try {
+      const qt = $('questionText');
+      if (qt) { qt.setAttribute('tabindex', '-1'); qt.focus({ preventScroll: true }); }
+    } catch (e) {}
   }
 
   function setPrompt() {
@@ -296,6 +303,7 @@
       const origIdx = q.order[pos];
       el.classList.toggle('closest', saved.closest === origIdx);
       el.classList.toggle('farthest', saved.farthest === origIdx);
+      el.setAttribute('aria-pressed', (saved.closest === origIdx || saved.farthest === origIdx) ? 'true' : 'false');
       el.querySelector('.mark').textContent =
         saved.closest === origIdx ? 'الأقرب إليّ' : saved.farthest === origIdx ? 'الأبعد عني' : '';
     });
@@ -427,6 +435,12 @@
     $('mixTeaser').innerHTML = teaser;
     showPanel('revealPanel');
 
+    // Funnel: quiz completed & result shown (once). No answers/email sent.
+    if (!state.completeTracked && window.trackEvent) {
+      state.completeTracked = true;
+      window.trackEvent('quiz_complete', { pattern_slug: dom, page_path: location.pathname });
+    }
+
     if (!reduced && typeof gsap !== 'undefined') {
       gsap.fromTo('#revealName', { opacity: 0, y: 18, scale: 0.96 },
         { opacity: 1, y: 0, scale: 1, duration: 1.4, ease: 'power3.out' });
@@ -477,8 +491,13 @@
         fd.append('ml-submit', '1');
         fd.append('anticsrf', 'true');
         await fetch(endpoint, { method: 'POST', body: fd, mode: 'no-cors' });
+        // Funnel event — pattern + status only, never the email address.
+        if (window.trackEvent) window.trackEvent('report_email_submit', { pattern_slug: dominant, submission_status: 'success', page_path: location.pathname });
       }
-    } catch (err) { /* keep the visitor moving; result still renders */ }
+    } catch (err) {
+      if (window.trackEvent) window.trackEvent('report_email_submit', { pattern_slug: dominant, submission_status: 'error', page_path: location.pathname });
+      /* keep the visitor moving; result still renders */
+    }
 
     try {
       localStorage.setItem('nizamok_last_result', JSON.stringify({
@@ -551,16 +570,16 @@
       '<div class="path-cards">' +
         pathCard('tier-lamhat', 'الخطوة 1 · متاحة الآن', 'لمحات نظامكِ',
           'قراءة مركّزة لما يحدث الآن في يومكِ: أين تتعطلين، وما السلوك الذي يخدعكِ.',
-          prices.lamhat, links.lamhat, 'افتحي لمحاتكِ') +
+          prices.lamhat, links.lamhat, 'افتحي لمحاتكِ', 'lamhat_click', dom, 'lamhat') +
         pathCard('tier-juthur', 'الخطوة 2 · القراءة الأعمق', 'جذور نمطكِ',
           'كتاب في أصل النمط: لماذا بدأ، وما الشعور الذي يحميه، ولماذا يعود.',
-          prices.juthur, links.juthur, 'اقرئي الجذور') +
+          prices.juthur, links.juthur, 'اقرئي الجذور', 'juthur_click', dom, 'juthur') +
         pathCard('tier-rebuild', 'الخطوة 3 · التحول العملي', 'نظام إعادة البناء',
           'نظام عملي كامل يحوّل الفهم إلى حركة: مراحل، أدوات، وخطوات تناسب نمطكِ.',
-          prices.rebuild, links.rebuild, 'ابدئي إعادة البناء') +
+          prices.rebuild, links.rebuild, 'ابدئي إعادة البناء', 'rebuild_click', dom, 'rebuild') +
       '</div>' +
       '<div class="waitlist-banner">' +
-        '<p><b>لوحة نظامك التفاعلية — قريبًا.</b> مساحة يومية تنظّم مهامكِ وطاقتكِ حسب نمطكِ، باشتراك شهري ' +
+        '<p><b>لوحة نمطكِ التفاعلية — قريبًا.</b> مساحة يومية تنظّم مهامكِ وطاقتكِ حسب نمطكِ، باشتراك شهري ' +
         (((CONFIG.interdash || {}).monthlyPriceSAR) || 29) + ' ريالًا عند الإطلاق.</p>' +
         '<a class="btn btn-ghost" href="' + ((CONFIG.urls || {}).interdash || '/interdash/') + '">انضمي إلى قائمة الانتظار</a>' +
       '</div>';
@@ -575,14 +594,15 @@
     }
   }
 
-  function pathCard(tier, label, title, desc, price, link, cta) {
+  function pathCard(tier, label, title, desc, price, link, cta, ev, pattern, level) {
     const has = !!link;
+    const data = ev ? ' data-ev="' + ev + '" data-pattern="' + pattern + '" data-level="' + level + '" data-section="quiz_result"' : '';
     return '<div class="path-card ' + tier + '">' +
       '<span class="step-label">' + label + '</span>' +
       '<h4>' + title + '</h4>' +
       '<p>' + desc + '</p>' +
       '<span class="price-line">' + (price != null ? price + ' ريال' : '') + '</span>' +
-      (has ? '<a class="btn btn-gold" href="' + link + '" target="_blank" rel="noopener">' + cta + '</a>'
+      (has ? '<a class="btn btn-gold" href="' + link + '" target="_blank" rel="noopener"' + data + '>' + cta + '</a>'
            : '<button class="btn btn-gold" disabled>قريبًا</button>') +
       '</div>';
   }
@@ -612,7 +632,13 @@
     if (!$('quizPanel')) return;
     if ($('totalQuestions')) $('totalQuestions').textContent = questions.length;
 
-    $('startBtn').addEventListener('click', () => { state.index = 0; renderQuestion(); });
+    $('startBtn').addEventListener('click', () => {
+      if (!state.startTracked && window.trackEvent) {
+        state.startTracked = true;
+        window.trackEvent('quiz_start', { page_path: location.pathname, source_section: 'quiz_intro' });
+      }
+      state.index = 0; renderQuestion();
+    });
     $('actContinueBtn').addEventListener('click', () => { state.index++; renderQuestion(); });
     $('prevBtn').addEventListener('click', prev);
     $('toEmailBtn').addEventListener('click', () => showPanel('emailPanel'));
