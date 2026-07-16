@@ -146,33 +146,42 @@
       ? saved.volume : DEFAULT_VOL;
 
     var nizamokAmbientAudio = null;   // single Audio instance, created on first use
-    var ambientSoundEnabled = false;  // the visitor's intended (persisted) choice
+    var ambientSoundEnabled = false;  // is the ambient meant to be playing right now
+    var hasActivated = saved.activated === true; // has it ever played (persisted)
+    var pendingResume = false;        // enabled last visit; resume on next gesture
     var assetUnavailable = false;     // set once if the file is missing / fails
     var duckedByMedia = false;        // paused because other media is playing
     var fadeTimer = null, posTimer = null, resumeHandler = null;
 
-    /* ---- the control (semantic button, RTL-aware, injected once) ---- */
+    /* ---- the control: an RTL pill (speaker icon + Arabic label), injected once.
+       Three visible states, each label matching what a press will do:
+         initial → «ابدئي الرحلة الصوتية»  (start)
+         playing → «إيقاف الصوت»            (pause)
+         paused  → «استئناف الصوت»          (resume) */
+    var LABELS = { initial: 'ابدئي الرحلة الصوتية', playing: 'إيقاف الصوت', paused: 'استئناف الصوت' };
     var ambientSoundControl = document.createElement('button');
     ambientSoundControl.type = 'button';
     ambientSoundControl.className = 'ambient-control';
     ambientSoundControl.setAttribute('aria-pressed', 'false');
-    ambientSoundControl.setAttribute('aria-label', 'تشغيل الأجواء الصوتية');
-    ambientSoundControl.title = 'أجواء هادئة ترافقك أثناء الاستكشاف';
     ambientSoundControl.innerHTML =
       '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
         '<path class="spk" d="M4 9.2v5.6h3.2L12 18.8V5.2L7.2 9.2H4z"/>' +
         '<path class="wave w1" d="M15.4 9.1a4 4 0 0 1 0 5.8"/>' +
         '<path class="wave w2" d="M17.9 6.6a7.4 7.4 0 0 1 0 10.8"/>' +
-      '</svg>';
+      '</svg><span class="ambient-label"></span>';
+    var ambientLabelEl = ambientSoundControl.querySelector('.ambient-label');
 
     function isPlaying() {
       return !!(nizamokAmbientAudio && !nizamokAmbientAudio.paused && !nizamokAmbientAudio.ended);
     }
-    function reflectUI(on) {
-      ambientSoundControl.classList.toggle('is-on', on);
-      ambientSoundControl.setAttribute('aria-pressed', on ? 'true' : 'false');
-      ambientSoundControl.setAttribute('aria-label',
-        on ? 'إيقاف الأجواء الصوتية' : 'تشغيل الأجواء الصوتية');
+    // The visible label IS the accessible name (no aria-label needed). aria-pressed
+    // carries the toggle state. State is intent-driven so the label never lies.
+    function reflectUI() {
+      var state = ambientSoundEnabled ? 'playing' : (hasActivated ? 'paused' : 'initial');
+      ambientSoundControl.setAttribute('data-state', state);
+      ambientSoundControl.classList.toggle('is-on', state === 'playing');
+      ambientSoundControl.setAttribute('aria-pressed', state === 'playing' ? 'true' : 'false');
+      ambientLabelEl.textContent = LABELS[state];
     }
     function clearFade() { if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; } }
     function fadeTo(target, ms, done) {
@@ -200,10 +209,11 @@
       // Missing asset or playback error → reset cleanly, no error loop, no broken UI.
       assetUnavailable = true;
       ambientSoundEnabled = false;
+      pendingResume = false;
       writeState({ enabled: false });
       clearFade(); stopSavingPosition(); disarmResume();
       try { if (nizamokAmbientAudio) nizamokAmbientAudio.pause(); } catch (e) {}
-      reflectUI(false);
+      reflectUI();
     }
 
     function ensureAudio() {
@@ -233,13 +243,18 @@
       var p = a.play();
       if (p && typeof p.then === 'function') {
         p.then(function () {
-          reflectUI(true); fadeTo(TARGET_VOL, FADE_MS); startSavingPosition();
+          hasActivated = true; writeState({ activated: true });
+          reflectUI(); fadeTo(TARGET_VOL, FADE_MS); startSavingPosition();
         }).catch(function () {
           if (userInitiated) handleFailure();
-          else { reflectUI(true); armResume(); } // keep choice; wait for next gesture
+          else {                                   // autoplay blocked → wait for a gesture
+            ambientSoundEnabled = false; writeState({ enabled: false });
+            pendingResume = true; reflectUI(); armResume();
+          }
         });
       } else {
-        reflectUI(true); fadeTo(TARGET_VOL, FADE_MS); startSavingPosition();
+        hasActivated = true; writeState({ activated: true });
+        reflectUI(); fadeTo(TARGET_VOL, FADE_MS); startSavingPosition();
       }
     }
     function stopAmbient() {
@@ -255,7 +270,11 @@
       resumeHandler = function (e) {
         if (e.target && e.target.closest && e.target.closest('.ambient-control')) return;
         disarmResume();
-        if (ambientSoundEnabled && !isPlaying()) startAmbient(false);
+        if (pendingResume && !isPlaying() && !assetUnavailable) {
+          pendingResume = false;
+          ambientSoundEnabled = true; writeState({ enabled: true });
+          reflectUI(); startAmbient(false);
+        }
       };
       document.addEventListener('pointerdown', resumeHandler, true);
       document.addEventListener('keydown', resumeHandler, true);
@@ -268,17 +287,17 @@
     }
 
     function toggle() {
-      disarmResume();
-      if (assetUnavailable) { reflectUI(false); return; }
+      disarmResume(); pendingResume = false;
+      if (assetUnavailable) { reflectUI(); return; }
       if (ambientSoundEnabled) {
         ambientSoundEnabled = false;
         writeState({ enabled: false });
-        reflectUI(false);
+        reflectUI();          // → «استئناف الصوت»
         stopAmbient();
       } else {
         ambientSoundEnabled = true;
-        writeState({ enabled: true, volume: TARGET_VOL });
-        reflectUI(true);
+        writeState({ enabled: true });
+        reflectUI();          // → «إيقاف الصوت» (optimistic; reset on failure)
         startAmbient(true);   // click is a user gesture → playback is allowed
       }
     }
@@ -319,13 +338,14 @@
 
     document.body.appendChild(ambientSoundControl);
 
-    // Reflect the persisted choice. Never autoplay: show the active state and
-    // wait for the next interaction before resuming audible sound.
+    // Reflect the persisted choice. Never autoplay: if it was on last visit, show
+    // the «استئناف الصوت» (paused) state and resume on the next interaction.
     if (saved.enabled === true) {
-      ambientSoundEnabled = true;
-      reflectUI(true);
+      hasActivated = true;
+      pendingResume = true;
       armResume();
     }
+    reflectUI();   // initial paint (initial / paused, per persisted state)
   }
 
   /* ---------- Waiting list form ---------- */

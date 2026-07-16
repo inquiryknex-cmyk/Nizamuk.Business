@@ -1105,67 +1105,102 @@ select:focus-visible,
 
 /* ============================================================
    Ambient sound — opt-in atmospheric control.
-   Injected by main.js only on <body data-ambient> pages (home + Interdash).
-   Discreet lower-corner chip; RTL-aware; velvet + gold, never a music player.
+   Injected by main.js only on <body data-ambient> pages (quiz + home + Interdash).
+   RTL pill: speaker icon + Arabic label; velvet + gold; three visible states
+   (initial → «ابدئي الرحلة الصوتية», playing → «إيقاف الصوت»,
+    paused → «استئناف الصوت»). Never a music player.
    ============================================================ */
 .ambient-control {
   position: fixed;
-  inset-block-end: 20px;
-  inset-inline-end: 20px;              /* logical → lower-left in RTL, clear of CTAs */
+  inset-block-end: 22px;
+  inset-inline-end: 22px;              /* logical → lower-left in RTL, clear of CTAs */
   z-index: 70;                         /* above content, below the sticky header (80) */
-  width: 48px;                         /* ≥ 44×44 tap target */
-  height: 48px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0;
+  gap: 0.55rem;
+  min-height: 46px;                    /* ≥ 44px tap target */
+  max-width: calc(100vw - 44px);
+  padding: 0.58rem 1.15rem 0.58rem 1rem;
   border-radius: var(--radius-pill);
   border: 1px solid var(--velvet-line);
-  background: rgba(36, 26, 62, 0.82);  /* velvet, lightly translucent */
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  box-shadow: var(--shadow-velvet);
-  color: rgba(230, 211, 163, 0.72);    /* dimmed gold = inactive */
+  background: rgba(30, 21, 52, 0.92);  /* velvet, high-contrast base */
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: var(--shadow-velvet), var(--glow-gold);
+  color: var(--gold-soft);             /* warm gold text on velvet = strong contrast */
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  transition: color 0.4s ease, border-color 0.4s ease,
-              box-shadow 0.5s ease, background 0.4s ease, transform 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  transition: color .35s ease, border-color .35s ease, background .35s ease,
+              box-shadow .5s ease, transform .3s ease;
 }
-.ambient-control:hover { color: var(--gold-soft); transform: translateY(-1px); }
-.ambient-control svg { width: 22px; height: 22px; display: block; }
+.ambient-control:hover { transform: translateY(-1px); border-color: rgba(201, 167, 94, 0.55); }
+.ambient-control:active { transform: translateY(0); }
+.ambient-control svg { width: 20px; height: 20px; flex: none; display: block; }
+.ambient-control .ambient-label { white-space: nowrap; }
 .ambient-control .spk { fill: currentColor; }
 .ambient-control .wave {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  opacity: 0.26;                       /* waves quiet when inactive */
-  transition: opacity 0.4s ease;
+  fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round;
+  opacity: 0.5; transition: opacity .4s ease;
 }
-/* Active — warm, restrained. State is carried by colour + glow + aria, not motion alone. */
+
+/* Initial (first-run) — the clear, elegant invitation: a slow restrained glow. */
+.ambient-control[data-state="initial"] {
+  border-color: rgba(201, 167, 94, 0.5);
+  animation: ambientInvite 4.2s ease-in-out infinite;
+}
+@keyframes ambientInvite {
+  0%, 100% { box-shadow: var(--shadow-velvet), 0 0 0 rgba(201, 167, 94, 0); }
+  50%      { box-shadow: var(--shadow-velvet), 0 0 22px rgba(201, 167, 94, 0.30); }
+}
+
+/* Playing — active. Waves lift; one breathes gently (never rapid or flashing). */
 .ambient-control.is-on {
-  color: var(--gold-soft);
-  border-color: rgba(201, 167, 94, 0.6);
-  background: rgba(53, 36, 77, 0.9);
+  border-color: rgba(201, 167, 94, 0.62);
+  background: rgba(48, 33, 70, 0.94);
   box-shadow: var(--shadow-velvet), var(--glow-gold);
 }
-.ambient-control.is-on .wave { opacity: 0.9; }
-.ambient-control.is-on .wave.w2 { opacity: 0.55; }
-/* A single slow breath while active — calm, never rapid or flashing. */
+.ambient-control.is-on .wave { opacity: 0.95; }
+.ambient-control.is-on .wave.w2 { opacity: 0.6; }
 .ambient-control.is-on .wave.w1 { animation: ambientBreath 3.4s ease-in-out infinite; }
-@keyframes ambientBreath { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.5; } }
+@keyframes ambientBreath { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.5; } }
 
-/* Keyboard focus — reuse the site's gold ring, plus a halo so it reads on any bg. */
+/* Paused — quieter resume invitation; waves at rest. State also carried by label + aria. */
+.ambient-control[data-state="paused"] .wave { opacity: 0.4; }
+
+/* Keyboard focus — clear gold ring halo; wins over the invite animation. */
 .ambient-control:focus-visible {
-  box-shadow: var(--shadow-velvet), 0 0 0 4px rgba(231, 200, 139, 0.28);
+  animation: none;
+  outline: none;
+  box-shadow: var(--shadow-velvet), 0 0 0 4px rgba(231, 200, 139, 0.32);
 }
 
-/* Motion-sensitive visitors: remove the decorative sound-wave animation. */
+/* Motion-sensitive visitors: remove decorative movement (state stays via label/colour). */
 @media (prefers-reduced-motion: reduce) {
-  .ambient-control { transition: none; }
+  .ambient-control,
+  .ambient-control[data-state="initial"] { transition: none; animation: none; }
   .ambient-control.is-on .wave.w1 { animation: none; }
 }
+.reduced-motion .ambient-control[data-state="initial"],
 .reduced-motion .ambient-control.is-on .wave.w1 { animation: none; }
 
 @media (max-width: 640px) {
-  .ambient-control { inset-block-end: 16px; inset-inline-end: 16px; width: 46px; height: 46px; }
+  .ambient-control {
+    inset-block-end: 16px;
+    inset-inline-end: 16px;
+    font-size: 0.85rem;
+    padding: 0.55rem 1rem 0.55rem 0.85rem;
+    min-height: 44px;
+  }
+  /* Reserve a bottom safe-area on the pages that carry the control, so full-width
+     mobile content (quiz options, end-of-page CTAs, footer links) can always clear
+     the corner pill rather than sit trapped beneath it. Mobile-only; desktop keeps
+     its side gutter where the pill already sits clear of content. */
+  body[data-ambient] .quiz-main { padding-bottom: 6.5rem; }
+  body[data-ambient] .site-footer { padding-block-end: 4.75rem; }
+  body[data-ambient] main { scroll-padding-block-end: 5rem; }
 }
