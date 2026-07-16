@@ -153,17 +153,33 @@
     var duckedByMedia = false;        // paused because other media is playing
     var fadeTimer = null, posTimer = null, resumeHandler = null;
 
-    /* ---- the control: a blooming flower (matches the site's blossom motif).
-       The flower opens → music starts; it folds closed → music stops. The label
-       is invisible but kept as the accessible name (updates with state):
+    /* ---- the control: a blossom that matches the site's flower motif, paired
+       with a small caption so its purpose is clear. It stays a recognisable
+       flower at all times: a soft upward bud when off, a full bloom + gold glow
+       + sound-wave ripples when playing. Caption + aria-label update with state:
          initial → «ابدئي الرحلة الصوتية»  (start)
          playing → «إيقاف الصوت»            (stop)
          paused  → «استئناف الصوت»          (resume) */
     var LABELS = { initial: 'ابدئي الرحلة الصوتية', playing: 'إيقاف الصوت', paused: 'استئناف الصوت' };
+    // Two petal rings (8 outer + 5 inner, offset) — layered like the site's
+    // watercolor blossoms, so the flower reads as a flower even as a closed bud.
+    var OUTER = [0, 45, 90, 135, 180, -135, -90, -45];
+    var INNER = [22, 94, 166, -122, -50];
     var PETALS = '';
-    for (var _p = 0; _p < 6; _p++) {
-      PETALS += '<path class="ag-petal" style="--a:' + (_p * 60) + 'deg;--d:' + _p + '"' +
-        ' d="M32 34 C24.5 27 24.5 12 32 5 C39.5 12 39.5 27 32 34 Z"/>';
+    for (var _p = 0; _p < OUTER.length; _p++) {
+      PETALS += '<path class="ag-petal" style="--a:' + OUTER[_p] + 'deg;--d:' + _p + '"' +
+        ' d="M32 37 C26 31 25 16 32 6.5 C39 16 38 31 32 37 Z"/>';
+    }
+    var PETALS2 = '';
+    for (var _q = 0; _q < INNER.length; _q++) {
+      PETALS2 += '<path class="ag-petal2" style="--a:' + INNER[_q] + 'deg;--d:' + _q + '"' +
+        ' d="M32 36.5 C27.5 31.5 27 20 32 12 C37 20 36.5 31.5 32 36.5 Z"/>';
+    }
+    var STAMENS = '';
+    for (var _s = 0; _s < 7; _s++) {
+      var _ang = _s * (Math.PI * 2 / 7);
+      STAMENS += '<circle class="ag-stamen" cx="' + (32 + Math.cos(_ang) * 3.1).toFixed(1) +
+        '" cy="' + (37 + Math.sin(_ang) * 3.1).toFixed(1) + '" r="0.85"/>';
     }
     var SPARK = 'M0 -3 L0.85 -0.85 L3 0 L0.85 0.85 L0 3 L-0.85 0.85 L-3 0 L-0.85 -0.85 Z';
     var ambientSoundControl = document.createElement('button');
@@ -171,42 +187,54 @@
     ambientSoundControl.className = 'ambient-control';
     ambientSoundControl.setAttribute('aria-pressed', 'false');
     ambientSoundControl.setAttribute('aria-label', LABELS.initial);
-    ambientSoundControl.title = 'الأجواء الصوتية';
     ambientSoundControl.innerHTML =
-      '<svg class="ambient-flower" viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
-        '<defs>' +
-          '<radialGradient id="agPetal" cx="50%" cy="76%" r="76%">' +
-            '<stop offset="0%" stop-color="#F5DEE2"/>' +
-            '<stop offset="52%" stop-color="#D9B8E4"/>' +
-            '<stop offset="100%" stop-color="#B096DB"/>' +
-          '</radialGradient>' +
-          '<radialGradient id="agCore" cx="50%" cy="45%" r="60%">' +
-            '<stop offset="0%" stop-color="#F8EBC4"/>' +
-            '<stop offset="100%" stop-color="#C9A75E"/>' +
-          '</radialGradient>' +
-          '<radialGradient id="agGlow" cx="50%" cy="50%" r="50%">' +
-            '<stop offset="0%" stop-color="rgba(233,204,150,0.6)"/>' +
-            '<stop offset="100%" stop-color="rgba(233,204,150,0)"/>' +
-          '</radialGradient>' +
-        '</defs>' +
-        '<circle class="ag-glow" cx="32" cy="34" r="26" fill="url(#agGlow)"/>' +
-        '<g class="ag-petals">' + PETALS + '</g>' +
-        '<circle class="ag-core" cx="32" cy="34" r="5.4" fill="url(#agCore)"/>' +
-        '<g transform="translate(49 15)"><path class="ag-spark" d="' + SPARK + '"/></g>' +
-        '<g transform="translate(16 21) scale(0.72)"><path class="ag-spark" d="' + SPARK + '"/></g>' +
-      '</svg>';
+      '<span class="ambient-bloom">' +
+        '<svg class="ambient-flower" viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
+          '<defs>' +
+            '<radialGradient id="agPetal" cx="50%" cy="80%" r="80%">' +
+              '<stop offset="0%" stop-color="#F4DCE1"/>' +
+              '<stop offset="48%" stop-color="#D3B3E2"/>' +
+              '<stop offset="100%" stop-color="#9C7FC9"/>' +
+            '</radialGradient>' +
+            '<radialGradient id="agPetal2" cx="50%" cy="80%" r="80%">' +
+              '<stop offset="0%" stop-color="#F8E4E0"/>' +
+              '<stop offset="55%" stop-color="#E3B9CE"/>' +
+              '<stop offset="100%" stop-color="#B28ED0"/>' +
+            '</radialGradient>' +
+            '<radialGradient id="agCore" cx="50%" cy="42%" r="62%">' +
+              '<stop offset="0%" stop-color="#FBEFCB"/>' +
+              '<stop offset="100%" stop-color="#C9A75E"/>' +
+            '</radialGradient>' +
+            '<radialGradient id="agGlow" cx="50%" cy="50%" r="50%">' +
+              '<stop offset="0%" stop-color="rgba(233,204,150,0.65)"/>' +
+              '<stop offset="100%" stop-color="rgba(233,204,150,0)"/>' +
+            '</radialGradient>' +
+          '</defs>' +
+          '<circle class="ag-glow" cx="32" cy="37" r="26" fill="url(#agGlow)"/>' +
+          '<circle class="ag-ring r1" cx="32" cy="37" r="15" fill="none"/>' +
+          '<circle class="ag-ring r2" cx="32" cy="37" r="15" fill="none"/>' +
+          '<g class="ag-petals">' + PETALS + PETALS2 + '</g>' +
+          '<circle class="ag-core" cx="32" cy="37" r="5.4" fill="url(#agCore)"/>' +
+          '<g class="ag-stamens">' + STAMENS + '</g>' +
+          '<g transform="translate(52 14)"><path class="ag-spark" d="' + SPARK + '"/></g>' +
+          '<g transform="translate(13 24) scale(0.66)"><path class="ag-spark" d="' + SPARK + '"/></g>' +
+        '</svg>' +
+      '</span>' +
+      '<span class="ambient-caption"></span>';
+    var ambientCaptionEl = ambientSoundControl.querySelector('.ambient-caption');
 
     function isPlaying() {
       return !!(nizamokAmbientAudio && !nizamokAmbientAudio.paused && !nizamokAmbientAudio.ended);
     }
-    // Bloom = playing. The flower opens/closes; aria-label + aria-pressed carry the
-    // state for assistive tech. State is intent-driven so the affordance never lies.
+    // Bloom = playing. The flower opens/closes and the caption + aria-label update
+    // together, so the state (and what a press does) is always clear.
     function reflectUI() {
       var state = ambientSoundEnabled ? 'playing' : (hasActivated ? 'paused' : 'initial');
       ambientSoundControl.setAttribute('data-state', state);
       ambientSoundControl.classList.toggle('is-open', state === 'playing');
       ambientSoundControl.setAttribute('aria-pressed', state === 'playing' ? 'true' : 'false');
       ambientSoundControl.setAttribute('aria-label', LABELS[state]);
+      ambientCaptionEl.textContent = LABELS[state];
     }
     function clearFade() { if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; } }
     function fadeTo(target, ms, done) {
