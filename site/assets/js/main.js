@@ -153,35 +153,60 @@
     var duckedByMedia = false;        // paused because other media is playing
     var fadeTimer = null, posTimer = null, resumeHandler = null;
 
-    /* ---- the control: an RTL pill (speaker icon + Arabic label), injected once.
-       Three visible states, each label matching what a press will do:
+    /* ---- the control: a blooming flower (matches the site's blossom motif).
+       The flower opens → music starts; it folds closed → music stops. The label
+       is invisible but kept as the accessible name (updates with state):
          initial → «ابدئي الرحلة الصوتية»  (start)
-         playing → «إيقاف الصوت»            (pause)
+         playing → «إيقاف الصوت»            (stop)
          paused  → «استئناف الصوت»          (resume) */
     var LABELS = { initial: 'ابدئي الرحلة الصوتية', playing: 'إيقاف الصوت', paused: 'استئناف الصوت' };
+    var PETALS = '';
+    for (var _p = 0; _p < 6; _p++) {
+      PETALS += '<path class="ag-petal" style="--a:' + (_p * 60) + 'deg;--d:' + _p + '"' +
+        ' d="M32 34 C24.5 27 24.5 12 32 5 C39.5 12 39.5 27 32 34 Z"/>';
+    }
+    var SPARK = 'M0 -3 L0.85 -0.85 L3 0 L0.85 0.85 L0 3 L-0.85 0.85 L-3 0 L-0.85 -0.85 Z';
     var ambientSoundControl = document.createElement('button');
     ambientSoundControl.type = 'button';
     ambientSoundControl.className = 'ambient-control';
     ambientSoundControl.setAttribute('aria-pressed', 'false');
+    ambientSoundControl.setAttribute('aria-label', LABELS.initial);
+    ambientSoundControl.title = 'الأجواء الصوتية';
     ambientSoundControl.innerHTML =
-      '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-        '<path class="spk" d="M4 9.2v5.6h3.2L12 18.8V5.2L7.2 9.2H4z"/>' +
-        '<path class="wave w1" d="M15.4 9.1a4 4 0 0 1 0 5.8"/>' +
-        '<path class="wave w2" d="M17.9 6.6a7.4 7.4 0 0 1 0 10.8"/>' +
-      '</svg><span class="ambient-label"></span>';
-    var ambientLabelEl = ambientSoundControl.querySelector('.ambient-label');
+      '<svg class="ambient-flower" viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
+        '<defs>' +
+          '<radialGradient id="agPetal" cx="50%" cy="76%" r="76%">' +
+            '<stop offset="0%" stop-color="#F5DEE2"/>' +
+            '<stop offset="52%" stop-color="#D9B8E4"/>' +
+            '<stop offset="100%" stop-color="#B096DB"/>' +
+          '</radialGradient>' +
+          '<radialGradient id="agCore" cx="50%" cy="45%" r="60%">' +
+            '<stop offset="0%" stop-color="#F8EBC4"/>' +
+            '<stop offset="100%" stop-color="#C9A75E"/>' +
+          '</radialGradient>' +
+          '<radialGradient id="agGlow" cx="50%" cy="50%" r="50%">' +
+            '<stop offset="0%" stop-color="rgba(233,204,150,0.6)"/>' +
+            '<stop offset="100%" stop-color="rgba(233,204,150,0)"/>' +
+          '</radialGradient>' +
+        '</defs>' +
+        '<circle class="ag-glow" cx="32" cy="34" r="26" fill="url(#agGlow)"/>' +
+        '<g class="ag-petals">' + PETALS + '</g>' +
+        '<circle class="ag-core" cx="32" cy="34" r="5.4" fill="url(#agCore)"/>' +
+        '<g transform="translate(49 15)"><path class="ag-spark" d="' + SPARK + '"/></g>' +
+        '<g transform="translate(16 21) scale(0.72)"><path class="ag-spark" d="' + SPARK + '"/></g>' +
+      '</svg>';
 
     function isPlaying() {
       return !!(nizamokAmbientAudio && !nizamokAmbientAudio.paused && !nizamokAmbientAudio.ended);
     }
-    // The visible label IS the accessible name (no aria-label needed). aria-pressed
-    // carries the toggle state. State is intent-driven so the label never lies.
+    // Bloom = playing. The flower opens/closes; aria-label + aria-pressed carry the
+    // state for assistive tech. State is intent-driven so the affordance never lies.
     function reflectUI() {
       var state = ambientSoundEnabled ? 'playing' : (hasActivated ? 'paused' : 'initial');
       ambientSoundControl.setAttribute('data-state', state);
-      ambientSoundControl.classList.toggle('is-on', state === 'playing');
+      ambientSoundControl.classList.toggle('is-open', state === 'playing');
       ambientSoundControl.setAttribute('aria-pressed', state === 'playing' ? 'true' : 'false');
-      ambientLabelEl.textContent = LABELS[state];
+      ambientSoundControl.setAttribute('aria-label', LABELS[state]);
     }
     function clearFade() { if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; } }
     function fadeTo(target, ms, done) {

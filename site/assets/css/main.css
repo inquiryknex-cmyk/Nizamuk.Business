@@ -1104,103 +1104,123 @@ select:focus-visible,
 }
 
 /* ============================================================
-   Ambient sound — opt-in atmospheric control.
+   Ambient sound — opt-in blossom control (matches the site's flower motif).
    Injected by main.js only on <body data-ambient> pages (quiz + home + Interdash).
-   RTL pill: speaker icon + Arabic label; velvet + gold; three visible states
-   (initial → «ابدئي الرحلة الصوتية», playing → «إيقاف الصوت»,
-    paused → «استئناف الصوت»). Never a music player.
+   The flower blooms open → music plays; it folds closed → music stops.
+   Lavender→rose petals, gold core + glow, gold sparkles (dashboard palette).
    ============================================================ */
+/* Clip the decorative flower art that bleeds ~10px past the edges so the page
+   never scrolls horizontally. `clip` (not `hidden`) prevents scroll without
+   creating a scroll container, so the sticky header keeps working. Applied at the
+   root as well as body, since body overflow does not reliably reach the viewport. */
+html:has(body[data-ambient]),
+body[data-ambient] { overflow-x: clip; }
+
 .ambient-control {
   position: fixed;
-  inset-block-end: 22px;
-  inset-inline-end: 22px;              /* logical → lower-left in RTL, clear of CTAs */
+  /* Physical left/bottom — never logical inset — so the RTL inline axis and any
+     residual horizontal overflow can never push the flower off-screen. */
+  bottom: 22px;
+  left: 22px;
   z-index: 70;                         /* above content, below the sticky header (80) */
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  min-height: 46px;                    /* ≥ 44px tap target */
-  max-width: calc(100vw - 44px);
-  padding: 0.58rem 1.15rem 0.58rem 1rem;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--velvet-line);
-  background: rgba(30, 21, 52, 0.92);  /* velvet, high-contrast base */
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  box-shadow: var(--shadow-velvet), var(--glow-gold);
-  color: var(--gold-soft);             /* warm gold text on velvet = strong contrast */
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.9rem;
-  line-height: 1;
-  letter-spacing: 0.01em;
+  width: 56px;                         /* ≥ 44px tap target */
+  height: 56px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;             /* the flower floats, no chrome */
+  border-radius: 50%;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: color .35s ease, border-color .35s ease, background .35s ease,
-              box-shadow .5s ease, transform .3s ease;
+  transition: transform .3s ease;
 }
-.ambient-control:hover { transform: translateY(-1px); border-color: rgba(201, 167, 94, 0.55); }
-.ambient-control:active { transform: translateY(0); }
-.ambient-control svg { width: 20px; height: 20px; flex: none; display: block; }
-.ambient-control .ambient-label { white-space: nowrap; }
-.ambient-control .spk { fill: currentColor; }
-.ambient-control .wave {
-  fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round;
-  opacity: 0.5; transition: opacity .4s ease;
+/* Soft scrim so the blossom reads on ivory too; barely there on velvet. */
+.ambient-control::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 54%, rgba(47, 34, 80, 0.16), rgba(47, 34, 80, 0) 68%);
+  transition: box-shadow .3s ease, background .4s ease;
+}
+.ambient-control:hover { transform: translateY(-1px) scale(1.04); }
+.ambient-control:active { transform: scale(0.97); }
+
+.ambient-flower {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  overflow: visible;
+  display: block;
+  filter: drop-shadow(0 6px 13px rgba(20, 10, 35, 0.42));
+}
+.ag-petal {
+  fill: url(#agPetal);
+  stroke: rgba(201, 167, 94, 0.28);
+  stroke-width: 0.5;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;          /* base of each petal (the flower centre) */
+  transform: rotate(var(--a)) scale(0.34);   /* closed = folded bud */
+  transition: transform .8s cubic-bezier(.34, 1.32, .5, 1);
+  transition-delay: calc(var(--d) * 45ms);
+}
+.ambient-control.is-open .ag-petal { transform: rotate(var(--a)) scale(1); }
+.ag-core {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.82);
+  transition: transform .6s ease;
+}
+.ambient-control.is-open .ag-core { transform: scale(1); }
+.ag-glow { opacity: 0; transition: opacity .9s ease; }
+.ambient-control.is-open .ag-glow { opacity: 1; }
+.ag-spark {
+  fill: var(--gold-soft);
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  transform: scale(0.3);
+  transition: opacity .5s ease .25s, transform .6s cubic-bezier(.34, 1.5, .5, 1) .25s;
+}
+.ambient-control.is-open .ag-spark { opacity: 0.9; transform: scale(1); }
+
+/* Gentle life while the flower is open — slow breath + glow pulse (restrained). */
+.ambient-control.is-open .ag-petals {
+  transform-box: fill-box; transform-origin: center;
+  animation: agBreath 4.2s ease-in-out infinite;
+}
+@keyframes agBreath { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.035) rotate(1.6deg); } }
+.ambient-control.is-open .ag-glow { animation: agGlowPulse 4.2s ease-in-out infinite; }
+@keyframes agGlowPulse { 0%, 100% { opacity: 0.72; } 50% { opacity: 1; } }
+
+/* Closed first-run invite — a soft breathing halo so the bud reads as interactive. */
+.ambient-control[data-state="initial"] { animation: agInvite 4.6s ease-in-out infinite; }
+@keyframes agInvite {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(201, 167, 94, 0)); }
+  50%      { filter: drop-shadow(0 0 9px rgba(201, 167, 94, 0.4)); }
 }
 
-/* Initial (first-run) — the clear, elegant invitation: a slow restrained glow. */
-.ambient-control[data-state="initial"] {
-  border-color: rgba(201, 167, 94, 0.5);
-  animation: ambientInvite 4.2s ease-in-out infinite;
-}
-@keyframes ambientInvite {
-  0%, 100% { box-shadow: var(--shadow-velvet), 0 0 0 rgba(201, 167, 94, 0); }
-  50%      { box-shadow: var(--shadow-velvet), 0 0 22px rgba(201, 167, 94, 0.30); }
+/* Keyboard focus — clear gold ring halo around the blossom, on any background. */
+.ambient-control:focus-visible { outline: none; }
+.ambient-control:focus-visible::before {
+  box-shadow: 0 0 0 3px rgba(231, 200, 139, 0.6);
+  background: radial-gradient(circle at 50% 54%, rgba(47, 34, 80, 0.2), rgba(47, 34, 80, 0) 70%);
 }
 
-/* Playing — active. Waves lift; one breathes gently (never rapid or flashing). */
-.ambient-control.is-on {
-  border-color: rgba(201, 167, 94, 0.62);
-  background: rgba(48, 33, 70, 0.94);
-  box-shadow: var(--shadow-velvet), var(--glow-gold);
-}
-.ambient-control.is-on .wave { opacity: 0.95; }
-.ambient-control.is-on .wave.w2 { opacity: 0.6; }
-.ambient-control.is-on .wave.w1 { animation: ambientBreath 3.4s ease-in-out infinite; }
-@keyframes ambientBreath { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.5; } }
-
-/* Paused — quieter resume invitation; waves at rest. State also carried by label + aria. */
-.ambient-control[data-state="paused"] .wave { opacity: 0.4; }
-
-/* Keyboard focus — clear gold ring halo; wins over the invite animation. */
-.ambient-control:focus-visible {
-  animation: none;
-  outline: none;
-  box-shadow: var(--shadow-velvet), 0 0 0 4px rgba(231, 200, 139, 0.32);
-}
-
-/* Motion-sensitive visitors: remove decorative movement (state stays via label/colour). */
+/* Motion-sensitive visitors: no bloom transition or breathing; state stays via
+   the open/closed shape + aria. */
 @media (prefers-reduced-motion: reduce) {
-  .ambient-control,
-  .ambient-control[data-state="initial"] { transition: none; animation: none; }
-  .ambient-control.is-on .wave.w1 { animation: none; }
+  .ambient-control, .ambient-control[data-state="initial"] { animation: none; transition: none; }
+  .ag-petal, .ag-core, .ag-glow, .ag-spark { transition: none; }
+  .ambient-control.is-open .ag-petals, .ambient-control.is-open .ag-glow { animation: none; }
 }
 .reduced-motion .ambient-control[data-state="initial"],
-.reduced-motion .ambient-control.is-on .wave.w1 { animation: none; }
+.reduced-motion .ambient-control.is-open .ag-petals,
+.reduced-motion .ambient-control.is-open .ag-glow { animation: none; }
 
 @media (max-width: 640px) {
-  .ambient-control {
-    inset-block-end: 16px;
-    inset-inline-end: 16px;
-    font-size: 0.85rem;
-    padding: 0.55rem 1rem 0.55rem 0.85rem;
-    min-height: 44px;
-  }
-  /* Reserve a bottom safe-area on the pages that carry the control, so full-width
-     mobile content (quiz options, end-of-page CTAs, footer links) can always clear
-     the corner pill rather than sit trapped beneath it. Mobile-only; desktop keeps
-     its side gutter where the pill already sits clear of content. */
-  body[data-ambient] .quiz-main { padding-bottom: 6.5rem; }
-  body[data-ambient] .site-footer { padding-block-end: 4.75rem; }
-  body[data-ambient] main { scroll-padding-block-end: 5rem; }
+  .ambient-control { bottom: 16px; left: 16px; width: 52px; height: 52px; }
+  .ambient-flower { width: 48px; height: 48px; }
+  body[data-ambient] .site-footer { padding-block-end: 3.5rem; }
 }
