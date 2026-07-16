@@ -855,11 +855,16 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   box-shadow: 0 0 24px -6px rgba(201, 167, 94, 0.35);
 }
 .option.closest .mark { background: linear-gradient(135deg, #EBD9A9, var(--gold)); color: #2E1B41; opacity: 1; transform: none; }
-.option.farthest { border-color: rgba(227, 168, 172, 0.5); opacity: 0.8; }
-.option.farthest .mark { background: linear-gradient(135deg, #F4CFC9, var(--rose)); color: #3A1E33; opacity: 1; transform: none; }
+/* The optional second answer — «قريبة مني أيضًا»: a positive rose echo,
+   full presence (never dimmed — it is recognition, not rejection). */
+.option.second { border-color: rgba(227, 168, 172, 0.6); background: rgba(255, 250, 240, 0.05); }
+.option.second .mark { background: linear-gradient(135deg, #F4CFC9, var(--rose)); color: #3A1E33; opacity: 1; transform: none; }
 
 .quiz-controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1.9rem; }
 .quiz-controls .hint { font-size: 0.8rem; color: rgba(239, 231, 218, 0.5); }
+/* «تابعي» — continue with one answer only; present but quieter than the options. */
+.link-btn.next { color: var(--gold-soft); font-weight: 700; }
+.link-btn.next:hover { color: #F6E7C5; }
 .link-btn { background: none; border: none; color: rgba(239, 231, 218, 0.7); font-size: 0.9rem; }
 .link-btn:hover { color: var(--gold-soft); }
 .quiz-msg { min-height: 1.5em; font-size: 0.88rem; color: var(--rose); margin-top: 0.8rem; }

@@ -1,9 +1,12 @@
 /* ============================================================
-   اختبار نظامك — cinematic two-act quiz engine, v2.
-   Mechanic per scene: choose الأقرب ثم الأبعد.
-   Scoring: closest +2 (Act I) / +3 (Act II — the inner voice
-   outweighs the visible day), farthest −1. Options are shuffled
-   per session to kill position bias. Results include tie
+   اختبار نظامك — cinematic two-act quiz engine, v3.
+   Mechanic per scene: choose الأقرب (required), then optionally
+   ONE more answer that is also close — قريبة منكِ أيضًا. A woman
+   can genuinely live in two patterns; she should never be forced
+   to brand one answer as completely false. Scoring: closest +2,
+   second +1, nothing subtracted (the old forced «الأبعد» −1 is
+   gone). Max two selections keeps diagnostic power. Options are
+   shuffled per session to kill position bias. Results include tie
    handling, a clarity marker, and computed precision mirrors.
    ============================================================ */
 (function () {
@@ -184,8 +187,8 @@
   /* ---------- State ---------- */
   const state = {
     index: 0,
-    phase: 'closest',
-    answers: [],               // per question: {closest, farthest} — ORIGINAL indices
+    phase: 'closest',          // 'closest' → required pick; 'second' → optional extra pick
+    answers: [],               // per question: {closest, second|null} — ORIGINAL indices
     actBreakShown: false,
     lastResult: null
   };
@@ -203,7 +206,7 @@
     const path = $('progressPath');
     if (path) {
       const total = path.getTotalLength();
-      const answered = state.answers.filter(a => a && a.closest != null && a.farthest != null).length;
+      const answered = state.answers.filter(a => a && a.closest != null).length;
       const frac = Math.min(answered / questions.length, 1);
       const target = total * (1 - frac);
       path.style.strokeDasharray = total;
@@ -221,9 +224,8 @@
   /* ---------- Question rendering ---------- */
   function renderQuestion() {
     const q = questions[state.index];
-    const saved = state.answers[state.index] || { closest: null, farthest: null };
-    state.phase = (saved.closest != null && saved.farthest == null) ? 'farthest' : 'closest';
-    if (saved.closest != null && saved.farthest != null) state.phase = 'done';
+    const saved = state.answers[state.index] || { closest: null, second: null };
+    state.phase = saved.closest != null ? 'second' : 'closest';
 
     $('sceneKicker').textContent = 'المشهد ' + (state.index + 1) + ' · ' + q.scene;
     $('questionText').textContent = q.text;
@@ -237,10 +239,10 @@
       btn.type = 'button';
       btn.className = 'option';
       if (saved.closest === origIdx) btn.classList.add('closest');
-      if (saved.farthest === origIdx) btn.classList.add('farthest');
-      btn.setAttribute('aria-pressed', (saved.closest === origIdx || saved.farthest === origIdx) ? 'true' : 'false');
+      if (saved.second === origIdx) btn.classList.add('second');
+      btn.setAttribute('aria-pressed', (saved.closest === origIdx || saved.second === origIdx) ? 'true' : 'false');
       btn.innerHTML = '<span class="mark">' +
-        (saved.closest === origIdx ? 'الأقرب إليّ' : saved.farthest === origIdx ? 'الأبعد عني' : '') +
+        (saved.closest === origIdx ? 'الأقرب إليّ' : saved.second === origIdx ? 'قريبة مني أيضًا' : '') +
         '</span>' + opt.t;
       btn.addEventListener('click', () => choose(origIdx));
       wrap.appendChild(btn);
@@ -260,40 +262,52 @@
 
   function setPrompt() {
     const el = $('choosePrompt');
-    if (state.phase === 'farthest') {
-      el.textContent = 'والآن — الأبعد عنكِ؟';
+    const nextBtn = $('nextBtn');
+    if (state.phase === 'second') {
+      el.textContent = 'هل هناك إجابة ثانية تشبهكِ أيضًا؟ اختيارها اختياري';
       el.classList.add('far');
+      if (nextBtn) nextBtn.style.visibility = 'visible';
     } else {
-      el.textContent = 'اختاري الأقرب إليكِ';
+      el.textContent = 'اختاري الأقرب إليكِ — ما يتكرر معكِ غالبًا';
       el.classList.remove('far');
+      if (nextBtn) nextBtn.style.visibility = 'hidden';
     }
   }
 
+  /* Selection rules — never more than two answers:
+     · no closest yet → this pick becomes الأقرب
+     · tap الأقرب again → clears the scene (change of heart)
+     · tap the current second → unselects it
+     · tap another option → becomes/replaces قريبة أيضًا, then auto-advance */
   function choose(i) {
-    const saved = state.answers[state.index] || { closest: null, farthest: null };
+    const saved = state.answers[state.index] || { closest: null, second: null };
 
-    if (state.phase === 'done') {
-      state.answers[state.index] = { closest: i, farthest: null };
-      state.phase = 'farthest';
+    if (state.phase === 'closest') {
+      saved.closest = i; saved.second = null;
+      state.answers[state.index] = saved;
+      state.phase = 'second';
       refreshMarks(); setPrompt(); updateProgress();
       return;
     }
-    if (state.phase === 'closest') {
-      saved.closest = i; saved.farthest = null;
-      state.answers[state.index] = saved;
-      state.phase = 'farthest';
-      refreshMarks(); setPrompt();
-      return;
-    }
     if (saved.closest === i) {
-      $('quizMsg').textContent = 'اختاري إجابة مختلفة عن الأقرب.';
+      clearTimeout(state.advanceTimer); state.advanceTimer = null;
+      state.answers[state.index] = { closest: null, second: null };
+      state.phase = 'closest';
+      refreshMarks(); setPrompt(); updateProgress();
       return;
     }
-    saved.farthest = i;
+    if (saved.second === i) {
+      clearTimeout(state.advanceTimer); state.advanceTimer = null;
+      saved.second = null;
+      state.answers[state.index] = saved;
+      refreshMarks();
+      return;
+    }
+    saved.second = i;
     state.answers[state.index] = saved;
-    state.phase = 'done';
-    refreshMarks(); updateProgress();
-    setTimeout(advance, reduced ? 120 : 480);
+    refreshMarks();
+    clearTimeout(state.advanceTimer);
+    state.advanceTimer = setTimeout(advance, reduced ? 120 : 480);
   }
 
   function refreshMarks() {
@@ -302,15 +316,22 @@
     Array.from($('options').children).forEach((el, pos) => {
       const origIdx = q.order[pos];
       el.classList.toggle('closest', saved.closest === origIdx);
-      el.classList.toggle('farthest', saved.farthest === origIdx);
-      el.setAttribute('aria-pressed', (saved.closest === origIdx || saved.farthest === origIdx) ? 'true' : 'false');
+      el.classList.toggle('second', saved.second === origIdx);
+      el.setAttribute('aria-pressed', (saved.closest === origIdx || saved.second === origIdx) ? 'true' : 'false');
       el.querySelector('.mark').textContent =
-        saved.closest === origIdx ? 'الأقرب إليّ' : saved.farthest === origIdx ? 'الأبعد عني' : '';
+        saved.closest === origIdx ? 'الأقرب إليّ' : saved.second === origIdx ? 'قريبة مني أيضًا' : '';
     });
     $('quizMsg').textContent = '';
   }
 
   function advance() {
+    // Guard: never advance without a closest pick; kill any pending auto-advance
+    // so the timer and the «تابعي» button can never both fire for one scene.
+    clearTimeout(state.advanceTimer);
+    state.advanceTimer = null;
+    const cur = state.answers[state.index];
+    if (!cur || cur.closest == null) return;
+
     const lastActOne = questions.map(q => q.act).lastIndexOf(1);
     if (state.index === lastActOne && !state.actBreakShown) {
       state.actBreakShown = true;
@@ -331,11 +352,15 @@
     renderQuestion();
   }
 
-  /* ---------- Scoring & signature analysis ---------- */
+  /* ---------- Scoring & signature analysis ----------
+     closest = the repeating response → +2
+     second  = a genuinely near echo  → +1
+     Nothing is subtracted: recognizing yourself in a pattern is signal;
+     not choosing one is simply silence, not rejection. */
   function calculateResult() {
     const scores = { mubdia: 0, asira: 0, mutafadiya: 0, kafua: 0 };
     const closeCount = { mubdia: 0, asira: 0, mutafadiya: 0, kafua: 0 };
-    const farCount = { mubdia: 0, asira: 0, mutafadiya: 0, kafua: 0 };
+    const secCount = { mubdia: 0, asira: 0, mutafadiya: 0, kafua: 0 };
     const closeByAct = { 1: {}, 2: {} };
 
     state.answers.forEach((ans, qi) => {
@@ -343,32 +368,29 @@
       if (!ans) return;
       if (ans.closest != null) {
         const p = q.options[ans.closest].p;
-        scores[p] += (q.act === 2 ? 3 : 2);       // the inner voice weighs more
+        scores[p] += 2;
         closeCount[p]++;
         closeByAct[q.act][p] = (closeByAct[q.act][p] || 0) + 1;
       }
-      if (ans.farthest != null) {
-        const p = q.options[ans.farthest].p;
-        scores[p] -= 1;
-        farCount[p]++;
+      if (ans.second != null) {
+        const p = q.options[ans.second].p;
+        scores[p] += 1;
+        secCount[p]++;
       }
     });
 
-    const min = Math.min.apply(null, Object.values(scores));
-    const shifted = {};
-    Object.keys(scores).forEach(k => (shifted[k] = scores[k] - min + 1));
-    const total = Object.values(shifted).reduce((a, b) => a + b, 0);
+    const total = Object.values(scores).reduce((a, b) => a + b, 0) || 1;
     const pcts = {};
-    Object.keys(shifted).forEach(k => (pcts[k] = Math.round((shifted[k] / total) * 100)));
+    Object.keys(scores).forEach(k => (pcts[k] = Math.round((scores[k] / total) * 100)));
     const order = Object.keys(pcts).sort((a, b) =>
-      pcts[b] - pcts[a] || closeCount[b] - closeCount[a] || farCount[a] - farCount[b]);
+      pcts[b] - pcts[a] || closeCount[b] - closeCount[a] || secCount[b] - secCount[a]);
     pcts[order[0]] += 100 - Object.values(pcts).reduce((a, b) => a + b, 0);
 
     const dominant = order[0];
     const gap = pcts[order[0]] - pcts[order[1]];
     return {
       scores, pcts, order,
-      closeCount, farCount, closeByAct,
+      closeCount, secCount, closeByAct,
       coLead: gap <= 4,                     // two patterns share the lead
       highClarity: pcts[dominant] >= 45,    // unusually decisive profile
       gap
@@ -380,11 +402,12 @@
     const dom = r.order[0];
     const mirrors = [];
 
-    // 1) Tension: a pattern she both touches and pushes away.
-    const tension = Object.keys(patterns).find(p =>
-      p !== dom && r.closeCount[p] >= 2 && r.farCount[p] >= 3);
-    if (tension) {
-      mirrors.push('علاقتكِ بنمط «' + patterns[tension].name + '» متوترة: اخترتِه قريبًا ورفضتِه بعيدًا في مشاهد مختلفة — غالبًا هذا نمط قديم بدأتِ تخرجين منه، وما زال يشدّكِ من طرف ثوبكِ.');
+    // 1) The echo pattern: often «قريبة أيضًا», rarely the lead — a companion
+    //    mechanism that follows her dominant pattern without steering.
+    const echo = Object.keys(patterns).find(p =>
+      p !== dom && r.secCount[p] >= 3 && r.closeCount[p] <= 1);
+    if (echo) {
+      mirrors.push('نمط «' + patterns[echo].name + '» ظهر مرارًا في اختياركِ الثاني دون أن يتصدر مرة — هذا صدى يرافق نمطكِ الغالب: لا يقود قراراتكِ، لكنه يلوّنها من الخلف.');
     }
 
     // 2) Inner/outer split for the dominant pattern.
@@ -396,11 +419,13 @@
       mirrors.push('اللافت أن نمطكِ ظاهر في تفاصيل يومكِ أكثر مما تعترف به قناعاتكِ الداخلية — جسدكِ ويومكِ يعرفان قبل أن يقتنع رأسكِ.');
     }
 
-    // 3) The anti-pattern: her most-rejected door (never the tension pattern —
-    //    the two mirrors would contradict each other about the same door).
-    const anti = Object.keys(patterns).sort((a, b) => r.farCount[b] - r.farCount[a])[0];
-    if (anti && r.farCount[anti] >= 4 && anti !== dom && anti !== tension) {
-      mirrors.push('أبعد الأنماط عنكِ: «' + patterns[anti].name + '» — هذا الباب ليس معركتكِ أصلًا. لا تصرفي طاقتكِ على نصائح كُتبت لامرأة أخرى.');
+    // 3) The silent door: a pattern she never touched in 12 scenes — not as
+    //    closest, not even as a near echo. That silence is information.
+    const silent = Object.keys(patterns)
+      .filter(p => p !== dom && p !== echo && r.closeCount[p] === 0 && r.secCount[p] === 0)
+      .sort((a, b) => (r.scores[a] || 0) - (r.scores[b] || 0))[0];
+    if (silent) {
+      mirrors.push('طوال اثني عشر مشهدًا لم تلمسي نمط «' + patterns[silent].name + '» ولا مرة — هذا الباب ليس معركتكِ أصلًا. لا تصرفي طاقتكِ على نصائح كُتبت لامرأة أخرى.');
     }
 
     return mirrors.slice(0, 3);
@@ -502,8 +527,8 @@
     try {
       localStorage.setItem('nizamok_last_result', JSON.stringify({
         payload: { email: email, fields: fields },
-        pcts: result.pcts, order: result.order,
-        closeCount: result.closeCount, farCount: result.farCount,
+        pcts: result.pcts, order: result.order, scores: result.scores,
+        closeCount: result.closeCount, secCount: result.secCount,
         closeByAct: result.closeByAct, coLead: result.coLead,
         highClarity: result.highClarity,
         at: new Date().toISOString()
@@ -615,8 +640,8 @@
       const saved = JSON.parse(localStorage.getItem('nizamok_last_result') || 'null');
       if (saved && saved.order && saved.order[0] === m[1]) {
         state.lastResult = {
-          pcts: saved.pcts, order: saved.order,
-          closeCount: saved.closeCount || {}, farCount: saved.farCount || {},
+          pcts: saved.pcts, order: saved.order, scores: saved.scores || {},
+          closeCount: saved.closeCount || {}, secCount: saved.secCount || {},
           closeByAct: saved.closeByAct || { 1: {}, 2: {} },
           coLead: !!saved.coLead, highClarity: !!saved.highClarity
         };
@@ -641,6 +666,9 @@
     });
     $('actContinueBtn').addEventListener('click', () => { state.index++; renderQuestion(); });
     $('prevBtn').addEventListener('click', prev);
+    // «تابعي» — continue with only the closest answer (the second is optional).
+    const nextBtn = $('nextBtn');
+    if (nextBtn) nextBtn.addEventListener('click', advance);
     $('toEmailBtn').addEventListener('click', () => showPanel('emailPanel'));
     $('emailForm').addEventListener('submit', submitEmail);
 
