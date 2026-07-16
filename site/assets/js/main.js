@@ -116,6 +116,291 @@
     // else: keep the premium "coming soon" poster already in the markup.
   }
 
+  /* ---------- Ambient sound (opt-in, atmospheric) ----------
+     Only runs on pages that opt in with <body data-ambient> (home + Interdash).
+     Excluded routes (quiz, legal, 404) omit the attribute, so nothing renders
+     or plays there. One lazily-created Audio instance; never autoplays. */
+  function initAmbientSound() {
+    if (!document.body || !document.body.hasAttribute('data-ambient')) return;
+
+    var AUDIO_SRC = '/assets/audio/nizamok-ambient.mp3';
+    var STORE_KEY = 'nizamok_ambient';   // { enabled, volume, position }
+    var DEFAULT_VOL = 0.12;              // gentle atmospheric level (0.10–0.15)
+    var FADE_MS = 1500;
+
+    // Storage may be blocked (private mode) — degrade to a session-only feature.
+    function readState() {
+      try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; }
+      catch (e) { return {}; }
+    }
+    function writeState(patch) {
+      try {
+        var s = readState();
+        for (var k in patch) s[k] = patch[k];
+        localStorage.setItem(STORE_KEY, JSON.stringify(s));
+      } catch (e) { /* storage blocked — ignore */ }
+    }
+
+    var saved = readState();
+    var TARGET_VOL = (typeof saved.volume === 'number' && saved.volume > 0 && saved.volume <= 1)
+      ? saved.volume : DEFAULT_VOL;
+
+    var nizamokAmbientAudio = null;   // single Audio instance, created on first use
+    var ambientSoundEnabled = false;  // is the ambient meant to be playing right now
+    var hasActivated = saved.activated === true; // has it ever played (persisted)
+    var pendingResume = false;        // enabled last visit; resume on next gesture
+    var assetUnavailable = false;     // set once if the file is missing / fails
+    var duckedByMedia = false;        // paused because other media is playing
+    var fadeTimer = null, posTimer = null, resumeHandler = null;
+
+    /* ---- the control: a blossom that matches the site's flower motif, paired
+       with a small caption so its purpose is clear. It stays a recognisable
+       flower at all times: a soft upward bud when off, a full bloom + gold glow
+       + sound-wave ripples when playing. Caption + aria-label update with state:
+         initial → «ابدئي الرحلة الصوتية»  (start)
+         playing → «إيقاف الصوت»            (stop)
+         paused  → «استئناف الصوت»          (resume) */
+    var LABELS = { initial: 'ابدئي الرحلة الصوتية', playing: 'إيقاف الصوت', paused: 'استئناف الصوت' };
+    // Two petal rings (8 outer + 5 inner, offset) — layered like the site's
+    // watercolor blossoms, so the flower reads as a flower even as a closed bud.
+    var OUTER = [0, 45, 90, 135, 180, -135, -90, -45];
+    var INNER = [22, 94, 166, -122, -50];
+    var PETALS = '';
+    for (var _p = 0; _p < OUTER.length; _p++) {
+      PETALS += '<path class="ag-petal" style="--a:' + OUTER[_p] + 'deg;--d:' + _p + '"' +
+        ' d="M32 37 C26 31 25 16 32 6.5 C39 16 38 31 32 37 Z"/>';
+    }
+    var PETALS2 = '';
+    for (var _q = 0; _q < INNER.length; _q++) {
+      PETALS2 += '<path class="ag-petal2" style="--a:' + INNER[_q] + 'deg;--d:' + _q + '"' +
+        ' d="M32 36.5 C27.5 31.5 27 20 32 12 C37 20 36.5 31.5 32 36.5 Z"/>';
+    }
+    var STAMENS = '';
+    for (var _s = 0; _s < 7; _s++) {
+      var _ang = _s * (Math.PI * 2 / 7);
+      STAMENS += '<circle class="ag-stamen" cx="' + (32 + Math.cos(_ang) * 3.1).toFixed(1) +
+        '" cy="' + (37 + Math.sin(_ang) * 3.1).toFixed(1) + '" r="0.85"/>';
+    }
+    var SPARK = 'M0 -3 L0.85 -0.85 L3 0 L0.85 0.85 L0 3 L-0.85 0.85 L-3 0 L-0.85 -0.85 Z';
+    var ambientSoundControl = document.createElement('button');
+    ambientSoundControl.type = 'button';
+    ambientSoundControl.className = 'ambient-control';
+    ambientSoundControl.setAttribute('aria-pressed', 'false');
+    ambientSoundControl.setAttribute('aria-label', LABELS.initial);
+    ambientSoundControl.innerHTML =
+      '<span class="ambient-bloom">' +
+        '<svg class="ambient-flower" viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
+          '<defs>' +
+            '<radialGradient id="agPetal" cx="50%" cy="80%" r="80%">' +
+              '<stop offset="0%" stop-color="#F4DCE1"/>' +
+              '<stop offset="48%" stop-color="#D3B3E2"/>' +
+              '<stop offset="100%" stop-color="#9C7FC9"/>' +
+            '</radialGradient>' +
+            '<radialGradient id="agPetal2" cx="50%" cy="80%" r="80%">' +
+              '<stop offset="0%" stop-color="#F8E4E0"/>' +
+              '<stop offset="55%" stop-color="#E3B9CE"/>' +
+              '<stop offset="100%" stop-color="#B28ED0"/>' +
+            '</radialGradient>' +
+            '<radialGradient id="agCore" cx="50%" cy="42%" r="62%">' +
+              '<stop offset="0%" stop-color="#FBEFCB"/>' +
+              '<stop offset="100%" stop-color="#C9A75E"/>' +
+            '</radialGradient>' +
+            '<radialGradient id="agGlow" cx="50%" cy="50%" r="50%">' +
+              '<stop offset="0%" stop-color="rgba(233,204,150,0.65)"/>' +
+              '<stop offset="100%" stop-color="rgba(233,204,150,0)"/>' +
+            '</radialGradient>' +
+          '</defs>' +
+          '<circle class="ag-glow" cx="32" cy="37" r="26" fill="url(#agGlow)"/>' +
+          '<circle class="ag-ring r1" cx="32" cy="37" r="15" fill="none"/>' +
+          '<circle class="ag-ring r2" cx="32" cy="37" r="15" fill="none"/>' +
+          '<g class="ag-petals">' + PETALS + PETALS2 + '</g>' +
+          '<circle class="ag-core" cx="32" cy="37" r="5.4" fill="url(#agCore)"/>' +
+          '<g class="ag-stamens">' + STAMENS + '</g>' +
+          '<g transform="translate(52 14)"><path class="ag-spark" d="' + SPARK + '"/></g>' +
+          '<g transform="translate(13 24) scale(0.66)"><path class="ag-spark" d="' + SPARK + '"/></g>' +
+        '</svg>' +
+      '</span>' +
+      '<span class="ambient-caption"></span>';
+    var ambientCaptionEl = ambientSoundControl.querySelector('.ambient-caption');
+
+    function isPlaying() {
+      return !!(nizamokAmbientAudio && !nizamokAmbientAudio.paused && !nizamokAmbientAudio.ended);
+    }
+    // Bloom = playing. The flower opens/closes and the caption + aria-label update
+    // together, so the state (and what a press does) is always clear.
+    function reflectUI() {
+      var state = ambientSoundEnabled ? 'playing' : (hasActivated ? 'paused' : 'initial');
+      ambientSoundControl.setAttribute('data-state', state);
+      ambientSoundControl.classList.toggle('is-open', state === 'playing');
+      ambientSoundControl.setAttribute('aria-pressed', state === 'playing' ? 'true' : 'false');
+      ambientSoundControl.setAttribute('aria-label', LABELS[state]);
+      ambientCaptionEl.textContent = LABELS[state];
+    }
+    function clearFade() { if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; } }
+    function fadeTo(target, ms, done) {
+      if (!nizamokAmbientAudio) { if (done) done(); return; }
+      clearFade();
+      var start = nizamokAmbientAudio.volume;
+      var steps = Math.max(1, Math.round(ms / 50)), i = 0;
+      fadeTimer = setInterval(function () {
+        i++;
+        var v = start + (target - start) * (i / steps);
+        try { nizamokAmbientAudio.volume = Math.min(1, Math.max(0, v)); } catch (e) {}
+        if (i >= steps) { clearFade(); if (done) done(); }
+      }, 50);
+    }
+    function savePosition() {
+      if (nizamokAmbientAudio) writeState({ position: Math.floor(nizamokAmbientAudio.currentTime) || 0 });
+    }
+    function startSavingPosition() {
+      if (posTimer) return;
+      posTimer = setInterval(function () { if (isPlaying()) savePosition(); }, 4000);
+    }
+    function stopSavingPosition() { if (posTimer) { clearInterval(posTimer); posTimer = null; } }
+
+    function handleFailure() {
+      // Missing asset or playback error → reset cleanly, no error loop, no broken UI.
+      assetUnavailable = true;
+      ambientSoundEnabled = false;
+      pendingResume = false;
+      writeState({ enabled: false });
+      clearFade(); stopSavingPosition(); disarmResume();
+      try { if (nizamokAmbientAudio) nizamokAmbientAudio.pause(); } catch (e) {}
+      reflectUI();
+    }
+
+    function ensureAudio() {
+      if (nizamokAmbientAudio) return nizamokAmbientAudio;
+      var a = new Audio();
+      a.preload = 'none';   // no network request until intentional activation
+      a.loop = true;
+      a.volume = 0;         // always fade up from silence
+      a.src = AUDIO_SRC;
+      var pos = readState().position;
+      if (typeof pos === 'number' && pos > 0) {
+        a.addEventListener('loadedmetadata', function () {
+          try { if (pos < (a.duration || Infinity)) a.currentTime = pos; } catch (e) {}
+        }, { once: true });
+      }
+      a.addEventListener('error', handleFailure);
+      nizamokAmbientAudio = a;
+      return a;
+    }
+
+    // userInitiated=true means a fresh gesture (play must succeed or it's a failure);
+    // false means a restore/resume that browser autoplay policy may legitimately block.
+    function startAmbient(userInitiated) {
+      if (assetUnavailable) return;
+      var a = ensureAudio();
+      duckedByMedia = false;
+      var p = a.play();
+      if (p && typeof p.then === 'function') {
+        p.then(function () {
+          hasActivated = true; writeState({ activated: true });
+          reflectUI(); fadeTo(TARGET_VOL, FADE_MS); startSavingPosition();
+        }).catch(function () {
+          if (userInitiated) handleFailure();
+          else {                                   // autoplay blocked → wait for a gesture
+            ambientSoundEnabled = false; writeState({ enabled: false });
+            pendingResume = true; reflectUI(); armResume();
+          }
+        });
+      } else {
+        hasActivated = true; writeState({ activated: true });
+        reflectUI(); fadeTo(TARGET_VOL, FADE_MS); startSavingPosition();
+      }
+    }
+    function stopAmbient() {
+      fadeTo(0, FADE_MS, function () {
+        try { if (nizamokAmbientAudio) nizamokAmbientAudio.pause(); } catch (e) {}
+        savePosition(); stopSavingPosition();
+      });
+    }
+
+    // Restore playback at the next genuine interaction (never circumvent autoplay).
+    function armResume() {
+      if (resumeHandler) return;
+      resumeHandler = function (e) {
+        if (e.target && e.target.closest && e.target.closest('.ambient-control')) return;
+        disarmResume();
+        if (pendingResume && !isPlaying() && !assetUnavailable) {
+          pendingResume = false;
+          ambientSoundEnabled = true; writeState({ enabled: true });
+          reflectUI(); startAmbient(false);
+        }
+      };
+      document.addEventListener('pointerdown', resumeHandler, true);
+      document.addEventListener('keydown', resumeHandler, true);
+    }
+    function disarmResume() {
+      if (!resumeHandler) return;
+      document.removeEventListener('pointerdown', resumeHandler, true);
+      document.removeEventListener('keydown', resumeHandler, true);
+      resumeHandler = null;
+    }
+
+    function toggle() {
+      disarmResume(); pendingResume = false;
+      if (assetUnavailable) { reflectUI(); return; }
+      if (ambientSoundEnabled) {
+        ambientSoundEnabled = false;
+        writeState({ enabled: false });
+        reflectUI();          // → «استئناف الصوت»
+        stopAmbient();
+      } else {
+        ambientSoundEnabled = true;
+        writeState({ enabled: true });
+        reflectUI();          // → «إيقاف الصوت» (optimistic; reset on failure)
+        startAmbient(true);   // click is a user gesture → playback is allowed
+      }
+    }
+    ambientSoundControl.addEventListener('click', toggle);
+
+    /* ---- media coordination: never two sources at once ----
+       Media events don't bubble, so listen in the capture phase. This also
+       catches the Interdash <video>, which main.js injects dynamically. */
+    function anyOtherMediaPlaying() {
+      var m = document.querySelectorAll('video, audio'), i;
+      for (i = 0; i < m.length; i++) {
+        if (m[i] !== nizamokAmbientAudio && !m[i].paused && !m[i].ended) return true;
+      }
+      return false;
+    }
+    document.addEventListener('play', function (e) {
+      var t = e.target;
+      if (!t || t === nizamokAmbientAudio) return;
+      if ((t.tagName === 'VIDEO' || t.tagName === 'AUDIO') && isPlaying()) {
+        duckedByMedia = true;
+        fadeTo(0, 600, function () { try { nizamokAmbientAudio.pause(); } catch (e2) {} });
+      }
+    }, true);
+    function onOtherMediaStop(e) {
+      var t = e.target;
+      if (!t || t === nizamokAmbientAudio) return;
+      if ((t.tagName === 'VIDEO' || t.tagName === 'AUDIO') && duckedByMedia
+          && ambientSoundEnabled && !anyOtherMediaPlaying()) {
+        duckedByMedia = false;
+        startAmbient(false);   // resume only if she still has it enabled
+      }
+    }
+    document.addEventListener('pause', onOtherMediaStop, true);
+    document.addEventListener('ended', onOtherMediaStop, true);
+
+    // Persist the position when leaving, so navigation doesn't restart from zero.
+    window.addEventListener('pagehide', savePosition);
+
+    document.body.appendChild(ambientSoundControl);
+
+    // Reflect the persisted choice. Never autoplay: if it was on last visit, show
+    // the «استئناف الصوت» (paused) state and resume on the next interaction.
+    if (saved.enabled === true) {
+      hasActivated = true;
+      pendingResume = true;
+      armResume();
+    }
+    reflectUI();   // initial paint (initial / paused, per persisted state)
+  }
+
   /* ---------- Waiting list form ---------- */
   async function submitWaitlist(e) {
     e.preventDefault();
@@ -176,8 +461,8 @@
     (el.textContent = String(new Date().getFullYear())));
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); });
+    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); initAmbientSound(); });
   } else {
-    initMotion(); initVideo();
+    initMotion(); initVideo(); initAmbientSound();
   }
 })();
