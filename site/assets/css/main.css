@@ -1102,3 +1102,70 @@ select:focus-visible,
   font-size: 0.82rem;
   color: var(--gold-deep, #A6813C);
 }
+
+/* ============================================================
+   Ambient sound — opt-in atmospheric control.
+   Injected by main.js only on <body data-ambient> pages (home + Interdash).
+   Discreet lower-corner chip; RTL-aware; velvet + gold, never a music player.
+   ============================================================ */
+.ambient-control {
+  position: fixed;
+  inset-block-end: 20px;
+  inset-inline-end: 20px;              /* logical → lower-left in RTL, clear of CTAs */
+  z-index: 70;                         /* above content, below the sticky header (80) */
+  width: 48px;                         /* ≥ 44×44 tap target */
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--velvet-line);
+  background: rgba(36, 26, 62, 0.82);  /* velvet, lightly translucent */
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  box-shadow: var(--shadow-velvet);
+  color: rgba(230, 211, 163, 0.72);    /* dimmed gold = inactive */
+  cursor: pointer;
+  transition: color 0.4s ease, border-color 0.4s ease,
+              box-shadow 0.5s ease, background 0.4s ease, transform 0.3s ease;
+}
+.ambient-control:hover { color: var(--gold-soft); transform: translateY(-1px); }
+.ambient-control svg { width: 22px; height: 22px; display: block; }
+.ambient-control .spk { fill: currentColor; }
+.ambient-control .wave {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.26;                       /* waves quiet when inactive */
+  transition: opacity 0.4s ease;
+}
+/* Active — warm, restrained. State is carried by colour + glow + aria, not motion alone. */
+.ambient-control.is-on {
+  color: var(--gold-soft);
+  border-color: rgba(201, 167, 94, 0.6);
+  background: rgba(53, 36, 77, 0.9);
+  box-shadow: var(--shadow-velvet), var(--glow-gold);
+}
+.ambient-control.is-on .wave { opacity: 0.9; }
+.ambient-control.is-on .wave.w2 { opacity: 0.55; }
+/* A single slow breath while active — calm, never rapid or flashing. */
+.ambient-control.is-on .wave.w1 { animation: ambientBreath 3.4s ease-in-out infinite; }
+@keyframes ambientBreath { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.5; } }
+
+/* Keyboard focus — reuse the site's gold ring, plus a halo so it reads on any bg. */
+.ambient-control:focus-visible {
+  box-shadow: var(--shadow-velvet), 0 0 0 4px rgba(231, 200, 139, 0.28);
+}
+
+/* Motion-sensitive visitors: remove the decorative sound-wave animation. */
+@media (prefers-reduced-motion: reduce) {
+  .ambient-control { transition: none; }
+  .ambient-control.is-on .wave.w1 { animation: none; }
+}
+.reduced-motion .ambient-control.is-on .wave.w1 { animation: none; }
+
+@media (max-width: 640px) {
+  .ambient-control { inset-block-end: 16px; inset-inline-end: 16px; width: 46px; height: 46px; }
+}

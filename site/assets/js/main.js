@@ -116,6 +116,218 @@
     // else: keep the premium "coming soon" poster already in the markup.
   }
 
+  /* ---------- Ambient sound (opt-in, atmospheric) ----------
+     Only runs on pages that opt in with <body data-ambient> (home + Interdash).
+     Excluded routes (quiz, legal, 404) omit the attribute, so nothing renders
+     or plays there. One lazily-created Audio instance; never autoplays. */
+  function initAmbientSound() {
+    if (!document.body || !document.body.hasAttribute('data-ambient')) return;
+
+    var AUDIO_SRC = '/assets/audio/nizamok-ambient.mp3';
+    var STORE_KEY = 'nizamok_ambient';   // { enabled, volume, position }
+    var DEFAULT_VOL = 0.12;              // gentle atmospheric level (0.10–0.15)
+    var FADE_MS = 1500;
+
+    // Storage may be blocked (private mode) — degrade to a session-only feature.
+    function readState() {
+      try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; }
+      catch (e) { return {}; }
+    }
+    function writeState(patch) {
+      try {
+        var s = readState();
+        for (var k in patch) s[k] = patch[k];
+        localStorage.setItem(STORE_KEY, JSON.stringify(s));
+      } catch (e) { /* storage blocked — ignore */ }
+    }
+
+    var saved = readState();
+    var TARGET_VOL = (typeof saved.volume === 'number' && saved.volume > 0 && saved.volume <= 1)
+      ? saved.volume : DEFAULT_VOL;
+
+    var nizamokAmbientAudio = null;   // single Audio instance, created on first use
+    var ambientSoundEnabled = false;  // the visitor's intended (persisted) choice
+    var assetUnavailable = false;     // set once if the file is missing / fails
+    var duckedByMedia = false;        // paused because other media is playing
+    var fadeTimer = null, posTimer = null, resumeHandler = null;
+
+    /* ---- the control (semantic button, RTL-aware, injected once) ---- */
+    var ambientSoundControl = document.createElement('button');
+    ambientSoundControl.type = 'button';
+    ambientSoundControl.className = 'ambient-control';
+    ambientSoundControl.setAttribute('aria-pressed', 'false');
+    ambientSoundControl.setAttribute('aria-label', 'تشغيل الأجواء الصوتية');
+    ambientSoundControl.title = 'أجواء هادئة ترافقك أثناء الاستكشاف';
+    ambientSoundControl.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path class="spk" d="M4 9.2v5.6h3.2L12 18.8V5.2L7.2 9.2H4z"/>' +
+        '<path class="wave w1" d="M15.4 9.1a4 4 0 0 1 0 5.8"/>' +
+        '<path class="wave w2" d="M17.9 6.6a7.4 7.4 0 0 1 0 10.8"/>' +
+      '</svg>';
+
+    function isPlaying() {
+      return !!(nizamokAmbientAudio && !nizamokAmbientAudio.paused && !nizamokAmbientAudio.ended);
+    }
+    function reflectUI(on) {
+      ambientSoundControl.classList.toggle('is-on', on);
+      ambientSoundControl.setAttribute('aria-pressed', on ? 'true' : 'false');
+      ambientSoundControl.setAttribute('aria-label',
+        on ? 'إيقاف الأجواء الصوتية' : 'تشغيل الأجواء الصوتية');
+    }
+    function clearFade() { if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; } }
+    function fadeTo(target, ms, done) {
+      if (!nizamokAmbientAudio) { if (done) done(); return; }
+      clearFade();
+      var start = nizamokAmbientAudio.volume;
+      var steps = Math.max(1, Math.round(ms / 50)), i = 0;
+      fadeTimer = setInterval(function () {
+        i++;
+        var v = start + (target - start) * (i / steps);
+        try { nizamokAmbientAudio.volume = Math.min(1, Math.max(0, v)); } catch (e) {}
+        if (i >= steps) { clearFade(); if (done) done(); }
+      }, 50);
+    }
+    function savePosition() {
+      if (nizamokAmbientAudio) writeState({ position: Math.floor(nizamokAmbientAudio.currentTime) || 0 });
+    }
+    function startSavingPosition() {
+      if (posTimer) return;
+      posTimer = setInterval(function () { if (isPlaying()) savePosition(); }, 4000);
+    }
+    function stopSavingPosition() { if (posTimer) { clearInterval(posTimer); posTimer = null; } }
+
+    function handleFailure() {
+      // Missing asset or playback error → reset cleanly, no error loop, no broken UI.
+      assetUnavailable = true;
+      ambientSoundEnabled = false;
+      writeState({ enabled: false });
+      clearFade(); stopSavingPosition(); disarmResume();
+      try { if (nizamokAmbientAudio) nizamokAmbientAudio.pause(); } catch (e) {}
+      reflectUI(false);
+    }
+
+    function ensureAudio() {
+      if (nizamokAmbientAudio) return nizamokAmbientAudio;
+      var a = new Audio();
+      a.preload = 'none';   // no network request until intentional activation
+      a.loop = true;
+      a.volume = 0;         // always fade up from silence
+      a.src = AUDIO_SRC;
+      var pos = readState().position;
+      if (typeof pos === 'number' && pos > 0) {
+        a.addEventListener('loadedmetadata', function () {
+          try { if (pos < (a.duration || Infinity)) a.currentTime = pos; } catch (e) {}
+        }, { once: true });
+      }
+      a.addEventListener('error', handleFailure);
+      nizamokAmbientAudio = a;
+      return a;
+    }
+
+    // userInitiated=true means a fresh gesture (play must succeed or it's a failure);
+    // false means a restore/resume that browser autoplay policy may legitimately block.
+    function startAmbient(userInitiated) {
+      if (assetUnavailable) return;
+      var a = ensureAudio();
+      duckedByMedia = false;
+      var p = a.play();
+      if (p && typeof p.then === 'function') {
+        p.then(function () {
+          reflectUI(true); fadeTo(TARGET_VOL, FADE_MS); startSavingPosition();
+        }).catch(function () {
+          if (userInitiated) handleFailure();
+          else { reflectUI(true); armResume(); } // keep choice; wait for next gesture
+        });
+      } else {
+        reflectUI(true); fadeTo(TARGET_VOL, FADE_MS); startSavingPosition();
+      }
+    }
+    function stopAmbient() {
+      fadeTo(0, FADE_MS, function () {
+        try { if (nizamokAmbientAudio) nizamokAmbientAudio.pause(); } catch (e) {}
+        savePosition(); stopSavingPosition();
+      });
+    }
+
+    // Restore playback at the next genuine interaction (never circumvent autoplay).
+    function armResume() {
+      if (resumeHandler) return;
+      resumeHandler = function (e) {
+        if (e.target && e.target.closest && e.target.closest('.ambient-control')) return;
+        disarmResume();
+        if (ambientSoundEnabled && !isPlaying()) startAmbient(false);
+      };
+      document.addEventListener('pointerdown', resumeHandler, true);
+      document.addEventListener('keydown', resumeHandler, true);
+    }
+    function disarmResume() {
+      if (!resumeHandler) return;
+      document.removeEventListener('pointerdown', resumeHandler, true);
+      document.removeEventListener('keydown', resumeHandler, true);
+      resumeHandler = null;
+    }
+
+    function toggle() {
+      disarmResume();
+      if (assetUnavailable) { reflectUI(false); return; }
+      if (ambientSoundEnabled) {
+        ambientSoundEnabled = false;
+        writeState({ enabled: false });
+        reflectUI(false);
+        stopAmbient();
+      } else {
+        ambientSoundEnabled = true;
+        writeState({ enabled: true, volume: TARGET_VOL });
+        reflectUI(true);
+        startAmbient(true);   // click is a user gesture → playback is allowed
+      }
+    }
+    ambientSoundControl.addEventListener('click', toggle);
+
+    /* ---- media coordination: never two sources at once ----
+       Media events don't bubble, so listen in the capture phase. This also
+       catches the Interdash <video>, which main.js injects dynamically. */
+    function anyOtherMediaPlaying() {
+      var m = document.querySelectorAll('video, audio'), i;
+      for (i = 0; i < m.length; i++) {
+        if (m[i] !== nizamokAmbientAudio && !m[i].paused && !m[i].ended) return true;
+      }
+      return false;
+    }
+    document.addEventListener('play', function (e) {
+      var t = e.target;
+      if (!t || t === nizamokAmbientAudio) return;
+      if ((t.tagName === 'VIDEO' || t.tagName === 'AUDIO') && isPlaying()) {
+        duckedByMedia = true;
+        fadeTo(0, 600, function () { try { nizamokAmbientAudio.pause(); } catch (e2) {} });
+      }
+    }, true);
+    function onOtherMediaStop(e) {
+      var t = e.target;
+      if (!t || t === nizamokAmbientAudio) return;
+      if ((t.tagName === 'VIDEO' || t.tagName === 'AUDIO') && duckedByMedia
+          && ambientSoundEnabled && !anyOtherMediaPlaying()) {
+        duckedByMedia = false;
+        startAmbient(false);   // resume only if she still has it enabled
+      }
+    }
+    document.addEventListener('pause', onOtherMediaStop, true);
+    document.addEventListener('ended', onOtherMediaStop, true);
+
+    // Persist the position when leaving, so navigation doesn't restart from zero.
+    window.addEventListener('pagehide', savePosition);
+
+    document.body.appendChild(ambientSoundControl);
+
+    // Reflect the persisted choice. Never autoplay: show the active state and
+    // wait for the next interaction before resuming audible sound.
+    if (saved.enabled === true) {
+      ambientSoundEnabled = true;
+      reflectUI(true);
+      armResume();
+    }
+  }
+
   /* ---------- Waiting list form ---------- */
   async function submitWaitlist(e) {
     e.preventDefault();
@@ -176,8 +388,8 @@
     (el.textContent = String(new Date().getFullYear())));
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); });
+    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); initAmbientSound(); });
   } else {
-    initMotion(); initVideo();
+    initMotion(); initVideo(); initAmbientSound();
   }
 })();
