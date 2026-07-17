@@ -6,6 +6,11 @@
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduced) document.documentElement.classList.add('reduced-motion');
 
+  // English pages (html lang="en") load i18n-en.js, which supplies runtime UI
+  // strings. Arabic remains the built-in default everywhere else.
+  const I18N_UI = (document.documentElement.lang === 'en'
+    && window.NIZAMOK_I18N_EN && window.NIZAMOK_I18N_EN.mainUi) || null;
+
   /* ---------- Mobile nav ---------- */
   const toggle = document.querySelector('.nav-toggle');
   const links = document.querySelector('.nav-links');
@@ -69,8 +74,8 @@
       const tl = gsap.timeline({ delay: 0.4 });
       tl.from(wm, { opacity: 0, y: 10, duration: 1.4, ease: 'power2.out' })
         .fromTo(wm,
-          { filter: 'drop-shadow(0 0 14px rgba(201,167,94,0.25)) brightness(1)' },
-          { filter: 'drop-shadow(0 0 22px rgba(201,167,94,0.5)) brightness(1.18)',
+          { filter: 'drop-shadow(0 0 12px rgba(233,214,170,0.25)) brightness(1.12)' },
+          { filter: 'drop-shadow(0 0 20px rgba(233,214,170,0.5)) brightness(1.3)',
             duration: 1.1, ease: 'sine.inOut', yoyo: true, repeat: 1 }, '-=0.3');
     }
 
@@ -125,7 +130,7 @@
 
     var AUDIO_SRC = '/assets/audio/nizamok-ambient.mp3';
     var STORE_KEY = 'nizamok_ambient';   // { enabled, volume, position }
-    var DEFAULT_VOL = 0.12;              // gentle atmospheric level (0.10–0.15)
+    var DEFAULT_VOL = 0.30;              // clearly audible, still atmospheric
     var FADE_MS = 1500;
 
     // Storage may be blocked (private mode) — degrade to a session-only feature.
@@ -142,7 +147,9 @@
     }
 
     var saved = readState();
-    var TARGET_VOL = (typeof saved.volume === 'number' && saved.volume > 0 && saved.volume <= 1)
+    // Ignore volumes saved by the quieter pre-launch builds (<= 0.12) so every
+    // visitor gets the new audible level.
+    var TARGET_VOL = (typeof saved.volume === 'number' && saved.volume > 0.12 && saved.volume <= 1)
       ? saved.volume : DEFAULT_VOL;
 
     var nizamokAmbientAudio = null;   // single Audio instance, created on first use
@@ -160,7 +167,8 @@
          initial → «ابدئي الرحلة الصوتية»  (start)
          playing → «إيقاف الصوت»            (stop)
          paused  → «استئناف الصوت»          (resume) */
-    var LABELS = { initial: 'ابدئي الرحلة الصوتية', playing: 'إيقاف الصوت', paused: 'استئناف الصوت' };
+    var LABELS = (I18N_UI && I18N_UI.ambient) ||
+      { initial: 'ابدئي الرحلة الصوتية', playing: 'إيقاف الصوت', paused: 'استئناف الصوت' };
     // Two petal rings (8 outer + 5 inner, offset) — layered like the site's
     // watercolor blossoms, so the flower reads as a flower even as a closed bud.
     var OUTER = [0, 45, 90, 135, 180, -135, -90, -45];
@@ -401,7 +409,33 @@
     reflectUI();   // initial paint (initial / paused, per persisted state)
   }
 
+  /* ---------- Language switch ----------
+     Arabic is the primary experience; a single small side button is the only
+     switcher. Each page declares its counterpart via <body data-lang-alt>. */
+  function initLangSwitch() {
+    if (document.querySelector('.lang-switch')) return;  // static button already in markup
+    var alt = document.body && document.body.getAttribute('data-lang-alt');
+    if (!alt) return;
+    var en = document.documentElement.lang === 'en';
+    var a = document.createElement('a');
+    a.className = 'lang-switch';
+    a.href = alt;
+    a.textContent = en ? 'ع' : 'EN';
+    a.setAttribute('lang', en ? 'ar' : 'en');
+    a.setAttribute('dir', en ? 'rtl' : 'ltr');
+    a.setAttribute('aria-label', en ? 'النسخة العربية' : 'English version');
+    a.title = en ? 'العربية' : 'English';
+    document.body.appendChild(a);
+  }
+
   /* ---------- Waiting list form ---------- */
+  const WL = (I18N_UI && I18N_UI.waitlist) || {
+    invalid: 'يرجى إدخال بريدٍ إلكتروني صحيح.',
+    sending: 'نسجّل انضمامكِ...',
+    success: 'انضممتِ إلى القائمة. سنراسلكِ عند فتح التجربة المبكرة.',
+    error: 'تعذّر الإرسال الآن. حاولي مرة أخرى بعد قليل.'
+  };
+
   async function submitWaitlist(e) {
     e.preventDefault();
     const form = e.currentTarget;
@@ -411,7 +445,7 @@
     const pattern = (form.querySelector('[name="pattern"]') || {}).value || '';
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      msg.textContent = 'يرجى إدخال بريدٍ إلكتروني صحيح.';
+      msg.textContent = WL.invalid;
       msg.classList.remove('ok');
       return;
     }
@@ -424,7 +458,7 @@
 
     const ml = CONFIG.mailerLite || {};
     const endpoint = ml.waitlistEndpoint || ml.endpoint || '';
-    msg.textContent = 'نسجّل انضمامكِ...';
+    msg.textContent = WL.sending;
     msg.classList.remove('ok');
 
     try {
@@ -441,13 +475,13 @@
         stash.push(Object.assign({ at: new Date().toISOString() }, payload));
         localStorage.setItem('nizamok_waitlist', JSON.stringify(stash));
       }
-      msg.textContent = 'انضممتِ إلى القائمة. سنراسلكِ عند فتح التجربة المبكرة.';
+      msg.textContent = WL.success;
       msg.classList.add('ok');
       form.reset();
       // Funnel event — status only, never the email or name.
       if (window.trackEvent) window.trackEvent('waitlist_submit', { submission_status: 'success', page_path: location.pathname });
     } catch (err) {
-      msg.textContent = 'تعذّر الإرسال الآن. حاولي مرة أخرى بعد قليل.';
+      msg.textContent = WL.error;
       msg.classList.remove('ok');
       if (window.trackEvent) window.trackEvent('waitlist_submit', { submission_status: 'error', page_path: location.pathname });
     }
@@ -461,8 +495,8 @@
     (el.textContent = String(new Date().getFullYear())));
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); initAmbientSound(); });
+    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); initAmbientSound(); initLangSwitch(); });
   } else {
-    initMotion(); initVideo(); initAmbientSound();
+    initMotion(); initVideo(); initAmbientSound(); initLangSwitch();
   }
 })();

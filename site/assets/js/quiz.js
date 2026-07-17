@@ -78,7 +78,7 @@
         { p: 'mubdia',     t: 'وصلتُ الدرس الثالث… ثم لمعَت دورة أو فكرة ثانية، وانتقل الحماس لها.' },
         { p: 'asira',      t: 'أعدتُ الدرس الواحد أكثر من مرة، وما سمحت لنفسي أتقدم قبل أن «أتقن» الذي فات.' },
         { p: 'mutafadiya', t: 'أجّلت أول واجب فيها؛ وكل ما كبر التأجيل، صار فتح المنصة نفسها أثقل.' },
-        { p: 'kafua',      t: 'انحشرت بين التزاماتي؛ وكل أسبوع أقول «من الأسبوع الجاي أرجع لها».' }
+        { p: 'kafua',      t: 'كل ما جئتُ أفتحها سبقني طلبُ أحدٍ اعتاد أني «ما أقصّر»؛ وقتي يُصرف على الجميع أولًا — ودورتي تنتظر دوري أنا.' }
       ]
     },
     {
@@ -95,7 +95,7 @@
       act: 1, scene: 'الموسم',
       text: 'يقترب موسم مزدحم — رمضان، أعراس، اختبارات، ضغط دوام. ماذا يحدث لمشروعكِ أنتِ؟',
       options: [
-        { p: 'kafua',      t: 'يُلغى تلقائيًا؛ أنا «مسؤولة الموسم» عند الجميع، والكل يعتمد عليّ.' },
+        { p: 'kafua',      t: 'لا يسألني أحد إن كنتُ متفرغة؛ لازم أستلم الموسم كله، ومشروعي أول ما يُهمَّش.' },
         { p: 'mutafadiya', t: 'أقول «بعد الموسم أبدأ بقوة»؛ صارت المواسم مواعيد مؤجلة تلد بعضها.' },
         { p: 'mubdia',     t: 'أدخل الموسم بمشروع… وأخرج منه متحمسة لمشروع ثاني مختلف تمامًا.' },
         { p: 'asira',      t: 'أكمل فيه بصمت لكن لا أُري أحدًا؛ «مو وقته، وما هو جاهز».' }
@@ -174,6 +174,59 @@
     }
   ];
 
+  /* ---------- Locale layer ----------
+     Arabic is the primary experience and the built-in default. On /en/ pages
+     (html lang="en") the i18n-en.js bundle supplies an English rendition of
+     the same content model. Slugs, scoring, mapping, and the MailerLite
+     payload (always Arabic pattern names, for the Arabic automations) are
+     locale-independent. */
+  const I18N = (document.documentElement.lang === 'en' && window.NIZAMOK_I18N_EN) || null;
+  const AR_PATTERN_NAMES = {
+    mubdia: 'المبدعة المشتّتة', asira: 'أسيرة الكمال',
+    mutafadiya: 'المتفادية الذكية', kafua: 'الكفؤة المنهَكة'
+  };
+  if (I18N) {
+    Object.keys(patterns).forEach(k => Object.assign(patterns[k], I18N.patterns[k] || {}));
+    questions.forEach((q, i) => {
+      const tq = I18N.questions[i];
+      if (!tq) return;
+      q.scene = tq.scene; q.text = tq.text;
+      q.options.forEach((o, j) => { if (tq.options[j]) o.t = tq.options[j]; });
+    });
+  }
+  const T = I18N ? I18N.t : {
+    act1: 'الفصل الأول — مشاهد من يومكِ',
+    act2: 'الفصل الثاني — الصوت الذي لا يسمعه أحد',
+    scene: (n, name) => 'المشهد ' + n + ' · ' + name,
+    markClosest: 'الأقرب إليّ',
+    markSecond: 'قريبة مني أيضًا',
+    promptClosest: 'اختاري الأقرب إليكِ — ما يتكرر معكِ غالبًا',
+    promptSecond: 'هل هناك إجابة ثانية تشبهكِ أيضًا؟ اختيارها اختياري',
+    emailInvalid: 'يرجى إدخال بريدٍ إلكتروني صحيح.',
+    emailPreparing: 'نفتح القراءة ونجهّز تقريركِ الأول...',
+    pctSign: '٪',
+    teaserColead: (a, b) => 'نتيجتكِ نادرة: نمطان يتقاسمان قيادتكِ هذه الفترة — <b>' + a + '</b> و<b>' + b + '</b> يعملان معًا. قراءتكِ الكاملة تفكك هذا التحالف.',
+    teaserHigh: (pct) => 'نمطكِ واضح بدرجة عالية — ظهر بنسبة <b>' + pct + '٪</b>، وهذا وضوح لا يظهر عند الكثيرات. ومعه نمط خفي يعمل في الظل… قراءتكِ الكاملة تكشفه.',
+    teaserNormal: (pct) => 'ظهر نمطكِ الغالب بنسبة <b>' + pct + '٪</b> — ومعه نمط خفي يعمل في الخلفية. قراءتكِ الكاملة تكشفه، مع خريطة مزيجكِ ومرايا دقيقة من إجاباتكِ أنتِ.',
+    hiddenColead: (name, pct) => '✦ نتيجة نادرة: <b>' + name + '</b> تقاسمكِ القيادة بنسبة ' + pct + '٪ — النمطان يعملان معًا هذه الفترة.',
+    hiddenNormal: (name, pct) => '✦ نمطكِ الخفي: <b>' + name + '</b> بنسبة ' + pct + '٪ — يعمل في الظل عندما يتعب نمطكِ الغالب.',
+    mirrorsHeading: 'مرايا دقيقة — من إجاباتكِ أنتِ',
+    mirrorEcho: (name) => 'نمط «' + name + '» ظهر مرارًا في اختياركِ الثاني دون أن يتصدر مرة — هذا صدى يرافق نمطكِ الغالب: لا يقود قراراتكِ، لكنه يلوّنها من الخلف.',
+    mirrorInner: 'يومكِ من الخارج لا يفضحكِ — لكن في «الصوت الداخلي» كانت إجاباتكِ محسومة. نمطكِ يسكن قراراتكِ الصامتة أكثر من سلوككِ الظاهر، ولهذا لا يلاحظه مَن حولكِ.',
+    mirrorOuter: 'اللافت أن نمطكِ ظاهر في تفاصيل يومكِ أكثر مما تعترف به قناعاتكِ الداخلية — جسدكِ ويومكِ يعرفان قبل أن يقتنع رأسكِ.',
+    mirrorSilent: (name) => 'طوال اثني عشر مشهدًا لم تلمسي نمط «' + name + '» ولا مرة — هذا الباب ليس معركتكِ أصلًا. لا تصرفي طاقتكِ على نصائح كُتبت لامرأة أخرى.',
+    pathHeading: 'مساركِ حسب نمطكِ',
+    pathIntro: 'ثلاث مراحل بعمقٍ متدرج — طُوّرت السلسلة عبر منهج يجمع بين علم النفس السلوكي، والتحليل التحريري، وتمارين التطبيق العملي.',
+    cardLamhat: { label: 'الخطوة 1 · متاحة الآن', title: 'لمحات نظامكِ', desc: 'قراءة مركّزة لما يحدث الآن في يومكِ: أين تتعطلين، وما السلوك الذي يخدعكِ.', cta: 'افتحي لمحاتكِ' },
+    cardJuthur: { label: 'الخطوة 2 · القراءة الأعمق', title: 'جذور نمطكِ', desc: 'كتاب في أصل النمط: لماذا بدأ، وما الشعور الذي يحميه، ولماذا يعود.', cta: 'اقرئي الجذور' },
+    cardRebuild: { label: 'الخطوة 3 · التحول العملي', title: 'نظام إعادة البناء', desc: 'نظام عملي كامل يحوّل الفهم إلى حركة: مراحل، أدوات، وخطوات تناسب نمطكِ.', cta: 'ابدئي إعادة البناء' },
+    price: (v) => v + ' ريال',
+    soon: 'قريبًا',
+    waitlistBanner: (price) => '<b>لوحة نمطكِ التفاعلية — قريبًا.</b> مساحة يومية تنظّم مهامكِ وطاقتكِ حسب نمطكِ، باشتراك شهري ' + price + ' ريالًا عند الإطلاق.',
+    waitlistCta: 'انضمي إلى قائمة الانتظار',
+    interdashUrl: null   // fall back to CONFIG.urls.interdash
+  };
+
   /* ---------- Session-stable option shuffle (kills primacy bias) ---------- */
   questions.forEach(q => {
     const order = [0, 1, 2, 3];
@@ -218,7 +271,7 @@
     }
     const q = questions[state.index];
     if ($('currentQuestion')) $('currentQuestion').textContent = state.index + 1;
-    if ($('actLabel')) $('actLabel').textContent = q.act === 1 ? 'الفصل الأول — مشاهد من يومكِ' : 'الفصل الثاني — الصوت الذي لا يسمعه أحد';
+    if ($('actLabel')) $('actLabel').textContent = q.act === 1 ? T.act1 : T.act2;
   }
 
   /* ---------- Question rendering ---------- */
@@ -227,7 +280,7 @@
     const saved = state.answers[state.index] || { closest: null, second: null };
     state.phase = saved.closest != null ? 'second' : 'closest';
 
-    $('sceneKicker').textContent = 'المشهد ' + (state.index + 1) + ' · ' + q.scene;
+    $('sceneKicker').textContent = T.scene(state.index + 1, q.scene);
     $('questionText').textContent = q.text;
     setPrompt();
 
@@ -242,7 +295,7 @@
       if (saved.second === origIdx) btn.classList.add('second');
       btn.setAttribute('aria-pressed', (saved.closest === origIdx || saved.second === origIdx) ? 'true' : 'false');
       btn.innerHTML = '<span class="mark">' +
-        (saved.closest === origIdx ? 'الأقرب إليّ' : saved.second === origIdx ? 'قريبة مني أيضًا' : '') +
+        (saved.closest === origIdx ? T.markClosest : saved.second === origIdx ? T.markSecond : '') +
         '</span>' + opt.t;
       btn.addEventListener('click', () => choose(origIdx));
       wrap.appendChild(btn);
@@ -264,11 +317,11 @@
     const el = $('choosePrompt');
     const nextBtn = $('nextBtn');
     if (state.phase === 'second') {
-      el.textContent = 'هل هناك إجابة ثانية تشبهكِ أيضًا؟ اختيارها اختياري';
+      el.textContent = T.promptSecond;
       el.classList.add('far');
       if (nextBtn) nextBtn.style.visibility = 'visible';
     } else {
-      el.textContent = 'اختاري الأقرب إليكِ — ما يتكرر معكِ غالبًا';
+      el.textContent = T.promptClosest;
       el.classList.remove('far');
       if (nextBtn) nextBtn.style.visibility = 'hidden';
     }
@@ -319,7 +372,7 @@
       el.classList.toggle('second', saved.second === origIdx);
       el.setAttribute('aria-pressed', (saved.closest === origIdx || saved.second === origIdx) ? 'true' : 'false');
       el.querySelector('.mark').textContent =
-        saved.closest === origIdx ? 'الأقرب إليّ' : saved.second === origIdx ? 'قريبة مني أيضًا' : '';
+        saved.closest === origIdx ? T.markClosest : saved.second === origIdx ? T.markSecond : '';
     });
     $('quizMsg').textContent = '';
   }
@@ -407,16 +460,16 @@
     const echo = Object.keys(patterns).find(p =>
       p !== dom && r.secCount[p] >= 3 && r.closeCount[p] <= 1);
     if (echo) {
-      mirrors.push('نمط «' + patterns[echo].name + '» ظهر مرارًا في اختياركِ الثاني دون أن يتصدر مرة — هذا صدى يرافق نمطكِ الغالب: لا يقود قراراتكِ، لكنه يلوّنها من الخلف.');
+      mirrors.push(T.mirrorEcho(patterns[echo].name));
     }
 
     // 2) Inner/outer split for the dominant pattern.
     const inner = (r.closeByAct[2][dom] || 0);
     const outer = (r.closeByAct[1][dom] || 0);
     if (inner - outer >= 2) {
-      mirrors.push('يومكِ من الخارج لا يفضحكِ — لكن في «الصوت الداخلي» كانت إجاباتكِ محسومة. نمطكِ يسكن قراراتكِ الصامتة أكثر من سلوككِ الظاهر، ولهذا لا يلاحظه مَن حولكِ.');
+      mirrors.push(T.mirrorInner);
     } else if (outer - inner >= 2) {
-      mirrors.push('اللافت أن نمطكِ ظاهر في تفاصيل يومكِ أكثر مما تعترف به قناعاتكِ الداخلية — جسدكِ ويومكِ يعرفان قبل أن يقتنع رأسكِ.');
+      mirrors.push(T.mirrorOuter);
     }
 
     // 3) The silent door: a pattern she never touched in 12 scenes — not as
@@ -425,7 +478,7 @@
       .filter(p => p !== dom && p !== echo && r.closeCount[p] === 0 && r.secCount[p] === 0)
       .sort((a, b) => (r.scores[a] || 0) - (r.scores[b] || 0))[0];
     if (silent) {
-      mirrors.push('طوال اثني عشر مشهدًا لم تلمسي نمط «' + patterns[silent].name + '» ولا مرة — هذا الباب ليس معركتكِ أصلًا. لا تصرفي طاقتكِ على نصائح كُتبت لامرأة أخرى.');
+      mirrors.push(T.mirrorSilent(patterns[silent].name));
     }
 
     return mirrors.slice(0, 3);
@@ -448,14 +501,11 @@
 
     let teaser;
     if (r.coLead) {
-      teaser = 'نتيجتكِ نادرة: نمطان يتقاسمان قيادتكِ هذه الفترة — <b>' + patterns[dom].name +
-        '</b> و<b>' + patterns[sec].name + '</b> يعملان معًا. قراءتكِ الكاملة تفكك هذا التحالف.';
+      teaser = T.teaserColead(patterns[dom].name, patterns[sec].name);
     } else if (r.highClarity) {
-      teaser = 'نمطكِ واضح بدرجة عالية — ظهر بنسبة <b>' + r.pcts[dom] +
-        '٪</b>، وهذا وضوح لا يظهر عند الكثيرات. ومعه نمط خفي يعمل في الظل… قراءتكِ الكاملة تكشفه.';
+      teaser = T.teaserHigh(r.pcts[dom]);
     } else {
-      teaser = 'ظهر نمطكِ الغالب بنسبة <b>' + r.pcts[dom] +
-        '٪</b> — ومعه نمط خفي يعمل في الخلفية. قراءتكِ الكاملة تكشفه، مع خريطة مزيجكِ ومرايا دقيقة من إجاباتكِ أنتِ.';
+      teaser = T.teaserNormal(r.pcts[dom]);
     }
     $('mixTeaser').innerHTML = teaser;
     showPanel('revealPanel');
@@ -480,11 +530,11 @@
     e.preventDefault();
     const email = $('email').value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      $('emailMsg').textContent = 'يرجى إدخال بريدٍ إلكتروني صحيح.';
+      $('emailMsg').textContent = T.emailInvalid;
       return;
     }
     if (!state.lastResult) state.lastResult = calculateResult();
-    $('emailMsg').textContent = 'نفتح القراءة ونجهّز تقريركِ الأول...';
+    $('emailMsg').textContent = T.emailPreparing;
     await sendPayload(email, state.lastResult);
     renderResult(email);
   }
@@ -493,9 +543,9 @@
     const dominant = result.order[0];
     const fields = {
       dominant_pattern: dominant,
-      dominant_pattern_name: patterns[dominant].name,
+      dominant_pattern_name: AR_PATTERN_NAMES[dominant],
       secondary_pattern: result.order[1],
-      secondary_pattern_name: patterns[result.order[1]].name,
+      secondary_pattern_name: AR_PATTERN_NAMES[result.order[1]],
       mubdia_percent: String(result.pcts.mubdia),
       asira_percent: String(result.pcts.asira),
       mutafadiya_percent: String(result.pcts.mutafadiya),
@@ -547,13 +597,9 @@
     $('resultTruth').textContent = P.truth;
 
     if (r.coLead) {
-      $('hiddenPattern').innerHTML =
-        '✦ نتيجة نادرة: <b>' + patterns[sec].name + '</b> تقاسمكِ القيادة بنسبة ' + r.pcts[sec] +
-        '٪ — النمطان يعملان معًا هذه الفترة.';
+      $('hiddenPattern').innerHTML = T.hiddenColead(patterns[sec].name, r.pcts[sec]);
     } else {
-      $('hiddenPattern').innerHTML =
-        '✦ نمطكِ الخفي: <b>' + patterns[sec].name + '</b> بنسبة ' + r.pcts[sec] +
-        '٪ — يعمل في الظل عندما يتعب نمطكِ الغالب.';
+      $('hiddenPattern').innerHTML = T.hiddenNormal(patterns[sec].name, r.pcts[sec]);
     }
 
     const bars = $('bars');
@@ -564,7 +610,7 @@
       row.innerHTML =
         '<span>' + patterns[k].name + '</span>' +
         '<span class="bar-bg"><span class="bar-fill" data-w="' + r.pcts[k] + '"></span></span>' +
-        '<b>' + r.pcts[k] + '٪</b>';
+        '<b>' + r.pcts[k] + T.pctSign + '</b>';
       bars.appendChild(row);
     });
 
@@ -578,7 +624,7 @@
     const mWrap = $('resultMirrors');
     if (mWrap) {
       if (mirrors.length) {
-        mWrap.innerHTML = '<h3>مرايا دقيقة — من إجاباتكِ أنتِ</h3>' +
+        mWrap.innerHTML = '<h3>' + T.mirrorsHeading + '</h3>' +
           mirrors.map(m => '<p>' + m + '</p>').join('');
         mWrap.style.display = '';
       } else {
@@ -590,23 +636,19 @@
     const links = (CONFIG.products || {})[dom] || {};
     const prices = CONFIG.pricing || {};
     $('resultPath').innerHTML =
-      '<h3>مساركِ حسب نمطكِ</h3>' +
-      '<p>ثلاث مراحل بعمقٍ متدرج — طُوّرت السلسلة عبر منهج يجمع بين علم النفس السلوكي، والتحليل التحريري، وتمارين التطبيق العملي.</p>' +
+      '<h3>' + T.pathHeading + '</h3>' +
+      '<p>' + T.pathIntro + '</p>' +
       '<div class="path-cards">' +
-        pathCard('tier-lamhat', 'الخطوة 1 · متاحة الآن', 'لمحات نظامكِ',
-          'قراءة مركّزة لما يحدث الآن في يومكِ: أين تتعطلين، وما السلوك الذي يخدعكِ.',
-          prices.lamhat, links.lamhat, 'افتحي لمحاتكِ', 'lamhat_click', dom, 'lamhat') +
-        pathCard('tier-juthur', 'الخطوة 2 · القراءة الأعمق', 'جذور نمطكِ',
-          'كتاب في أصل النمط: لماذا بدأ، وما الشعور الذي يحميه، ولماذا يعود.',
-          prices.juthur, links.juthur, 'اقرئي الجذور', 'juthur_click', dom, 'juthur') +
-        pathCard('tier-rebuild', 'الخطوة 3 · التحول العملي', 'نظام إعادة البناء',
-          'نظام عملي كامل يحوّل الفهم إلى حركة: مراحل، أدوات، وخطوات تناسب نمطكِ.',
-          prices.rebuild, links.rebuild, 'ابدئي إعادة البناء', 'rebuild_click', dom, 'rebuild') +
+        pathCard('tier-lamhat', T.cardLamhat.label, T.cardLamhat.title, T.cardLamhat.desc,
+          prices.lamhat, links.lamhat, T.cardLamhat.cta, 'lamhat_click', dom, 'lamhat') +
+        pathCard('tier-juthur', T.cardJuthur.label, T.cardJuthur.title, T.cardJuthur.desc,
+          prices.juthur, links.juthur, T.cardJuthur.cta, 'juthur_click', dom, 'juthur') +
+        pathCard('tier-rebuild', T.cardRebuild.label, T.cardRebuild.title, T.cardRebuild.desc,
+          prices.rebuild, links.rebuild, T.cardRebuild.cta, 'rebuild_click', dom, 'rebuild') +
       '</div>' +
       '<div class="waitlist-banner">' +
-        '<p><b>لوحة نمطكِ التفاعلية — قريبًا.</b> مساحة يومية تنظّم مهامكِ وطاقتكِ حسب نمطكِ، باشتراك شهري ' +
-        (((CONFIG.interdash || {}).monthlyPriceSAR) || 29) + ' ريالًا عند الإطلاق.</p>' +
-        '<a class="btn btn-ghost" href="' + ((CONFIG.urls || {}).interdash || '/interdash/') + '">انضمي إلى قائمة الانتظار</a>' +
+        '<p>' + T.waitlistBanner((((CONFIG.interdash || {}).monthlyPriceSAR) || 29)) + '</p>' +
+        '<a class="btn btn-ghost" href="' + (T.interdashUrl || (CONFIG.urls || {}).interdash || '/interdash/') + '">' + T.waitlistCta + '</a>' +
       '</div>';
 
     showPanel('resultPanel');
@@ -626,9 +668,9 @@
       '<span class="step-label">' + label + '</span>' +
       '<h4>' + title + '</h4>' +
       '<p>' + desc + '</p>' +
-      '<span class="price-line">' + (price != null ? price + ' ريال' : '') + '</span>' +
+      '<span class="price-line">' + (price != null ? T.price(price) : '') + '</span>' +
       (has ? '<a class="btn btn-gold" href="' + link + '" target="_blank" rel="noopener"' + data + '>' + cta + '</a>'
-           : '<button class="btn btn-gold" disabled>قريبًا</button>') +
+           : '<button class="btn btn-gold" disabled>' + T.soon + '</button>') +
       '</div>';
   }
 

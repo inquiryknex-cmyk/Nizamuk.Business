@@ -38,6 +38,12 @@ pass the owner approves separately.
   «اختاري الأقرب إليكِ — ما يتكرر معكِ غالبًا» under the question, and the
   intro card teaches: «قد تجدين نفسكِ في أكثر من إجابة — وهذا طبيعي. اختاري
   الأقرب إليكِ: ما يتكرر معكِ غالبًا، لا ما حدث مرة أو مرتين.»
-- **Recommended next step (owner approval needed):** micro-sharpen the two
-  Kafua options in scenes 3 and 5 toward *who took the time* rather than
-  *that time was lost*. Two-line copy edits; no structural change.
+- **Resolved (owner-approved 2026-07-16):** the two Kafua options were
+  sharpened toward *who takes the time* rather than *that time was lost*:
+  - Scene 3: «كل ما جئتُ أفتحها سبقني طلبُ أحدٍ اعتاد أني «ما أقصّر»؛ وقتي
+    يُصرف على الجميع أولًا — ودورتي تنتظر دوري أنا.»
+  - Scene 5 (owner's wording): «لا يسألني أحد إن كنتُ متفرغة؛ لازم أستلم
+    الموسم كله، ومشروعي أول ما يُهمَّش.»
+  Both lead with the mechanism — she is claimed, not asked — closing the
+  Mutafadiya ↔ Kafua adjacency flagged above. No slug, scoring, or structural
+  change.

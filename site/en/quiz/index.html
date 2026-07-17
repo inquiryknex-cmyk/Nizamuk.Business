@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The NizamOk Quiz — Discover Your Pattern</title>
+  <meta name="description" content="The NizamOk quiz: 12 scenes from your real day reveal your blend across the four patterns — an instant result, and a hidden pattern you won't expect.">
+  <link rel="canonical" href="https://nizamok.com/en/quiz/">
+  <link rel="alternate" hreflang="ar" href="https://nizamok.com/ikhtibar/">
+  <link rel="alternate" hreflang="en" href="https://nizamok.com/en/quiz/">
+  <link rel="alternate" hreflang="x-default" href="https://nizamok.com/ikhtibar/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="The NizamOk Quiz — Discover the pattern that runs your energy">
+  <meta property="og:description" content="Your problem isn't discipline. 12 scenes in three minutes reveal your dominant pattern and your hidden one.">
+  <meta property="og:url" content="https://nizamok.com/en/quiz/">
+  <meta property="og:image" content="https://nizamok.com/assets/video/interdash-poster.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The NizamOk Quiz — Discover the pattern that runs your energy">
+  <meta name="twitter:description" content="Your problem isn't discipline. 12 scenes in three minutes reveal your dominant pattern and your hidden one.">
+  <meta name="twitter:image" content="https://nizamok.com/assets/video/interdash-poster.jpg">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/assets/img/seal.png">
+  <link rel="apple-touch-icon" href="/assets/img/seal.png">
+
+  <link rel="preload" href="/assets/fonts/almarai-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/reem-kufi-600-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/fonts/fonts.css">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
+</head>
+<body class="quiz-body velvet" data-ambient data-lang-alt="/ikhtibar/">
+
+<a class="lang-switch" href="/ikhtibar/" lang="ar" dir="rtl" title="العربية" aria-label="النسخة العربية">ع</a>
+
+<span class="k-star" style="top:6%;inset-inline-start:7%">✦</span>
+<span class="k-star" style="top:22%;inset-inline-end:5%;font-size:0.7rem">✦</span>
+<span class="k-star" style="bottom:18%;inset-inline-start:4%;font-size:0.65rem">✦</span>
+<img class="flower fl-r" src="/assets/img/flower-r.png" alt="" style="top:2%;opacity:0.45">
+<img class="flower fl-l" src="/assets/img/flower-l.png" alt="" style="bottom:8%;opacity:0.35">
+
+<div class="container">
+  <div class="quiz-topbar">
+    <a class="brand" href="/en/">
+      <img class="seal-img" src="/assets/img/seal.png" alt="NizamOk seal" style="width:42px;height:42px">
+      <img class="wordmark-img" src="/assets/img/wordmark.png" alt="NizamOk" style="height:30px">
+    </a>
+    <a class="back" href="/en/">Home</a>
+  </div>
+</div>
+
+<main class="quiz-main">
+  <div class="container quiz-stage">
+
+    <!-- Progress: the golden pattern line -->
+    <div class="progress-line" aria-hidden="true">
+      <svg viewBox="0 0 700 34" preserveAspectRatio="none">
+        <path class="track" d="M0 22 C 60 6, 120 30, 180 18 S 300 8, 360 20 S 480 32, 540 16 S 660 8, 700 18" />
+        <path class="drawn" id="progressPath" d="M0 22 C 60 6, 120 30, 180 18 S 300 8, 360 20 S 480 32, 540 16 S 660 8, 700 18" style="stroke-dashoffset:9999" />
+      </svg>
+      <div class="progress-meta">
+        <span id="actLabel">Act One — Scenes From Your Day</span>
+        <span>Scene <b id="currentQuestion">1</b> of <b id="totalQuestions">12</b></span>
+      </div>
+    </div>
+
+    <!-- ============ INTRO ============ -->
+    <section class="panel intro-screen" id="introPanel">
+      <div class="quiz-card glass">
+        <img class="seal-img" src="/assets/img/seal.png" alt="NizamOk seal">
+        <img class="wordmark-img" src="/assets/img/wordmark.png" alt="NizamOk">
+        <span class="kicker">The Patterns Quiz · Three minutes · Closest — and also close</span>
+        <h1>Your problem isn't discipline.</h1>
+        <p class="lead">This quiz doesn't flatter the image you wish to present. It reads your response in the moments that are hard to beautify — across two acts: scenes everyone sees, then the voice no one hears but you.</p>
+        <div class="intro-cards">
+          <div class="intro-card"><strong>How to choose</strong><p>You may find yourself in more than one answer — that's natural. Choose the closest to you: what repeats in your life, not what happened once or twice. And if a second answer is genuinely close, add it.</p></div>
+          <div class="intro-card"><strong>Your result</strong><p>Your blend across four patterns — and a hidden pattern working in the background.</p></div>
+          <div class="intro-card"><strong>Your free report</strong><p>A focused first reading of your pattern arrives in your inbox after the quiz — your first glimpse of how you work.</p></div>
+        </div>
+        <button class="btn btn-rose" id="startBtn">Begin Act One</button>
+        <p style="margin-top:1.2rem;font-size:0.84rem;color:rgba(239,231,218,0.6)">And if you want the full analysis after your report, the NizamOk book series awaits — crafted in Arabic through behavioral psychology, editorial analysis, and practical application.</p>
+      </div>
+    </section>
+
+    <!-- ============ QUESTION SCENE ============ -->
+    <section class="panel" id="quizPanel">
+      <div class="quiz-card glass">
+        <div class="scene-kicker" id="sceneKicker">Scene 1</div>
+        <h2 class="question-title" id="questionText"></h2>
+        <span class="choose-prompt" id="choosePrompt">Choose the closest to you</span>
+        <div class="options" id="options"></div>
+        <div class="quiz-msg" id="quizMsg" aria-live="polite"></div>
+        <div class="quiz-controls">
+          <button type="button" class="link-btn" id="prevBtn">← Previous scene</button>
+          <span class="hint">The second answer is optional — choosing it moves you on automatically</span>
+          <button type="button" class="link-btn next" id="nextBtn" style="visibility:hidden">Continue →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ACT BREAK ============ -->
+    <section class="panel" id="actbreakPanel">
+      <div class="quiz-card glass actbreak">
+        <span class="act-kicker">End of Act One</span>
+        <div class="ornament">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/><circle cx="12" cy="12" r="2.6"/></svg>
+        </div>
+        <h2>The scenes everyone sees are over.<br>What remains… is the voice no one hears but you.</h2>
+        <button class="btn btn-rose" id="actContinueBtn">Enter Act Two</button>
+      </div>
+    </section>
+
+    <!-- ============ CALCULATING ============ -->
+    <section class="panel" id="calcPanel">
+      <div class="quiz-card glass calc-screen">
+        <img class="seal-img" src="/assets/img/seal.png" alt="">
+        <p>Reading your blend across the four patterns…</p>
+      </div>
+    </section>
+
+    <!-- ============ REVEAL ============ -->
+    <section class="panel reveal-screen" id="revealPanel">
+      <div class="quiz-card glass">
+        <span class="rk">Your Dominant Pattern</span>
+        <h2 class="reveal-name" id="revealName"></h2>
+        <p class="reveal-truth" id="revealTruth"></p>
+        <div class="ornament">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/><circle cx="12" cy="12" r="2.6"/></svg>
+        </div>
+        <p class="mix-teaser" id="mixTeaser"></p>
+        <button class="btn btn-gold" id="toEmailBtn">Open Your Full Reading</button>
+      </div>
+    </section>
+
+    <!-- ============ EMAIL GATE ============ -->
+    <section class="panel email-panel" id="emailPanel">
+      <div class="quiz-card glass center">
+        <span class="kicker">One last step</span>
+        <h2 style="margin-bottom:0.8rem">Your full reading is ready</h2>
+        <p style="color:rgba(239,231,218,0.75);font-size:0.95rem">Enter your email to open the reading here now, and we'll send your first report to return to whenever you need — with your hidden pattern and your blend map.</p>
+        <form class="email-box" id="emailForm" novalidate>
+          <input id="email" type="email" dir="ltr" required placeholder="name@email.com" autocomplete="email" aria-label="Email">
+          <button class="btn btn-rose" type="submit">Open the Reading &amp; Send My Report</button>
+          <div class="quiz-msg" id="emailMsg" aria-live="polite"></div>
+        </form>
+        <p class="email-note">No noisy emails. Only your result, your first report, and what belongs to this path. Your report is crafted in Arabic — the native voice of NizamOk.</p>
+      </div>
+    </section>
+
+    <!-- ============ FULL RESULT ============ -->
+    <section class="panel" id="resultPanel">
+      <div class="quiz-card glass">
+        <div class="result-head">
+          <span class="kicker">Your Pattern Reading</span>
+          <h2 class="result-name" id="resultName"></h2>
+          <p class="result-truth" id="resultTruth"></p>
+          <div class="hidden-pattern" id="hiddenPattern"></div>
+        </div>
+
+        <div class="bars" id="bars"></div>
+
+        <div class="reading">
+          <h3>What seems to be happening?</h3>
+          <p id="readingHeadline"></p>
+          <h3>What keeps repeating?</h3>
+          <p id="readingWound"></p>
+          <h3>A small step today</h3>
+          <p id="readingStep"></p>
+        </div>
+
+        <div class="mirrors" id="resultMirrors" style="display:none"></div>
+
+        <p class="sent-note">Your first report is on its way to: <strong id="sentTo"></strong> — arriving within minutes.</p>
+
+        <div class="result-path" id="resultPath"></div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer" style="margin-top:auto;padding:1.6rem 0">
+  <div class="container">
+    <p class="disclaimer" style="border:none;margin-top:0;padding-top:0">NizamOk content is designed for self-understanding and practical organization; it is not a psychological diagnosis nor a substitute for a professional. · © <span data-year></span> NizamOk</p>
+  </div>
+</footer>
+
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/analytics.js"></script>
+<script src="/assets/js/i18n-en.js?v=20260719h"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="/assets/js/main.js?v=20260719h" defer></script>
+<script src="/assets/js/quiz.js?v=20260719h" defer></script>
+</body>
+</html>
