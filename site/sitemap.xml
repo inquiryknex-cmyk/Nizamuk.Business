@@ -6,4 +6,10 @@
   <url><loc>https://nizamok.com/privacy/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://nizamok.com/terms/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://nizamok.com/refund/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://nizamok.com/en/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://nizamok.com/en/quiz/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nizamok.com/en/interdash/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://nizamok.com/en/privacy/</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://nizamok.com/en/terms/</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://nizamok.com/en/refund/</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
 </urlset>

@@ -1190,6 +1190,10 @@ body[data-ambient] { overflow-x: clip; }
   box-shadow: var(--shadow-velvet);
 }
 
+
+/* English pages: the caption reads LTR. */
+html[lang="en"] .ambient-caption { direction: ltr; }
+
 /* --- Petals: a lotus bud when closed, a layered full bloom when open --- */
 .ag-petal {
   fill: url(#agPetal);

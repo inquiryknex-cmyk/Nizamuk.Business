@@ -4,7 +4,7 @@
   "private": true,
   "description": "NizamOk (نظامك) — Arabic self-understanding funnel: landing, pattern quiz, Interdash waitlist. Static site (vanilla HTML/CSS/JS + GSAP), no framework, no build step.",
   "scripts": {
-    "build": "node -e \"const fs=require('fs');const must=['site/index.html','site/ikhtibar/index.html','site/interdash/index.html','site/privacy/index.html','site/terms/index.html','site/refund/index.html','site/404.html','site/assets/css/main.css','site/assets/js/config.js','site/assets/js/main.js','site/assets/js/quiz.js','site/assets/js/analytics.js','site/_redirects','site/_headers','site/robots.txt','site/sitemap.xml','site/favicon.ico'];const miss=must.filter(f=>!fs.existsSync(f));if(miss.length){console.error('BUILD FAILED — missing:',miss);process.exit(1)}console.log('Build OK — static site verified, output directory: site/')\"",
+    "build": "node -e \"const fs=require('fs');const must=['site/index.html','site/ikhtibar/index.html','site/interdash/index.html','site/privacy/index.html','site/terms/index.html','site/refund/index.html','site/404.html','site/assets/css/main.css','site/assets/js/config.js','site/assets/js/main.js','site/assets/js/quiz.js','site/assets/js/analytics.js','site/assets/js/i18n-en.js','site/en/index.html','site/en/quiz/index.html','site/en/interdash/index.html','site/en/privacy/index.html','site/en/terms/index.html','site/en/refund/index.html','site/_redirects','site/_headers','site/robots.txt','site/sitemap.xml','site/favicon.ico'];const miss=must.filter(f=>!fs.existsSync(f));if(miss.length){console.error('BUILD FAILED — missing:',miss);process.exit(1)}console.log('Build OK — static site verified, output directory: site/')\"",
     "preview": "wrangler dev",
     "deploy": "wrangler deploy"
   },
