@@ -1304,9 +1304,9 @@ html[lang="en"] .ambient-caption { direction: ltr; }
    ============================================================ */
 .lang-switch {
   position: fixed;
-  top: clamp(84px, 12vh, 112px);        /* upper area, just below the header/logo —
-                                           clear of mobile browser bottom bars */
-  right: 14px;
+  top: clamp(84px, 12vh, 112px);        /* upper-left corner, floating beside the
+                                           dashboard image — away from the logo */
+  left: 14px;
   z-index: 70;
   animation: langFloat 5.5s ease-in-out infinite;   /* a soft float, like the hero phone */
   width: 50px;
@@ -1341,5 +1341,5 @@ html[lang="en"] .ambient-caption { direction: ltr; }
 @media (prefers-reduced-motion: reduce) { .lang-switch { transition: none; animation: none; } }
 .reduced-motion .lang-switch { animation: none; }
 @media (max-width: 640px) {
-  .lang-switch { top: 78px; right: 10px; width: 44px; height: 44px; }
+  .lang-switch { top: 78px; left: 10px; width: 44px; height: 44px; }
 }
