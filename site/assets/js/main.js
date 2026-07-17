@@ -74,8 +74,8 @@
       const tl = gsap.timeline({ delay: 0.4 });
       tl.from(wm, { opacity: 0, y: 10, duration: 1.4, ease: 'power2.out' })
         .fromTo(wm,
-          { filter: 'drop-shadow(0 0 14px rgba(233,214,170,0.4)) brightness(1.6)' },
-          { filter: 'drop-shadow(0 0 24px rgba(233,214,170,0.65)) brightness(1.8)',
+          { filter: 'drop-shadow(0 0 12px rgba(233,214,170,0.25)) brightness(1.12)' },
+          { filter: 'drop-shadow(0 0 20px rgba(233,214,170,0.5)) brightness(1.3)',
             duration: 1.1, ease: 'sine.inOut', yoyo: true, repeat: 1 }, '-=0.3');
     }
 

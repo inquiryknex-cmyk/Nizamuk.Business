@@ -226,7 +226,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .brand .seal-img { width: 46px; height: 46px; object-fit: cover; }
 .brand .wordmark-img {
   height: 38px; width: auto; object-fit: contain;
-  filter: brightness(1.6) contrast(1.05) drop-shadow(0 0 8px rgba(233, 214, 170, 0.4));
+  filter: brightness(1.1) drop-shadow(0 0 6px rgba(233, 214, 170, 0.22));
 }
 .brand .brand-ar { font-family: var(--font-kufi); font-weight: 600; color: var(--gold-soft); font-size: 1.15rem; line-height: 1; }
 
@@ -273,7 +273,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   .hero-brandmark { margin-inline: auto; }
 }
 
-.hero-brandmark { display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; margin-bottom: 1.3rem; }
+.hero-brandmark { display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem;
+  width: max-content; margin-bottom: 2.4rem; }
+.hero-brandmark .brand-line { align-self: center; text-align: center; }
 @media (max-width: 940px) { .hero-brandmark { align-items: center; } }
 .hero-brandmark .seal-img { width: clamp(84px, 10vw, 116px); }
 .hero-brandmark .brand-line { font-size: 0.78rem; letter-spacing: 0.5em; color: rgba(230, 211, 163, 0.75); margin-top: 0.2rem; }
@@ -283,7 +285,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   height: clamp(52px, 6.5vw, 74px);
   width: auto;
   margin-top: 2px;
-  filter: brightness(1.6) contrast(1.05) drop-shadow(0 0 14px rgba(233, 214, 170, 0.4));
+  filter: brightness(1.12) drop-shadow(0 0 12px rgba(233, 214, 170, 0.25));
 }
 
 .hero h1 {
@@ -523,8 +525,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .cover .c-dot.bl { bottom: 7px; inset-inline-start: 7px; }
 .cover .c-dot.br { bottom: 7px; inset-inline-end: 7px; }
 .cover .cover-seal { width: 58px; height: 58px; object-fit: contain; z-index: 1; margin-bottom: 0.55rem; opacity: 0.95; }
-.cover .cover-word { height: 22px; width: auto; object-fit: contain; z-index: 1; margin-bottom: 0.9rem; opacity: 1;
-  filter: brightness(1.65) contrast(1.05) drop-shadow(0 0 5px rgba(233, 214, 170, 0.45)); }
+.cover .cover-word { height: 24px; width: auto; object-fit: contain; z-index: 1; margin-bottom: 0.9rem; opacity: 1;
+  filter: brightness(1.12) drop-shadow(0 0 4px rgba(233, 214, 170, 0.25)); }
 .cover .cover-kicker { font-family: var(--font-quote); font-size: 0.92rem; color: var(--gold-soft); z-index: 1; margin-bottom: 0.15rem; }
 .cover .cover-orn {
   display: flex; align-items: center; gap: 0.45rem; z-index: 1; margin: 0.45rem 0 0.75rem;
@@ -726,7 +728,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .footer-brand { display: flex; align-items: center; gap: 1rem; }
 @media (max-width: 700px) { .footer-brand { justify-content: center; } }
 .footer-brand .wordmark-img { height: 40px; width: auto;
-  filter: brightness(1.6) contrast(1.05) drop-shadow(0 0 8px rgba(233, 214, 170, 0.4)); }
+  filter: brightness(1.1) drop-shadow(0 0 6px rgba(233, 214, 170, 0.22)); }
 .footer-brand span { color: rgba(239, 231, 218, 0.65); font-size: 0.88rem; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 1.3rem; font-size: 0.86rem; justify-content: flex-end; }
 @media (max-width: 700px) { .footer-links { justify-content: center; } }
@@ -793,7 +795,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .intro-screen { text-align: center; }
 .intro-screen .seal-img { width: 96px; margin: 0 auto 0.6rem; }
 .intro-screen .wordmark-img { height: 44px; width: auto; margin: 0 auto 1.4rem;
-  filter: brightness(1.6) contrast(1.05) drop-shadow(0 0 8px rgba(233, 214, 170, 0.4)); }
+  filter: brightness(1.1) drop-shadow(0 0 6px rgba(233, 214, 170, 0.22)); }
 .intro-screen h1 { font-size: clamp(1.7rem, 4.2vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; }
 .intro-screen .lead { color: rgba(239, 231, 218, 0.75); max-width: 34rem; margin: 0 auto 1.9rem; font-weight: 300; }
 .intro-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2.1rem; }
