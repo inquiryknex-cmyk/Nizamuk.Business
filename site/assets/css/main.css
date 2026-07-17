@@ -256,7 +256,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
    ============================================================ */
 
 .hero {
-  padding: clamp(3.5rem, 8vw, 6rem) 0 0;
+  padding: clamp(1.8rem, 4vw, 3rem) 0 0;   /* lifted — the brandmark and titles sit
+                                              higher, filling the violet space */
   overflow: hidden;
 }
 .hero-grid {
@@ -272,7 +273,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   .hero-brandmark { margin-inline: auto; }
 }
 
-.hero-brandmark { display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; margin-bottom: 1.6rem; }
+.hero-brandmark { display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; margin-bottom: 1.3rem; }
 @media (max-width: 940px) { .hero-brandmark { align-items: center; } }
 .hero-brandmark .seal-img { width: clamp(84px, 10vw, 116px); }
 .hero-brandmark .brand-line { font-size: 0.78rem; letter-spacing: 0.5em; color: rgba(230, 211, 163, 0.75); margin-top: 0.2rem; }
@@ -1303,11 +1304,11 @@ html[lang="en"] .ambient-caption { direction: ltr; }
    ============================================================ */
 .lang-switch {
   position: fixed;
-  top: 50%;                             /* mid-right edge — never hidden behind
-                                           mobile browser bottom bars */
-  right: 12px;
-  transform: translateY(-50%);
+  top: clamp(84px, 12vh, 112px);        /* upper area, just below the header/logo —
+                                           clear of mobile browser bottom bars */
+  right: 14px;
   z-index: 70;
+  animation: langFloat 5.5s ease-in-out infinite;   /* a soft float, like the hero phone */
   width: 50px;
   height: 50px;
   display: grid;
@@ -1328,7 +1329,6 @@ html[lang="en"] .ambient-caption { direction: ltr; }
   transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
 }
 .lang-switch:hover {
-  transform: translateY(-50%) scale(1.06);
   border-color: #EFD9A8;
   box-shadow: var(--shadow-velvet), 0 0 22px rgba(201, 167, 94, 0.65),
               inset 0 1px 8px rgba(0, 0, 0, 0.3);
@@ -1337,7 +1337,9 @@ html[lang="en"] .ambient-caption { direction: ltr; }
   outline: none;
   box-shadow: var(--shadow-velvet), 0 0 0 3px rgba(231, 200, 139, 0.65);
 }
-@media (prefers-reduced-motion: reduce) { .lang-switch { transition: none; } }
+@keyframes langFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@media (prefers-reduced-motion: reduce) { .lang-switch { transition: none; animation: none; } }
+.reduced-motion .lang-switch { animation: none; }
 @media (max-width: 640px) {
-  .lang-switch { right: 8px; width: 44px; height: 44px; }
+  .lang-switch { top: 78px; right: 10px; width: 44px; height: 44px; }
 }
