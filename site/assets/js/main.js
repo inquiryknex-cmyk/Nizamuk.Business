@@ -74,8 +74,8 @@
       const tl = gsap.timeline({ delay: 0.4 });
       tl.from(wm, { opacity: 0, y: 10, duration: 1.4, ease: 'power2.out' })
         .fromTo(wm,
-          { filter: 'drop-shadow(0 0 14px rgba(201,167,94,0.25)) brightness(1)' },
-          { filter: 'drop-shadow(0 0 22px rgba(201,167,94,0.5)) brightness(1.18)',
+          { filter: 'drop-shadow(0 0 14px rgba(233,214,170,0.4)) brightness(1.6)' },
+          { filter: 'drop-shadow(0 0 24px rgba(233,214,170,0.65)) brightness(1.8)',
             duration: 1.1, ease: 'sine.inOut', yoyo: true, repeat: 1 }, '-=0.3');
     }
 
@@ -130,7 +130,7 @@
 
     var AUDIO_SRC = '/assets/audio/nizamok-ambient.mp3';
     var STORE_KEY = 'nizamok_ambient';   // { enabled, volume, position }
-    var DEFAULT_VOL = 0.12;              // gentle atmospheric level (0.10–0.15)
+    var DEFAULT_VOL = 0.30;              // clearly audible, still atmospheric
     var FADE_MS = 1500;
 
     // Storage may be blocked (private mode) — degrade to a session-only feature.
@@ -147,7 +147,9 @@
     }
 
     var saved = readState();
-    var TARGET_VOL = (typeof saved.volume === 'number' && saved.volume > 0 && saved.volume <= 1)
+    // Ignore volumes saved by the quieter pre-launch builds (<= 0.12) so every
+    // visitor gets the new audible level.
+    var TARGET_VOL = (typeof saved.volume === 'number' && saved.volume > 0.12 && saved.volume <= 1)
       ? saved.volume : DEFAULT_VOL;
 
     var nizamokAmbientAudio = null;   // single Audio instance, created on first use
