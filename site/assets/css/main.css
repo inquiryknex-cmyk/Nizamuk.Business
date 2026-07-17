@@ -1303,8 +1303,10 @@ html[lang="en"] .ambient-caption { direction: ltr; }
    ============================================================ */
 .lang-switch {
   position: fixed;
-  bottom: 22px;
-  right: 22px;                          /* physical — never shifts with dir */
+  top: 50%;                             /* mid-right edge — never hidden behind
+                                           mobile browser bottom bars */
+  right: 12px;
+  transform: translateY(-50%);
   z-index: 70;
   width: 50px;
   height: 50px;
@@ -1326,7 +1328,7 @@ html[lang="en"] .ambient-caption { direction: ltr; }
   transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
 }
 .lang-switch:hover {
-  transform: translateY(-1px);
+  transform: translateY(-50%) scale(1.06);
   border-color: #EFD9A8;
   box-shadow: var(--shadow-velvet), 0 0 22px rgba(201, 167, 94, 0.65),
               inset 0 1px 8px rgba(0, 0, 0, 0.3);
@@ -1337,5 +1339,5 @@ html[lang="en"] .ambient-caption { direction: ltr; }
 }
 @media (prefers-reduced-motion: reduce) { .lang-switch { transition: none; } }
 @media (max-width: 640px) {
-  .lang-switch { bottom: 16px; right: 16px; width: 46px; height: 46px; }
+  .lang-switch { right: 8px; width: 44px; height: 44px; }
 }

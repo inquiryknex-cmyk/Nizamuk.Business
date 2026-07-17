@@ -411,6 +411,7 @@
      Arabic is the primary experience; a single small side button is the only
      switcher. Each page declares its counterpart via <body data-lang-alt>. */
   function initLangSwitch() {
+    if (document.querySelector('.lang-switch')) return;  // static button already in markup
     var alt = document.body && document.body.getAttribute('data-lang-alt');
     if (!alt) return;
     var en = document.documentElement.lang === 'en';
