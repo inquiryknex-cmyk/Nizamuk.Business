@@ -407,6 +407,24 @@
     reflectUI();   // initial paint (initial / paused, per persisted state)
   }
 
+  /* ---------- Language switch ----------
+     Arabic is the primary experience; a single small side button is the only
+     switcher. Each page declares its counterpart via <body data-lang-alt>. */
+  function initLangSwitch() {
+    var alt = document.body && document.body.getAttribute('data-lang-alt');
+    if (!alt) return;
+    var en = document.documentElement.lang === 'en';
+    var a = document.createElement('a');
+    a.className = 'lang-switch';
+    a.href = alt;
+    a.textContent = en ? 'ع' : 'EN';
+    a.setAttribute('lang', en ? 'ar' : 'en');
+    a.setAttribute('dir', en ? 'rtl' : 'ltr');
+    a.setAttribute('aria-label', en ? 'النسخة العربية' : 'English version');
+    a.title = en ? 'العربية' : 'English';
+    document.body.appendChild(a);
+  }
+
   /* ---------- Waiting list form ---------- */
   const WL = (I18N_UI && I18N_UI.waitlist) || {
     invalid: 'يرجى إدخال بريدٍ إلكتروني صحيح.',
@@ -474,8 +492,8 @@
     (el.textContent = String(new Date().getFullYear())));
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); initAmbientSound(); });
+    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); initAmbientSound(); initLangSwitch(); });
   } else {
-    initMotion(); initVideo(); initAmbientSound();
+    initMotion(); initVideo(); initAmbientSound(); initLangSwitch();
   }
 })();

@@ -1295,3 +1295,44 @@ html[lang="en"] .ambient-caption { direction: ltr; }
   .ambient-caption { font-size: 0.78rem; padding: 0.32rem 0.62rem; }
   body[data-ambient] .site-footer { padding-block-end: 3.5rem; }
 }
+
+/* ============================================================
+   Language switch — the ONLY switcher: one small side medallion,
+   fixed lower-right (opposite the ambient flower). "EN" on Arabic
+   pages, «ع» on English ones. Arabic is always the landing language.
+   ============================================================ */
+.lang-switch {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;                          /* physical — never shifts with dir */
+  z-index: 70;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 26%, var(--velvet-3) 0%, var(--velvet-1) 62%, var(--velvet-0) 100%);
+  border: 1px solid rgba(214, 186, 128, 0.55);
+  box-shadow: var(--shadow-velvet), inset 0 1px 8px rgba(0, 0, 0, 0.35);
+  color: var(--gold-soft);
+  font-family: var(--font-messiri, serif);
+  font-weight: 700;
+  font-size: 0.92rem;
+  line-height: 1;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.lang-switch:hover {
+  transform: translateY(-1px);
+  border-color: rgba(201, 167, 94, 0.75);
+  box-shadow: var(--shadow-velvet), 0 0 14px rgba(201, 167, 94, 0.35);
+}
+.lang-switch:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-velvet), 0 0 0 3px rgba(231, 200, 139, 0.65);
+}
+@media (prefers-reduced-motion: reduce) { .lang-switch { transition: none; } }
+@media (max-width: 640px) {
+  .lang-switch { bottom: 16px; right: 16px; width: 44px; height: 44px; }
+}
