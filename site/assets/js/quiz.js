@@ -1,11 +1,11 @@
 /* ============================================================
    اختبار نظامك — cinematic two-act quiz engine, v3.
    Mechanic per scene: choose الأقرب (required), then optionally
-   ONE more answer that is also close — قريبة منكِ أيضًا. A woman
+   ONE more answer that also resembles her — تشبهني أيضًا. A woman
    can genuinely live in two patterns; she should never be forced
    to brand one answer as completely false. Scoring: closest +2,
-   second +1, nothing subtracted (the old forced «الأبعد» −1 is
-   gone). Max two selections keeps diagnostic power. Options are
+   second +1, nothing subtracted — every selection adds signal,
+   nothing is negative. Max two selections keeps diagnostic power. Options are
    shuffled per session to kill position bias. Results include tie
    handling, a clarity marker, and computed precision mirrors.
    ============================================================ */
@@ -199,9 +199,9 @@
     act2: 'الفصل الثاني — الصوت الذي لا يسمعه أحد',
     scene: (n, name) => 'المشهد ' + n + ' · ' + name,
     markClosest: 'الأقرب إليّ',
-    markSecond: 'قريبة مني أيضًا',
-    promptClosest: 'اختاري الأقرب إليكِ — ما يتكرر معكِ غالبًا',
-    promptSecond: 'هل هناك إجابة ثانية تشبهكِ أيضًا؟ اختيارها اختياري',
+    markSecond: 'تشبهني أيضًا',
+    promptClosest: 'اختاري الإجابة الأقرب إليكِ، ثم أضيفي إجابة ثانية إن كانت تشبهكِ أيضًا.',
+    promptSecond: 'أضيفي إجابة ثانية إن كانت تشبهكِ أيضًا — اختيارُها لكِ.',
     emailInvalid: 'يرجى إدخال بريدٍ إلكتروني صحيح.',
     emailPreparing: 'نفتح القراءة ونجهّز تقريركِ الأول...',
     pctSign: '٪',
