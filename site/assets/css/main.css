@@ -861,7 +861,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   box-shadow: 0 0 24px -6px rgba(201, 167, 94, 0.35);
 }
 .option.closest .mark { background: linear-gradient(135deg, #EBD9A9, var(--gold)); color: #2E1B41; opacity: 1; transform: none; }
-/* The optional second answer — «قريبة مني أيضًا»: a positive rose echo,
+/* The optional second answer — «تشبهني أيضًا»: a positive rose echo,
    full presence (never dimmed — it is recognition, not rejection). */
 .option.second { border-color: rgba(227, 168, 172, 0.6); background: rgba(255, 250, 240, 0.05); }
 .option.second .mark { background: linear-gradient(135deg, #F4CFC9, var(--rose)); color: #3A1E33; opacity: 1; transform: none; }
