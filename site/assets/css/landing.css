@@ -58,6 +58,7 @@
 .landing-list li + li { border-top: 1px solid rgba(214, 186, 128, 0.14); }
 .landing-list li::before {
   content: '✦';
+  content: '✦' / '';  /* alt-text form: silences the marker for screen readers where supported */
   position: absolute;
   inset-inline-start: 0;
   top: 0.62rem;
@@ -95,6 +96,7 @@
 .landing-steps li + li { border-top: 1px solid rgba(214, 186, 128, 0.14); }
 .landing-steps li::before {
   content: counter(step, arabic-indic);
+  content: counter(step, arabic-indic) / '';  /* the <ol> already conveys numbering to screen readers */
   position: absolute;
   inset-inline-start: 0;
   top: 0.75rem;
