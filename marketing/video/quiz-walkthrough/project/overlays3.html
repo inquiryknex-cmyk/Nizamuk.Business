@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family:'NotoAr'; src:url('../fonts/noto-500.woff2') format('woff2'); font-weight:500; }
+  @font-face { font-family:'NotoAr'; src:url('../fonts/noto-600.woff2') format('woff2'); font-weight:600; }
+  @font-face { font-family:'NotoAr'; src:url('../fonts/noto-700.woff2') format('woff2'); font-weight:700; }
+  @font-face { font-family:'NotoAr'; src:url('../fonts/noto-800.woff2') format('woff2'); font-weight:800; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:transparent; font-family:'NotoAr'; }
+  body > * { margin-bottom:110px; }
+
+  /* header strip: latin counter left, arabic kicker right */
+  .hdr { width:1000px; padding:6px 10px; display:flex; align-items:center;
+         justify-content:space-between; direction:rtl; }
+  .kick { font-size:29px; font-weight:700; color:#D9B972; letter-spacing:0.2px; }
+  .cnt  { font-family:ui-monospace,Menlo,monospace; font-size:26px; font-weight:700;
+          color:rgba(217,185,114,0.75); letter-spacing:5px; direction:ltr; }
+  .sh { text-shadow:0 3px 22px rgba(10,5,20,0.7), 0 1px 5px rgba(10,5,20,0.55); }
+
+  /* headline */
+  .hl { width:1000px; padding:4px 14px; text-align:right; direction:rtl;
+        font-size:57px; font-weight:800; color:#F8F1E3; line-height:1.44; }
+  .hl.sm { font-size:50px; }
+  .gold { color:#E6C87F; }
+
+  /* explanation card — ivory, label on the right rail */
+  .ex { width:970px; display:flex; direction:rtl; align-items:stretch;
+        background:#F7F1E6; border-radius:26px; overflow:hidden;
+        box-shadow:0 22px 50px -22px rgba(10,5,20,0.75); }
+  .ex .lab { width:250px; padding:22px 24px; background:#EFE6D5;
+             border-left:2px solid rgba(201,167,94,0.5); }
+  .ex .lab b { display:block; font-size:22px; font-weight:700; color:#A6813C;
+               margin-bottom:7px; }
+  .ex .lab span { display:block; font-size:29px; font-weight:800; color:#2A2333;
+                  line-height:1.4; }
+  .ex .body { flex:1; padding:22px 26px; font-size:30px; font-weight:600;
+              color:#3A3242; line-height:1.62; text-align:right; }
+
+  /* small ivory callout chip */
+  .co { display:inline-block; background:#F7F1E6; color:#2A2333;
+        font-size:27px; font-weight:700; padding:13px 26px; border-radius:16px;
+        box-shadow:0 14px 34px -16px rgba(10,5,20,0.8); }
+  .co.g { border:2px solid rgba(201,167,94,0.85); }
+  .co.r { border:2px solid rgba(227,168,172,0.9); }
+  .wrap { padding:14px 18px; }
+
+  /* intro + end */
+  .center { width:1000px; padding:24px; text-align:center; direction:rtl;
+            display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .title { font-size:66px; font-weight:800; color:#F8F1E3; line-height:1.4; }
+  .sub { font-size:33px; font-weight:600; color:rgba(248,241,227,0.86); }
+  .endline { font-size:56px; font-weight:800; color:#F8F1E3; line-height:1.5; }
+  .cta { font-size:44px; font-weight:800; color:#3A1E33;
+         background:linear-gradient(135deg,#F4CFC9 0%,#E3A8AC 45%,#C67F8E 100%);
+         padding:22px 62px; border-radius:999px;
+         box-shadow:0 16px 42px -14px rgba(198,127,142,0.6); }
+  .bio { font-size:32px; font-weight:600; color:rgba(248,241,227,0.92);
+         border:1.6px solid rgba(201,167,94,0.7); border-radius:999px;
+         padding:12px 40px; background:rgba(23,16,42,0.4); }
+</style>
+</head>
+<body>
+
+<!-- ===== intro / end ===== -->
+<div class="center sh" id="p_title">
+  <div class="title">جولة داخل <span class="gold">اختبار نظامك</span></div>
+  <div class="sub">١٢ مشهدًا من يومكِ في ٣ دقائق</div>
+</div>
+<div class="center sh" id="p_endline">
+  <div class="endline">يمكن <span class="gold">٣ دقائق</span> تفسّر<br>شيئًا يتكرر معكِ <span class="gold">من سنوات</span>.</div>
+</div>
+<div class="wrap" id="p_cta"><span class="cta">ابدئي اختبار نمطكِ المجاني</span></div>
+<div class="wrap" id="p_bio"><span class="bio">الرابط في البايو</span></div>
+
+<!-- ===== headers ===== -->
+<div class="hdr sh" id="hdr1"><span class="kick">✦ الخطوة ١ · عيشي المشهد</span><span class="cnt">01 / 07</span></div>
+<div class="hdr sh" id="hdr2"><span class="kick">✦ الخطوة ٢ · اختاري بصدق</span><span class="cnt">02 / 07</span></div>
+<div class="hdr sh" id="hdr3"><span class="kick">✦ الخطوة ٣ · الإجابة الثانية</span><span class="cnt">03 / 07</span></div>
+<div class="hdr sh" id="hdr4"><span class="kick">✦ الخطوة ٤ · تقدّمكِ</span><span class="cnt">04 / 07</span></div>
+<div class="hdr sh" id="hdr5"><span class="kick">✦ الخطوة ٥ · الفصل الثاني</span><span class="cnt">05 / 07</span></div>
+<div class="hdr sh" id="hdr6"><span class="kick">✦ الخطوة ٦ · اكتمال الصورة</span><span class="cnt">06 / 07</span></div>
+<div class="hdr sh" id="hdr7"><span class="kick">✦ الخطوة ٧ · قراءتكِ وتقريركِ</span><span class="cnt">07 / 07</span></div>
+
+<!-- ===== headlines ===== -->
+<div class="hl sh" id="hl1">يبدأ بمشهد من يومكِ…<br>لا بسؤال <span class="gold">عنكِ</span>.</div>
+<div class="hl sh" id="hl2">اختاري <span class="gold">الأقرب</span> إليكِ —<br>لا الأجمل.</div>
+<div class="hl sh sm" id="hl3">وإن كانت إجابة ثانية<br>تشبهكِ… <span class="gold">أضيفيها</span>.</div>
+<div class="hl sh sm" id="hl4">خطٌّ ذهبي يرافقكِ<br>من مشهد إلى مشهد.</div>
+<div class="hl sh sm" id="hl5">بعد ٦ مشاهد… ينتقل<br>إلى <span class="gold">صوتكِ الداخلي</span>.</div>
+<div class="hl sh sm" id="hl6">النتيجة تُبنى على ما<br><span class="gold">يتكرر</span> — لا على جواب.</div>
+<div class="hl sh sm" id="hl7">نمطكِ الغالب —<br>ومعه <span class="gold">نمط خفي</span>.</div>
+
+<!-- ===== explanation cards ===== -->
+<div class="ex" id="ex1"><div class="lab"><b>التجربة خطوة بخطوة</b><span>ماذا يحدث هنا؟</span></div>
+  <div class="body">اثنا عشر مشهدًا مكتوبة من تفاصيل يومكِ الحقيقي. اقرئي المشهد كما لو أنه يحدث الآن.</div></div>
+<div class="ex" id="ex2"><div class="lab"><b>التجربة خطوة بخطوة</b><span>كيف تختارين؟</span></div>
+  <div class="body">لا توجد إجابة صحيحة. اختاري ما يتكرر معكِ فعلًا — لا ما تتمنين أن يكون.</div></div>
+<div class="ex" id="ex3"><div class="lab"><b>التجربة خطوة بخطوة</b><span>لماذا إجابتان؟</span></div>
+  <div class="body">لأنكِ قد تعيشين في نمطين معًا. الإجابة الثانية اختيارية، واختيارُها ينقلكِ تلقائيًا.</div></div>
+<div class="ex" id="ex4"><div class="lab"><b>التجربة خطوة بخطوة</b><span>أين أنتِ الآن؟</span></div>
+  <div class="body">يظهر لكِ الفصل ورقم المشهد، فتعرفين كم بقي — بلا عدّاد يضغطكِ.</div></div>
+<div class="ex" id="ex5"><div class="lab"><b>التجربة خطوة بخطوة</b><span>ما الفرق؟</span></div>
+  <div class="body">الفصل الأول: مواقف يراها الجميع. الفصل الثاني: الجُمل التي لا تقولينها لأحد.</div></div>
+<div class="ex" id="ex6"><div class="lab"><b>التجربة خطوة بخطوة</b><span>كيف تُقرأ إجاباتكِ؟</span></div>
+  <div class="body">كل مشهد يضيف إشارة. عند المشهد ١٢ تكتمل الصورة، فيظهر النمط الذي يقود طاقتكِ.</div></div>
+<div class="ex" id="ex7"><div class="lab"><b>التجربة خطوة بخطوة</b><span>وماذا بعد؟</span></div>
+  <div class="body">نتيجتكِ تظهر فورًا. وبريدكِ يفتح قراءتكِ الكاملة، ويصلكِ تقريركِ الأول مجانًا.</div></div>
+
+<!-- ===== callout chips ===== -->
+<div class="wrap" id="co_scene"><span class="co g">موقف من يومكِ — لا سؤال نظري</span></div>
+<div class="wrap" id="co_closest"><span class="co g">هذا هو الخيار الأقرب</span></div>
+<div class="wrap" id="co_mark"><span class="co g">ظهرت علامة «الأقرب إليّ»</span></div>
+<div class="wrap" id="co_second"><span class="co r">إجابة ثانية — اختيارية</span></div>
+<div class="wrap" id="co_auto"><span class="co r">اختيارُها ينقلكِ تلقائيًا</span></div>
+<div class="wrap" id="co_prog"><span class="co g">الفصل ورقم المشهد</span></div>
+<div class="wrap" id="co_end1"><span class="co g">انتهى الفصل الأول</span></div>
+<div class="wrap" id="co_enter2"><span class="co r">اضغطي للدخول إلى الفصل الثاني</span></div>
+<div class="wrap" id="co_12"><span class="co g">وصلتِ إلى المشهد ١٢ من ١٢</span></div>
+<div class="wrap" id="co_result"><span class="co g">النتيجة فورية</span></div>
+<div class="wrap" id="co_email"><span class="co r">ضعي بريدكِ هنا</span></div>
+
+</body>
+</html>
