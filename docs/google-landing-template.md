@@ -31,14 +31,20 @@ stays server-rendered and crawlable, per the project's static-rendering rule:
 To create a new variant, copy an existing page and change only:
 
 1. `<title>`, meta description, OG/Twitter tags, canonical URL
-2. Hero: eyebrow (`.kicker`), `<h1>`, `.lead`, hero CTA label
-3. Recognition section: heading + five `<li>` items
-4. Bridge section: heading + paragraph
-5. `window.NIZAMOK_LANDING = { variant: '<snake_case_variant>' }`
+2. Hero: eyebrow (`.kicker`), `<h1>`, `.lead`, hero CTA label,
+   `.hero-note` recognition line
+3. Recognition section: heading + 5–6 `<li>` items + `.section-close` line
+4. Bridge section: heading + paragraph + `.emphasis-line`
+5. Pattern preview: section heading, the four one-line descriptions
+   (intent-angled per variant — the four names themselves never change),
+   and the `.pattern-clarify` line
+6. What-you-get items + `.section-close`; how-it-works step sub-copy
+7. Final CTA heading, supporting line, button label, trust line
+8. `window.NIZAMOK_LANDING = { variant: '<snake_case_variant>' }`
 
-Everything else (pattern preview, what-you-get, how-it-works, boundary,
-privacy, final CTA, footer) is shared copy and must stay identical unless a
-deliberate product decision changes it for all variants.
+The skeleton, section order, boundary/privacy copy, footer, and analytics
+wiring are shared and must stay identical unless a deliberate product
+decision changes them for all variants.
 
 ## Non-negotiables baked into the template
 

@@ -11,7 +11,13 @@
 
 /* ---------- Hero ---------- */
 .landing-hero { text-align: center; padding: 1.4rem 0 1rem; }
-.landing-hero .seal-img { width: 66px; height: 66px; margin: 0 auto 0.9rem; }
+.landing-hero .seal-img {
+  width: clamp(96px, 22vw, 118px);
+  height: auto;
+  aspect-ratio: 1;
+  margin: 0 auto 1rem;
+  filter: drop-shadow(0 0 18px rgba(201, 167, 94, 0.22));
+}
 .landing-hero h1 {
   font-family: var(--font-display);
   font-weight: 600;
@@ -32,6 +38,13 @@
   margin-top: 0.95rem;
   font-size: 0.85rem;
   color: rgba(239, 231, 218, 0.62);
+}
+.hero-note {
+  display: block;
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  color: rgba(239, 231, 218, 0.72);
 }
 
 /* ---------- Sections ---------- */
@@ -66,6 +79,10 @@
   font-size: 0.8rem;
 }
 
+/* Quiet closing line after a list; softly-lit emphasis line in the bridge */
+.section-close { margin-top: 1rem; font-size: 0.88rem; color: rgba(239, 231, 218, 0.62); }
+.emphasis-line { margin-top: 0.9rem; font-size: 0.95rem; color: var(--gold-soft); }
+
 /* Four-pattern preview */
 .pattern-grid { display: grid; grid-template-columns: 1fr; gap: 0.9rem; margin-top: 1.1rem; }
 @media (min-width: 620px) { .pattern-grid { grid-template-columns: 1fr 1fr; } }
@@ -94,6 +111,8 @@
   color: rgba(239, 231, 218, 0.82);
 }
 .landing-steps li + li { border-top: 1px solid rgba(214, 186, 128, 0.14); }
+.landing-steps li strong { display: block; font-size: 1rem; color: #F6EEDF; margin-bottom: 0.15rem; }
+.landing-steps li p { font-size: 0.88rem; color: rgba(239, 231, 218, 0.68); line-height: 1.9; }
 .landing-steps li::before {
   content: counter(step, arabic-indic);
   content: counter(step, arabic-indic) / '';  /* the <ol> already conveys numbering to screen readers */
