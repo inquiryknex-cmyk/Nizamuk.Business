@@ -52,7 +52,7 @@ window.NIZAMOK = {
   // journey breaks across the checkout domain and purchase never ties back.
   analytics: {
     gtmId: '',
-    ga4Id: ''
+    ga4Id: 'G-MVH7ZVH1KJ'   // NizamOK · property 545877279 · SAR · Riyadh
   },
 
   pricing: {
