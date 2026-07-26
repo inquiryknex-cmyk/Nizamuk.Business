@@ -162,6 +162,9 @@
   color: rgba(239, 231, 218, 0.6);
 }
 .rb-alt a { color: var(--gold-soft); text-decoration: underline; text-underline-offset: 4px; }
+/* display:block above would otherwise beat the `hidden` attribute — /shukran/
+   hides the billing-portal line this way on a payment that did not succeed. */
+.rb-alt[hidden] { display: none; }
 
 /* Short trust strip under the hero CTA */
 .rb-trust {
