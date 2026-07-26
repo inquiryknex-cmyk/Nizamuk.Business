@@ -116,9 +116,9 @@
 /* Hero product shot — a real cover from the file the buyer receives */
 .rb-cover-frame {
   position: relative;
-  /* Kept deliberately small on a phone: the cover sits between the H1 and the
-     lead, and a full-width shot would push the price and CTA off the fold. */
-  width: min(52%, 210px);
+  /* The cover is the product's real page 1 — its title has to be legible, so
+     it gets room. Sized so 109 ر.س still clears the fold on a 640px screen. */
+  width: min(74%, 290px);
   margin-inline: auto;
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -126,7 +126,9 @@
   box-shadow: var(--shadow-velvet), var(--glow-gold);
   background: var(--tier-rebuild);
 }
-.rb-cover-frame img { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; }
+/* Natural ratio — the page-1 capture is ~3:4.13; forcing 3:4 would shave
+   the cover's own gold frame off the top and bottom. */
+.rb-cover-frame img { width: 100%; height: auto; display: block; }
 .rb-cover-cap {
   display: block; text-align: center;
   margin-top: 0.8rem;
@@ -536,4 +538,23 @@
 
 @media (prefers-reduced-motion: reduce) {
   .rb-sticky { transition: none; }
+}
+
+
+/* ============================================================
+   AMBIENT BLOOM — the site-wide sound control, opted into here.
+   It lives bottom-left (physical) and the mobile sticky CTA owns
+   the bottom strip, so lift it clear of the bar on small screens.
+   ============================================================ */
+@media (max-width: 860px) {
+  .rb-body .ambient-control { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .rb-body .ambient-caption { display: none; }   /* medallion only — the bar owns the words */
+}
+
+/* A quiet UI affordance, not argument copy — must not read at body weight. */
+.rb-hint {
+  margin-top: 1.1rem;
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--taupe);
 }

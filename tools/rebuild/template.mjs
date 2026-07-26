@@ -25,7 +25,7 @@ const tools = (a) => a.map(d => `        <article class="rb-tool">
 /* data-src is the 3:4 tile; data-full is the whole page for the lightbox.
    Product-page captures get a -thumb variant; the cover jpg is already 3:4. */
 const shots = (a) => a.map(s => {
-  const thumb = s.src.endsWith('.webp') ? s.src.replace(/\.webp$/, '-thumb.webp') : s.src;
+  const thumb = s.src.replace(/\.webp$/, '-thumb.webp');
   return `        <figure class="rb-shot" hidden>
           <button type="button" data-full="${s.src}"><img alt="${s.alt}" data-src="${thumb}" loading="lazy" width="620" height="827"></button>
           <figcaption>${s.cap}</figcaption>
@@ -42,7 +42,7 @@ const CLOSING = 'إن تعرفتِ على أكثر من ثلاثة مشاهد، 
 const SAFETY = 'هذه نتائج تطبيقية محتملة وليست ضمانًا. مقدار الفائدة يعتمد على ملاءمة النمط واستمرار التطبيق والسياق الشخصي.';
 const LIMITS = 'نظامك منصة عربية للتفكير الذاتي والإدارة السلوكية العملية للنساء. يساعدكِ هذا المنتج على تسمية نمط متكرر وتجربة استجابات أكثر وعيًا وتنظيمًا. لا يقدم تشخيصًا نفسيًا أو طبيًا، ولا يعد بنتيجة مضمونة، ولا يستبدل العلاج أو الرعاية المتخصصة عند الحاجة. النتائج تختلف باختلاف التطبيق والسياق.';
 const DISCLAIMER = 'نظامك منصة عربية للتفكير الذاتي والإدارة السلوكية العملية للنساء. المحتوى تعليمي/تطبيقي غير تشخيصي ولا يستبدل الرعاية المتخصصة. الدعم:';
-const GALLERY_LEAD = 'لا تشترين غلافًا أو وعدًا عامًا. هذه صفحات من الملف نفسه الذي سيصل إليكِ بعد الدفع.';
+const GALLERY_LEAD = 'لا تشترين غلافًا ولا وعدًا عامًا. هذه صفحات من الملف نفسه الذي يصلكِ بعد الدفع.';
 const WHY_PRICE = 'لأنكِ لا تشترين معلومة عامة أو كتابًا يشرح المشكلة ثم يترككِ معها. أنتِ تحصلين على نظام كامل مرتبط بنمط واحد: نموذج يفسر ما يتكرر، أدوات للحظة الفعل، تجربة تكشف الفرق بين الخوف والواقع، وصفحات تطبيق، ونظام متابعة لثلاثة أشهر. السعر دفعة واحدة، ولا يوجد اشتراك مرتبط بهذا المنتج.';
 const FINAL_LEAD = 'ابدئي بخطوة واحدة لا تحتاج إلى شعور كامل بالاستعداد: افهمي النمط، اختاري أداتكِ الأولى، واجمعي دليلًا صغيرًا من واقعكِ.';
 
@@ -63,8 +63,21 @@ const journeyDay90 = 'تكررين الاستجابة الجديدة في سيا
 export function renderPage(p) {
   /* U+00A0 keeps «109 ر.س» from splitting across two lines inside a button. */
   const nb = (s) => s.replace(/109 ر\.س/g, '109\u00A0ر.س');
-  const buy = (pos, label) => `<a class="btn btn-gold rb-cta" href="${p.dodo}" data-rb-cta="buy" data-rb-pos="${pos}">${nb(label)}</a>`;
-  const cover = `https://nizamok.com/assets/covers/${p.cover}`;
+  /* Checkout URL. The dodo.pe shortener DROPS query params, so we link the
+     product page directly and carry them ourselves:
+       country=SA               → billing country starts on Saudi Arabia
+       paymentCurrency=SAR      → she is charged in riyals
+       showCurrencySelector=false → the 109 ر.س promised on this page is the
+                                    number she sees at checkout, always
+       redirect_url             → back to /shukran/ after payment
+     Country stays editable so GCC buyers outside KSA are not blocked. */
+  const checkout = `https://checkout.dodopayments.com/buy/${p.productId}`
+    + '?quantity=1&showDiscounts=false&country=SA&paymentCurrency=SAR'
+    + '&showCurrencySelector=false&redirect_url=' + encodeURIComponent('https://nizamok.com/shukran/');
+  const buy = (pos, label) => `<a class="btn btn-gold rb-cta" href="${checkout}" data-rb-cta="buy" data-rb-pos="${pos}">${nb(label)}</a>`;
+  const cover = `https://nizamok.com/assets/product/${p.slug}/cover-og.jpg`;   // social card
+  const coverThumb = `/assets/product/${p.slug}/cover-thumb.webp`;              // hero + gallery tile
+  const coverFull = `/assets/product/${p.slug}/cover.webp`;                     // lightbox
 
   return `<!doctype html>
 <html lang="ar" dir="rtl">
@@ -95,19 +108,19 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
-  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726a">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726b">
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": "نظام إعادة البناء — ${p.name}",
-    "description": "نظام عربي رقمي تطبيقي من ${p.pages} صفحة لنمط ${p.name}: خمس مراحل، خمس أدوات، تجربة توقيعية مكتوبة، صفحات تطبيق، وخطط 7 و30 و90 يومًا.",
+    "description": "ملف PDF عربي تطبيقي من ${p.pages} صفحة لنمط ${p.name}: خمس مراحل، خمس أدوات، تجربة توقيعية مكتوبة، صفحات تطبيق، وخطط 7 و30 و90 يومًا.",
     "url": "https://nizamok.com/rebuild/${p.slug}/",
     "image": "${cover}",
     "brand": { "@type": "Brand", "name": "نظامك" },
     "additionalProperty": [
-      { "@type": "PropertyValue", "name": "الصيغة", "value": "منتج رقمي تطبيقي" },
+      { "@type": "PropertyValue", "name": "الصيغة", "value": "ملف PDF رقمي" },
       { "@type": "PropertyValue", "name": "عدد الصفحات", "value": "${p.pages}" },
       { "@type": "PropertyValue", "name": "اللغة", "value": "العربية" }
     ],
@@ -122,7 +135,7 @@ export function renderPage(p) {
   }
   </script>
 </head>
-<body class="rb-body">
+<body class="rb-body" data-ambient>
 
 <!-- ============================================================
      HERO — velvet chamber
@@ -156,9 +169,9 @@ export function renderPage(p) {
 
       <div class="rb-hero-media">
         <div class="rb-cover-frame">
-          <img src="/assets/covers/${p.cover}" alt="غلاف نظام إعادة البناء — ${p.name}" width="900" height="1200" fetchpriority="high">
+          <img src="${coverThumb}" alt="غلاف نظام إعادة البناء — ${p.name}" width="700" height="964" fetchpriority="high">
         </div>
-        <span class="rb-cover-cap">نظام رقمي من ${p.pages} صفحة مصممة</span>
+        <span class="rb-cover-cap">ملف PDF من ${p.pages} صفحة مصممة</span>
       </div>
 
       <div class="rb-hero-body">
@@ -173,8 +186,8 @@ ${li(p.promises)}
         <span class="rb-alt">لستِ متأكدة أن هذا نمطكِ؟ <a href="/ikhtibar/" data-rb-cta="quiz" data-rb-pos="hero">ابدئي الاختبار المجاني</a></span>
 
         <p class="rb-trust">
-          <span>منتج رقمي تطبيقي</span>
-          <span>وصول بعد الدفع</span>
+          <span>ملف PDF تطبيقي</span>
+          <span>تحميل فوري بعد الدفع</span>
           <span>دعم عبر البريد</span>
           <span>دفع آمن</span>
         </p>
@@ -280,7 +293,7 @@ ${tools(p.tools)}
       <div class="rb-gallery-grid">
 ${shots(p.shots)}
       </div>
-      <p class="rb-close">اضغطي أي صورة لتكبيرها.</p>
+      <p class="rb-hint">اضغطي أي صفحة لقراءتها بحجمها الكامل.</p>
     </div>
   </section>
 
@@ -363,7 +376,7 @@ ${fitLi(p.fitNo)}
         <p class="rb-pay-trust">
           <span>دفع آمن</span>
           <span>السعر شامل الضرائب</span>
-          <span>وصول رقمي</span>
+          <span>تحميل فوري</span>
           <span>دعم عبر البريد</span>
         </p>
         <p class="rb-policy-links">
@@ -433,7 +446,7 @@ ${faqs(p.faq)}
     <span class="rb-sticky-name">نظام إعادة البناء · ${p.name}</span>
     <span class="rb-sticky-price">109 ر.س</span>
   </div>
-  <a class="btn btn-gold" href="${p.dodo}" data-rb-cta="buy" data-rb-pos="sticky">احصلي عليه الآن</a>
+  <a class="btn btn-gold" href="${checkout}" data-rb-cta="buy" data-rb-pos="sticky">احصلي عليه الآن</a>
 </div>
 
 <!-- Lightbox -->
@@ -445,7 +458,8 @@ ${faqs(p.faq)}
 <script>window.NIZAMOK_REBUILD = { pattern: '${p.slug}', patternName: '${p.name}', price: 109, currency: 'SAR' };</script>
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js"></script>
-<script src="/assets/js/rebuild.js?v=20260726a" defer></script>
+<script src="/assets/js/rebuild.js?v=20260726b" defer></script>
+<script src="/assets/js/main.js?v=20260719h" defer></script>
 </body>
 </html>
 `;
