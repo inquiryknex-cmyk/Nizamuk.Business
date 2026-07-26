@@ -635,6 +635,16 @@
     // Personalized product path.
     const links = (CONFIG.products || {})[dom] || {};
     const prices = CONFIG.pricing || {};
+
+    /* إعادة البناء now goes to her pattern's sales page rather than straight to
+       checkout — that page carries the mirror, the mechanism, real pages of the
+       product and the price justification, which a bare payment form cannot.
+       Arabic only: those pages have no English rendition, so the English quiz
+       keeps its direct checkout link. Falls back to checkout if the map is
+       missing, so a config slip can never leave the card dead. */
+    const rebuildPage = !I18N ? ((CONFIG.rebuildPages || {})[dom] || '') : '';
+    const rebuildDest = rebuildPage || links.rebuild;
+    const rebuildSameTab = !!rebuildPage;
     $('resultPath').innerHTML =
       '<h3>' + T.pathHeading + '</h3>' +
       '<p>' + T.pathIntro + '</p>' +
@@ -644,7 +654,7 @@
         pathCard('tier-juthur', T.cardJuthur.label, T.cardJuthur.title, T.cardJuthur.desc,
           prices.juthur, links.juthur, T.cardJuthur.cta, 'juthur_click', dom, 'juthur') +
         pathCard('tier-rebuild', T.cardRebuild.label, T.cardRebuild.title, T.cardRebuild.desc,
-          prices.rebuild, links.rebuild, T.cardRebuild.cta, 'rebuild_click', dom, 'rebuild') +
+          prices.rebuild, rebuildDest, T.cardRebuild.cta, 'rebuild_click', dom, 'rebuild', rebuildSameTab) +
       '</div>' +
       '<div class="waitlist-banner">' +
         '<p>' + T.waitlistBanner((((CONFIG.interdash || {}).monthlyPriceSAR) || 29)) + '</p>' +
@@ -661,15 +671,18 @@
     }
   }
 
-  function pathCard(tier, label, title, desc, price, link, cta, ev, pattern, level) {
+  /* sameTab: for links to our own pages. Off-site checkout links keep opening
+     in a new tab so her result stays behind her; an internal page should not. */
+  function pathCard(tier, label, title, desc, price, link, cta, ev, pattern, level, sameTab) {
     const has = !!link;
+    const target = sameTab ? '' : ' target="_blank" rel="noopener"';
     const data = ev ? ' data-ev="' + ev + '" data-pattern="' + pattern + '" data-level="' + level + '" data-section="quiz_result"' : '';
     return '<div class="path-card ' + tier + '">' +
       '<span class="step-label">' + label + '</span>' +
       '<h4>' + title + '</h4>' +
       '<p>' + desc + '</p>' +
       '<span class="price-line">' + (price != null ? T.price(price) : '') + '</span>' +
-      (has ? '<a class="btn btn-gold" href="' + link + '" target="_blank" rel="noopener"' + data + '>' + cta + '</a>'
+      (has ? '<a class="btn btn-gold" href="' + link + '"' + target + data + '>' + cta + '</a>'
            : '<button class="btn btn-gold" disabled>' + T.soon + '</button>') +
       '</div>';
   }

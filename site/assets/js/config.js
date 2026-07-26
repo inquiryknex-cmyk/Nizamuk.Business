@@ -61,6 +61,18 @@ window.NIZAMOK = {
     rebuild: 109
   },
 
+  // Arabic sales page per pattern, for the quiz result to route into.
+  // NOTE the deliberate key/slug mismatch: the pattern keys below are the ones
+  // used throughout the quiz (asira, mutafadiya) while the public URLs use
+  // asirat and mutafadia. Keep this map as the only place that reconciles them.
+  // English visitors are NOT sent here — these pages are Arabic-only.
+  rebuildPages: {
+    mubdia:     '/rebuild/mubdia/',
+    asira:      '/rebuild/asirat/',
+    mutafadiya: '/rebuild/mutafadia/',
+    kafua:      '/rebuild/kafua/'
+  },
+
   // Dodo checkout links per pattern (Saudi pricing configured in Dodo).
   products: {
     mubdia: {
