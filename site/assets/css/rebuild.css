@@ -300,31 +300,39 @@
   overflow: hidden; background: var(--ivory-2);
   cursor: zoom-in;
 }
-.rb-shot img { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; }
+/* Product pages are tall (roughly 1:1.6), so the thumbnail crops to a 3:4 tile
+   anchored at the top — the page heading stays visible. Full page in lightbox. */
+.rb-shot img { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; object-position: top; }
 .rb-shot figcaption {
   margin-top: 0.5rem;
   font-size: 0.78rem; line-height: 1.8;
   color: var(--taupe); text-align: center;
 }
 
-/* Lightbox */
+/* Lightbox — scrolls rather than shrink-to-fit. A full product page capped at
+   viewport height would render its body text far too small to read, which is
+   the opposite of what the preview is for. */
 .rb-lightbox {
   position: fixed; inset: 0; z-index: 90;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: flex-start; justify-content: center;
   padding: clamp(1rem, 4vw, 2.5rem);
+  padding-top: 3.8rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: rgba(23, 16, 42, 0.92);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
 .rb-lightbox[hidden] { display: none; }
 .rb-lightbox img {
-  max-width: min(100%, 780px); max-height: 88vh;
+  max-width: min(100%, 820px);
   width: auto; height: auto;
+  margin-block: auto;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-velvet);
 }
 .rb-lightbox-close {
-  position: absolute; top: 1rem; inset-inline-end: 1rem;
+  position: fixed; top: 1rem; inset-inline-end: 1rem;
   width: 2.6rem; height: 2.6rem;
   display: flex; align-items: center; justify-content: center;
   border-radius: 50%;

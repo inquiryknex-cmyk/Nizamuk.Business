@@ -160,7 +160,8 @@
         var shot = btn.querySelector('img');
         var cap = btn.closest('figure').querySelector('figcaption');
         lastTrigger = btn;
-        open(shot.currentSrc || shot.src, shot.alt, cap ? cap.textContent.trim() : '');
+        /* The tile is a 3:4 crop; the lightbox shows the whole page. */
+        open(btn.getAttribute('data-full') || shot.currentSrc || shot.src, shot.alt, cap ? cap.textContent.trim() : '');
         return;
       }
       if (!box.hidden && (e.target === box || e.target.closest('.rb-lightbox-close'))) close();
