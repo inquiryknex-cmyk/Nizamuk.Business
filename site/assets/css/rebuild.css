@@ -558,3 +558,26 @@
   font-size: 0.86rem;
   color: var(--taupe);
 }
+
+/* Accepted payment methods, stated at the decision point. Calm, not a warning
+   banner — it should read as clarity, not as a caveat about the product. */
+.rb-pay-methods {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(201, 167, 94, 0.22);
+}
+.rb-pay-methods .methods {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--plum);
+}
+.rb-pay-methods .methods-note {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.84rem;
+  line-height: 1.95;
+  color: var(--taupe);
+}
+.rb-pay-methods a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }

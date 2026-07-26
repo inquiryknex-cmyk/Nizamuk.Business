@@ -108,7 +108,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
-  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726b">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726c">
 
   <script type="application/ld+json">
   {
@@ -378,6 +378,15 @@ ${fitLi(p.fitNo)}
           <span>السعر شامل الضرائب</span>
           <span>تحميل فوري</span>
           <span>دعم عبر البريد</span>
+        </p>
+
+        <!-- Accepted methods, stated before she commits. Dodo settles on the
+             international rails, so mada-only cards can decline at the last
+             step; saying so here turns a failed payment into a support email
+             instead of a refund request. -->
+        <p class="rb-pay-methods">
+          <span class="methods">الدفع بفيزا أو ماستركارد أو Apple Pay</span>
+          <span class="methods-note">بطاقات مدى المشتركة مع فيزا أو ماستركارد مقبولة. إن لم تتم العملية، راسلينا على <a href="mailto:support@nizamok.com">support@nizamok.com</a> ونساعدكِ.</span>
         </p>
         <p class="rb-policy-links">
           <a href="/refund/">سياسة الاسترداد</a> · <a href="/terms/">الشروط</a> · <a href="/privacy/">الخصوصية</a>
