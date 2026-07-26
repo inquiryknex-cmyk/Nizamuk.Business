@@ -17,6 +17,31 @@
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
   <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726d">
+
+  <script>
+  /*
+    Dodo appends the buyer's EMAIL (and a license_key when enabled) to this
+    return URL. GA4 collects page_location on its automatic page_view, so left
+    alone the customer's email address would be sent to Analytics as part of the
+    URL — personal data in analytics, against GA4's own terms.
+
+    This runs in <head>, before config.js / analytics.js load at the end of body,
+    so the address is gone from the URL before any tag reads it. payment_id and
+    status are kept: they are opaque identifiers, not personal data, and
+    shukran.js needs them to fire the purchase conversion. debug_mode is kept so
+    DebugView still works through the funnel.
+  */
+  (function stripPii() {
+    try {
+      var url = new URL(location.href);
+      var dropped = false;
+      ['email', 'license_key', 'customer_email', 'name'].forEach(function (k) {
+        if (url.searchParams.has(k)) { url.searchParams.delete(k); dropped = true; }
+      });
+      if (dropped) history.replaceState(null, '', url.pathname + (url.search || '') + url.hash);
+    } catch (e) { /* never block the thank-you page */ }
+  })();
+  </script>
 </head>
 <body class="rb-body">
 
