@@ -108,7 +108,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
-  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726c">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726d">
 
   <script type="application/ld+json">
   {
@@ -171,7 +171,7 @@ export function renderPage(p) {
         <div class="rb-cover-frame">
           <img src="${coverThumb}" alt="غلاف نظام إعادة البناء — ${p.name}" width="700" height="964" fetchpriority="high">
         </div>
-        <span class="rb-cover-cap">ملف PDF من ${p.pages} صفحة مصممة</span>
+        <span class="rb-cover-cap">ملف PDF من ${p.pages} صفحة صممها، حرّرها ودقّقها فريق نظامك</span>
       </div>
 
       <div class="rb-hero-body">

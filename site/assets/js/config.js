@@ -41,6 +41,20 @@ window.NIZAMOK = {
     monthlyPriceSAR: 29
   },
 
+  // Analytics. Both start EMPTY and everything stays inert until a real id is
+  // pasted here — nothing is invented, and no tag fires without one.
+  //   gtmId  — Google Tag Manager container, e.g. 'GTM-XXXXXXX'
+  //   ga4Id  — GA4 measurement id, e.g. 'G-XXXXXXXXXX'
+  // Set gtmId if you want to manage tags in GTM (recommended: Google Ads
+  // conversion import lives there too). Set ga4Id alone for plain GA4.
+  // If both are set, GTM wins and GA4 should be configured inside GTM.
+  // IMPORTANT: use the SAME property in Dodo's analytics integration, or the
+  // journey breaks across the checkout domain and purchase never ties back.
+  analytics: {
+    gtmId: '',
+    ga4Id: ''
+  },
+
   pricing: {
     lamhat: 19,
     juthur: 49,

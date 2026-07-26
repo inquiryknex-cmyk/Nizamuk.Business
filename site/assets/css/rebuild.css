@@ -70,10 +70,12 @@
     grid-template-columns: 1fr 0.78fr;
     grid-template-areas: "head media" "body media";
     align-items: start;
-    column-gap: clamp(2rem, 4vw, 3.4rem);
+    column-gap: clamp(3rem, 5.5vw, 5rem);
     row-gap: 0;
   }
-  .rb-hero-media { align-self: center; }
+  /* Top-aligned, not centred. Centring parked the cover caption right beside
+     the CTA across the gutter and the two read as one crowded row. */
+  .rb-hero-media { align-self: start; padding-top: 0.6rem; }
   .rb-hero-media .rb-cover-frame { width: min(100%, 320px); }
 }
 
@@ -131,9 +133,10 @@
 .rb-cover-frame img { width: 100%; height: auto; display: block; }
 .rb-cover-cap {
   display: block; text-align: center;
-  margin-top: 0.8rem;
-  font-size: 0.82rem;
-  color: rgba(239, 231, 218, 0.6);
+  margin-top: 1rem;
+  max-width: 22rem; margin-inline: auto;
+  font-size: 0.82rem; line-height: 1.85;
+  color: rgba(239, 231, 218, 0.62);
 }
 
 /* ---------- Price + CTA block (repeats in ivory sections too) ---------- */

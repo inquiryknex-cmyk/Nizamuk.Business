@@ -16,6 +16,45 @@
 (function () {
   'use strict';
 
+  /* ----------------------------------------------------------------
+     Tag loader. Reads ids from config.js (loaded before this file on
+     every page). With no id configured nothing is injected at all —
+     no requests, no cookies, no console noise — and track() falls
+     through to Zaraz or to a silent no-op exactly as before.
+     ---------------------------------------------------------------- */
+  (function loadTags() {
+    var cfg = (window.NIZAMOK && window.NIZAMOK.analytics) || {};
+    var gtmId = (cfg.gtmId || '').trim();
+    var ga4Id = (cfg.ga4Id || '').trim();
+
+    function inject(src) {
+      var el = document.createElement('script');
+      el.async = true;
+      el.src = src;
+      document.head.appendChild(el);
+    }
+
+    if (gtmId) {
+      /* GTM owns the tags from here; GA4 is configured inside the container. */
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+      inject('https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(gtmId));
+      window.NIZAMOK_GTM_READY = true;
+      return;
+    }
+
+    if (ga4Id) {
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      /* Ads personalisation stays off: the deck forbids building remarketing
+         audiences from pain-signal behaviour on these pages. */
+      window.gtag('config', ga4Id, { allow_ad_personalization_signals: false });
+      inject('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ga4Id));
+      window.NIZAMOK_GA_READY = true;
+    }
+  })();
+
   function track(name, params) {
     try {
       if (!name) return;
@@ -26,6 +65,10 @@
       }
       if (typeof window.gtag === 'function' && window.NIZAMOK_GA_READY === true) {
         window.gtag('event', name, p);
+        return;
+      }
+      if (window.NIZAMOK_GTM_READY === true && window.dataLayer) {
+        window.dataLayer.push(Object.assign({ event: name }, p));
         return;
       }
       /* no provider yet → silent */

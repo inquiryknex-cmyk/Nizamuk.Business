@@ -19,10 +19,10 @@
     · quiz_fallback_click   click on the secondary «ابدئي الاختبار المجاني» link
     · scroll_50 / scroll_90 diagnostic only — NOT commercial conversions
 
-  DELIBERATELY ABSENT: `purchase`. A click on Dodo is not a sale, and a URL
-  parameter on a thank-you page is not proof of payment. The purchase event
-  must come from Dodo's own GA4/GTM integration or its webhook, carrying the
-  real transaction_id. See docs/rebuild-landing-pages.md.
+  `purchase` is NOT fired here — a click on Dodo is not a sale. It fires on
+  /shukran/ (see shukran.js), only on Dodo's own succeeded redirect, and
+  deduplicated on payment_id. This file stashes the pending checkout so that
+  page can attribute the sale to the right system.
 
   CTA hrefs are real links in the markup, so checkout works with JS disabled;
   this file only measures and reveals.
@@ -81,6 +81,19 @@
     p.currency = cfg.currency || 'SAR';
     p.items = [{ item_id: 'rebuild-' + pattern, item_name: cfg.patternName || pattern, price: cfg.price || 109, quantity: 1 }];
     track('begin_checkout', p);
+
+    /* Remember which system she is buying so /shukran/ can attribute the sale.
+       Dodo's return URL carries payment_id and status but not the product, and
+       stashing it here beats threading it through a query string Dodo also
+       appends to. No personal data — pattern, price, currency only. */
+    try {
+      localStorage.setItem('nz_pending_checkout', JSON.stringify({
+        pattern: pattern,
+        name: cfg.patternName || pattern,
+        value: cfg.price || 109,
+        currency: cfg.currency || 'SAR'
+      }));
+    } catch (e) { /* private mode — purchase still fires, just without item detail */ }
   }, true);
 
   /* ---------- 3. Mobile sticky bar — appears once the hero is passed ---------- */
