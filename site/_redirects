@@ -9,3 +9,12 @@
 /q/  /ikhtibar/?utm_source=tiktok&utm_medium=organic&utm_campaign=launch_01      302
 /z   /ikhtibar/?utm_source=youtube&utm_medium=organic&utm_campaign=launch_01     302
 /z/  /ikhtibar/?utm_source=youtube&utm_medium=organic&utm_campaign=launch_01     302
+
+# Retired Google Ads landing pages (the /google/… quiz funnel, removed 2026-07-26).
+# They are replaced by the direct-sale /rebuild/… pages, but their ad copy
+# promised a FREE quiz — so stragglers, bookmarks and any still-running ad go to
+# /ikhtibar/, which keeps that promise. Point new campaigns at /rebuild/… directly.
+/google/not-finishing     /ikhtibar/   301
+/google/not-finishing/    /ikhtibar/   301
+/google/procrastination   /ikhtibar/   301
+/google/procrastination/  /ikhtibar/   301

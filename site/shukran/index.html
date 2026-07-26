@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>شكرًا لكِ | نظامك</title>
+  <meta name="description" content="صفحة تأكيد الطلب بعد الدفع في نظامك، وتعليمات الوصول إلى نظام إعادة البناء.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://nizamok.com/shukran/">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/assets/img/seal.png">
+  <link rel="apple-touch-icon" href="/assets/img/seal.png">
+
+  <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/fonts/fonts.css">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726d">
+
+  <script>
+  /*
+    Dodo appends the buyer's EMAIL (and a license_key when enabled) to this
+    return URL. GA4 collects page_location on its automatic page_view, so left
+    alone the customer's email address would be sent to Analytics as part of the
+    URL — personal data in analytics, against GA4's own terms.
+
+    This runs in <head>, before config.js / analytics.js load at the end of body,
+    so the address is gone from the URL before any tag reads it. payment_id and
+    status are kept: they are opaque identifiers, not personal data, and
+    shukran.js needs them to fire the purchase conversion. debug_mode is kept so
+    DebugView still works through the funnel.
+  */
+  (function stripPii() {
+    try {
+      var url = new URL(location.href);
+      var dropped = false;
+      ['email', 'license_key', 'customer_email', 'name'].forEach(function (k) {
+        if (url.searchParams.has(k)) { url.searchParams.delete(k); dropped = true; }
+      });
+      if (dropped) history.replaceState(null, '', url.pathname + (url.search || '') + url.hash);
+    } catch (e) { /* never block the thank-you page */ }
+  })();
+  </script>
+</head>
+<body class="rb-body">
+
+<div class="velvet rb-hero">
+  <span class="k-star" aria-hidden="true" style="top:12%;inset-inline-start:8%">✦</span>
+  <span class="k-star" aria-hidden="true" style="top:30%;inset-inline-end:7%;font-size:0.7rem">✦</span>
+  <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:3%;opacity:0.4">
+
+  <div class="container">
+    <header class="rb-topbar">
+      <a class="brand" href="/" aria-label="نظامك — الصفحة الرئيسية">
+        <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="40" height="40">
+        <img class="wordmark-img" src="/assets/img/wordmark.png" alt="NizamOk" width="112" height="28">
+      </a>
+      <a class="rb-support" href="mailto:support@nizamok.com">الدعم</a>
+    </header>
+
+    <div class="rb-narrow rb-final">
+      <img class="seal-img" src="/assets/img/seal.png" alt="" width="100" height="100">
+      <span class="kicker">تم استلام طلبكِ</span>
+      <h1 data-shukran-head style="font-family:var(--font-display);font-size:clamp(1.6rem,4.6vw,2.3rem);color:#F8F1E3;line-height:1.75;margin-bottom:0.9rem">شكرًا لكِ. نظامكِ في طريقه إليكِ.</h1>
+      <p data-shukran-body>يصلكِ ملف النظام (PDF) ورابط التحميل وتأكيد العملية على البريد الذي استخدمتِه في الدفع. إن لم تجديه خلال دقائق، تحققي من مجلد «الرسائل غير المرغوب فيها» قبل مراسلتنا.</p>
+      <a class="btn btn-gold rb-cta" href="mailto:support@nizamok.com">لم يصلكِ شيء؟ راسلي الدعم</a>
+      <span class="rb-assure">support@nizamok.com — اذكري بريد الشراء واسم النظام حتى نصل إلى طلبكِ بسرعة.</span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <section class="rb-section">
+    <div class="container rb-narrow">
+      <div class="rb-card">
+        <h2>ما الخطوة الأولى؟</h2>
+        <ul class="rb-list" role="list">
+          <li>احفظي الملف على جهازكِ أولًا، ثم افتحي خريطة نمطكِ قبل أي شيء آخر — لا تبدئي بالأدوات.</li>
+          <li>اكتبي موقفًا حقيقيًا حدث معكِ خلال الأسبوع الماضي بجانب الخريطة.</li>
+          <li>اختاري أداة واحدة فقط لأول سبعة أيام. الأدوات الخمس دفعة واحدة تُربك ولا تُثبّت.</li>
+        </ul>
+        <p class="rb-close">النظام مسار قراءة وتطبيق. ما ينفع ليس إنهاءه بسرعة، بل تنفيذ تجربته التوقيعية مرة واحدة بصدق.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="rb-section">
+    <div class="container rb-narrow">
+      <p class="rb-safety">هذه صفحة تأكيد فقط. إن حدث خصم من دون وصول الملف، راسلينا على <a href="mailto:support@nizamok.com">support@nizamok.com</a> وسنتابع الطلب. تنطبق <a href="/refund/">سياسة الاسترداد</a> و<a href="/terms/">الشروط</a> المنشورة.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer velvet rb-footer">
+  <div class="container">
+    <p class="disclaimer">نظامك منصة عربية للتفكير الذاتي والإدارة السلوكية العملية للنساء. المحتوى تعليمي/تطبيقي غير تشخيصي ولا يستبدل الرعاية المتخصصة. الدعم: <a href="mailto:support@nizamok.com" style="color:var(--gold-soft)">support@nizamok.com</a></p>
+    <nav class="footer-links" aria-label="روابط الموقع">
+      <a href="/">الرئيسية</a>
+      <a href="/privacy/">الخصوصية</a>
+      <a href="/terms/">الشروط</a>
+      <a href="/refund/">سياسة الاسترداد</a>
+      <a href="mailto:support@nizamok.com">البريد</a>
+    </nav>
+    <p class="copyright">© <span data-year></span> نظامك</p>
+  </div>
+</footer>
+
+<!--
+  The `purchase` conversion fires from shukran.js, and ONLY when Dodo redirects
+  here with its own payment_id and status=succeeded. It is deduplicated on
+  payment_id so a refresh or a back-navigation never double-counts.
+
+  This is not cryptographic proof of payment — a crafted URL could fake it. For
+  a server-verified conversion, use Dodo's webhook or its native GA4/GTM
+  integration; this is the documented fallback. See
+  docs/rebuild-landing-pages.md §القياس.
+-->
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/analytics.js"></script>
+<script src="/assets/js/shukran.js?v=20260726a"></script>
+<script>
+  document.querySelectorAll('[data-year]').forEach(function (el) {
+    el.textContent = new Date().getFullYear();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,586 @@
+/* ============================================================
+   NizamOk — «نظام إعادة البناء» direct-sale landing pages.
+   One shared layout; the copy is what differs per pattern
+   (/rebuild/mubdia/ · /rebuild/asirat/ · /rebuild/kafua/ ·
+    /rebuild/mutafadia/).
+
+   Follows the house v2 system: velvet-plum brand chambers
+   (hero, mechanism, final CTA) framing ivory reading sections.
+   Reuses main.css tokens & components — .btn, .glass, .kicker,
+   .cover, .velvet, .container. Only sale-page layout lives here.
+   RTL-first, mobile-first, no added motion.
+   ============================================================ */
+
+/* ---------- Reading size ----------
+   The deck fixes body copy at 18–20px desktop and 17–18px mobile. main.css
+   sets a 16.5px site default, which is under spec for these pages — Arabic
+   needs more size than Latin at the same measure, and this is long, heavy
+   copy read mostly on a phone. These two ramps carry every reading surface. */
+:root {
+  --rb-read: clamp(1.0625rem, 0.98rem + 0.42vw, 1.1875rem);  /* 17px → 19px */
+  --rb-read-lg: clamp(1.125rem, 1.04rem + 0.42vw, 1.25rem);  /* 18px → 20px */
+}
+
+/* ---------- Page shell ---------- */
+.rb-body { background: var(--ivory); }
+
+/* The grafted blossoms sit at inset-inline-start:-12px by design, so each
+   velvet chamber has to clip its own decoration — otherwise they widen the
+   document and the page scrolls sideways on a phone. */
+.rb-hero, .rb-mech, .rb-final { overflow: hidden; }
+.rb-stage { max-width: 1000px; margin-inline: auto; }
+.rb-narrow { max-width: 760px; margin-inline: auto; }
+
+/* Room for the mobile sticky bar so it never covers the footer. */
+@media (max-width: 860px) {
+  .rb-body { padding-bottom: 5.4rem; }
+}
+
+/* ---------- Minimal top bar (no large nav — Google Ads rule) ---------- */
+.rb-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 0.85rem 0;
+}
+.rb-topbar .brand .seal-img { width: 40px; height: 40px; }
+.rb-topbar .brand .wordmark-img { height: 28px; width: auto; }
+.rb-support {
+  font-size: 0.85rem; color: rgba(239, 231, 218, 0.72);
+  border: 1px solid rgba(214, 186, 128, 0.3);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 1rem;
+}
+.rb-support:hover { color: var(--gold-soft); border-color: var(--gold); }
+
+/* ============================================================
+   HERO — velvet chamber
+   ============================================================ */
+.rb-hero { position: relative; padding-bottom: clamp(2.6rem, 6vw, 4rem); }
+.rb-hero-grid {
+  display: grid;
+  gap: clamp(1.4rem, 3.4vw, 2.4rem);
+  grid-template-areas: "head" "media" "body";
+  padding-top: clamp(1.2rem, 3vw, 2.2rem);
+}
+.rb-hero-head { grid-area: head; }
+.rb-hero-media { grid-area: media; }
+.rb-hero-body { grid-area: body; }
+
+@media (min-width: 900px) {
+  .rb-hero-grid {
+    grid-template-columns: 1fr 0.78fr;
+    grid-template-areas: "head media" "body media";
+    align-items: start;
+    column-gap: clamp(3rem, 5.5vw, 5rem);
+    row-gap: 0;
+  }
+  /* Top-aligned, not centred. Centring parked the cover caption right beside
+     the CTA across the gutter and the two read as one crowded row. */
+  .rb-hero-media { align-self: start; padding-top: 0.6rem; }
+  .rb-hero-media .rb-cover-frame { width: min(100%, 320px); }
+}
+
+/* The hero price sits under the H1 (both layouts) so 109 ر.س is on the first
+   screen of a phone, never behind a scroll. */
+.rb-hero-head .rb-price { margin-bottom: 0; }
+
+.rb-hero h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.72rem, 5.4vw, 2.75rem);
+  line-height: 1.7;
+  color: #F8F1E3;
+  margin-top: 0.2rem;
+}
+.rb-lead {
+  color: rgba(240, 233, 222, 0.82);
+  font-size: var(--rb-read-lg);
+  line-height: 2.05;
+  max-width: 34rem;
+}
+
+/* The three hero promises */
+.rb-promises { list-style: none; margin: 1.4rem 0 0; }
+.rb-promises li {
+  position: relative;
+  padding-inline-start: 1.75rem;
+  padding-block: 0.5rem;
+  color: rgba(240, 233, 222, 0.86);
+  font-size: var(--rb-read);
+  line-height: 1.95;
+}
+.rb-promises li::before {
+  content: '✦';
+  content: '✦' / '';  /* alt-text form: silences the marker for screen readers where supported */
+  position: absolute; inset-inline-start: 0; top: 0.6rem;
+  color: var(--gold-soft); font-size: 0.78rem;
+}
+
+/* Hero product shot — a real cover from the file the buyer receives */
+.rb-cover-frame {
+  position: relative;
+  /* The cover is the product's real page 1 — its title has to be legible, so
+     it gets room. Sized so 109 ر.س still clears the fold on a 640px screen. */
+  width: min(74%, 290px);
+  margin-inline: auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--velvet-line);
+  box-shadow: var(--shadow-velvet), var(--glow-gold);
+  background: var(--tier-rebuild);
+}
+/* Natural ratio — the page-1 capture is ~3:4.13; forcing 3:4 would shave
+   the cover's own gold frame off the top and bottom. */
+.rb-cover-frame img { width: 100%; height: auto; display: block; }
+.rb-cover-cap {
+  display: block; text-align: center;
+  margin-top: 1rem;
+  max-width: 22rem; margin-inline: auto;
+  font-size: 0.82rem; line-height: 1.85;
+  color: rgba(239, 231, 218, 0.62);
+}
+
+/* ---------- Price + CTA block (repeats in ivory sections too) ---------- */
+.rb-price {
+  display: flex; align-items: baseline; gap: 0.6rem;
+  font-family: var(--font-display);
+  margin: 1.6rem 0 1rem;
+}
+.rb-price .amount { font-size: clamp(2rem, 6vw, 2.6rem); font-weight: 700; color: var(--gold-soft); line-height: 1; }
+.rb-price .unit { font-size: 1.05rem; color: rgba(239, 231, 218, 0.78); }
+.rb-price .once { font-size: 0.85rem; color: rgba(239, 231, 218, 0.55); font-family: var(--font-body); }
+
+.rb-cta { width: min(100%, 26rem); font-size: 1.03rem; text-align: center; line-height: 1.5; padding-inline: 1.6rem; }
+.rb-assure {
+  display: block; margin-top: 0.85rem;
+  font-size: 0.85rem; line-height: 1.9;
+  color: rgba(239, 231, 218, 0.66);
+  max-width: 24rem;
+}
+.rb-alt {
+  display: block; margin-top: 1rem;
+  font-size: 0.88rem;
+  color: rgba(239, 231, 218, 0.6);
+}
+.rb-alt a { color: var(--gold-soft); text-decoration: underline; text-underline-offset: 4px; }
+
+/* Short trust strip under the hero CTA */
+.rb-trust {
+  display: flex; flex-wrap: wrap; gap: 0.55rem 1.1rem;
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: rgba(239, 231, 218, 0.6);
+}
+.rb-trust span { display: inline-flex; align-items: center; gap: 0.45rem; }
+.rb-trust span::before {
+  content: '·'; color: var(--gold-soft); font-weight: 700; font-size: 1.1rem;
+}
+
+/* ============================================================
+   IVORY READING SECTIONS
+   ============================================================ */
+.rb-section { padding: clamp(2.6rem, 6vw, 4.2rem) 0; }
+.rb-section + .rb-section { padding-top: 0; }
+.rb-section h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.32rem, 3.8vw, 1.85rem);
+  line-height: 1.75;
+  margin-bottom: 1.1rem;
+}
+.rb-section p { color: var(--ink-soft); font-size: var(--rb-read); line-height: 2.05; }
+.rb-section p + p { margin-top: 0.9rem; }
+
+.rb-card {
+  background: var(--card);
+  border: 1px solid rgba(201, 167, 94, 0.22);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-ivory);
+  padding: clamp(1.5rem, 4vw, 2.6rem);
+}
+
+/* Recognition mirror + "what you receive" lists */
+.rb-list { list-style: none; }
+.rb-list li {
+  position: relative;
+  padding-inline-start: 1.8rem;
+  padding-block: 0.62rem;
+  color: var(--ink-soft);
+  font-size: var(--rb-read);
+  line-height: 2;
+}
+.rb-list li + li { border-top: 1px solid rgba(201, 167, 94, 0.16); }
+.rb-list li::before {
+  content: '✦';
+  content: '✦' / '';
+  position: absolute; inset-inline-start: 0; top: 0.72rem;
+  color: var(--gold); font-size: 0.78rem;
+}
+.rb-close {
+  margin-top: 1.2rem; padding-top: 1.1rem;
+  border-top: 1px solid rgba(201, 167, 94, 0.2);
+  font-family: var(--font-display);
+  font-size: var(--rb-read); line-height: 1.95; color: var(--plum);
+}
+
+/* ---------- Mechanism — velvet chamber, the pattern's own model ---------- */
+.rb-mech { position: relative; }
+.rb-mech .rb-section { padding-block: clamp(2.8rem, 6vw, 4.4rem); }
+.rb-mech h2, .rb-mech h3 { color: #F8F1E3; }
+.rb-mech p { color: rgba(240, 233, 222, 0.8); font-size: var(--rb-read); }
+.rb-mech-name {
+  font-family: var(--font-quote);
+  font-size: clamp(1.5rem, 4.6vw, 2.1rem);
+  color: var(--gold-soft);
+  margin-bottom: 0.8rem;
+}
+.rb-doors { display: grid; gap: 1rem; margin-top: 1.8rem; }
+@media (min-width: 700px) { .rb-doors { grid-template-columns: 1fr 1fr; } }
+.rb-door {
+  border: 1px solid rgba(214, 186, 128, 0.26);
+  background: rgba(255, 250, 240, 0.045);
+  border-radius: var(--radius-md);
+  padding: 1.15rem 1.35rem;
+}
+.rb-door h3 {
+  font-family: var(--font-kufi);
+  font-weight: 600; font-size: 1.02rem;
+  color: var(--gold-soft);
+  margin-bottom: 0.35rem;
+}
+.rb-door p { font-size: var(--rb-read); line-height: 1.95; color: rgba(240, 233, 222, 0.74); }
+
+/* ---------- Value card (what the 47 pages contain) ---------- */
+.rb-value {
+  margin-top: 1.6rem;
+  border: 1px dashed rgba(201, 167, 94, 0.5);
+  border-radius: var(--radius-md);
+  background: rgba(201, 167, 94, 0.07);
+  padding: 1.1rem 1.3rem;
+  font-family: var(--font-display);
+  font-size: clamp(0.92rem, 2.4vw, 1.02rem);
+  line-height: 2.1;
+  color: var(--plum);
+  text-align: center;
+}
+
+/* ---------- The five tools ---------- */
+.rb-tools { display: grid; gap: 1rem; margin-top: 1.4rem; counter-reset: tool; }
+@media (min-width: 760px) { .rb-tools { grid-template-columns: 1fr 1fr; } }
+.rb-tool {
+  counter-increment: tool;
+  position: relative;
+  border: 1px solid rgba(201, 167, 94, 0.24);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  padding: 1.1rem 1.3rem 1.1rem 1.3rem;
+  padding-inline-start: 3.5rem;
+}
+.rb-tool::before {
+  content: counter(tool, arabic-indic);
+  content: counter(tool, arabic-indic) / '';
+  position: absolute; inset-inline-start: 1rem; top: 1.15rem;
+  width: 1.9rem; height: 1.9rem;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--gold-faint);
+  border-radius: 50%;
+  color: var(--gold-deep);
+  font-size: 0.88rem;
+}
+.rb-tool h3 { font-family: var(--font-display); font-size: var(--rb-read-lg); margin-bottom: 0.3rem; }
+.rb-tool p { font-size: var(--rb-read); line-height: 1.95; }
+
+/* ---------- Signature experience — the conversion heart ---------- */
+.rb-signature {
+  border-inline-start: 3px solid var(--gold);
+  background: linear-gradient(90deg, rgba(201, 167, 94, 0.08), transparent 70%);
+  border-radius: var(--radius-md);
+  padding: 1.3rem clamp(1.1rem, 3vw, 1.8rem);
+  margin-top: 1.2rem;
+}
+.rb-relapse {
+  margin-top: 1.3rem;
+  font-size: 0.92rem;
+  color: var(--plum);
+  line-height: 2;
+}
+.rb-relapse b { color: var(--gold-deep); }
+
+/* ---------- Product gallery (real pages only; JS reveals what exists) ---------- */
+.rb-gallery-grid { display: grid; gap: 0.9rem; margin-top: 1.4rem; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 760px) { .rb-gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+.rb-shot { margin: 0; }
+.rb-shot[hidden] { display: none; }
+.rb-shot button {
+  display: block; width: 100%; padding: 0;
+  border: 1px solid rgba(201, 167, 94, 0.28);
+  border-radius: var(--radius-md);
+  overflow: hidden; background: var(--ivory-2);
+  cursor: zoom-in;
+}
+/* Product pages are tall (roughly 1:1.6), so the thumbnail crops to a 3:4 tile
+   anchored at the top — the page heading stays visible. Full page in lightbox. */
+.rb-shot img { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; object-position: top; }
+.rb-shot figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.78rem; line-height: 1.8;
+  color: var(--taupe); text-align: center;
+}
+
+/* Lightbox — scrolls rather than shrink-to-fit. A full product page capped at
+   viewport height would render its body text far too small to read, which is
+   the opposite of what the preview is for. */
+.rb-lightbox {
+  position: fixed; inset: 0; z-index: 90;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  padding-top: 3.8rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: rgba(23, 16, 42, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.rb-lightbox[hidden] { display: none; }
+.rb-lightbox img {
+  max-width: min(100%, 820px);
+  width: auto; height: auto;
+  margin-block: auto;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-velvet);
+}
+.rb-lightbox-close {
+  position: fixed; top: 1rem; inset-inline-end: 1rem;
+  width: 2.6rem; height: 2.6rem;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(214, 186, 128, 0.4);
+  background: rgba(255, 250, 240, 0.08);
+  color: var(--gold-soft); font-size: 1.3rem; line-height: 1;
+  cursor: pointer;
+}
+
+/* ---------- Journey 1 / 7 / 30 / 90 ---------- */
+.rb-journey { list-style: none; margin-top: 1.3rem; display: grid; gap: 0.9rem; }
+@media (min-width: 760px) { .rb-journey { grid-template-columns: repeat(2, 1fr); } }
+.rb-journey li {
+  border: 1px solid rgba(201, 167, 94, 0.22);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  padding: 1.1rem 1.3rem;
+}
+.rb-journey .when {
+  display: block;
+  font-family: var(--font-kufi); font-weight: 600;
+  font-size: 0.86rem; letter-spacing: 0.04em;
+  color: var(--gold-deep);
+  margin-bottom: 0.4rem;
+}
+.rb-journey p { font-size: var(--rb-read); line-height: 1.95; }
+
+/* ---------- Safety wording under outcomes ---------- */
+.rb-safety {
+  margin-top: 1.4rem;
+  padding-inline-start: 1.1rem;
+  border-inline-start: 2px solid rgba(201, 167, 94, 0.4);
+  font-size: 1rem; line-height: 2;
+  color: var(--taupe);
+}
+
+/* ---------- Fit / not-fit ---------- */
+.rb-fit { display: grid; gap: 1rem; margin-top: 1.2rem; }
+@media (min-width: 780px) { .rb-fit { grid-template-columns: 1fr 1fr; align-items: start; } }
+.rb-fit-col {
+  border-radius: var(--radius-md);
+  padding: 1.2rem 1.4rem;
+  border: 1px solid rgba(201, 167, 94, 0.22);
+  background: var(--card);
+}
+.rb-fit-col.no { background: var(--ivory-2); }
+.rb-fit-col h3 { font-family: var(--font-display); font-size: 1.05rem; margin-bottom: 0.6rem; }
+.rb-fit-col.yes h3 { color: var(--gold-deep); }
+.rb-fit-col.no h3 { color: var(--taupe); }
+.rb-fit-col ul { list-style: none; }
+.rb-fit-col li {
+  position: relative; padding-inline-start: 1.4rem; padding-block: 0.45rem;
+  font-size: var(--rb-read); line-height: 1.95; color: var(--ink-soft);
+}
+.rb-fit-col li::before {
+  position: absolute; inset-inline-start: 0; top: 0.5rem; font-size: 0.9rem;
+}
+.rb-fit-col.yes li::before { content: '✓'; content: '✓' / ''; color: var(--gold-deep); }
+.rb-fit-col.no li::before { content: '—'; content: '—' / ''; color: var(--taupe); }
+
+/* ---------- Purchase card ---------- */
+.rb-buy {
+  margin-top: 1.4rem;
+  border: 1px solid var(--gold-faint);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(165deg, rgba(201, 167, 94, 0.1), rgba(255, 253, 248, 0.6));
+  padding: clamp(1.4rem, 4vw, 2.2rem);
+  text-align: center;
+}
+.rb-buy .rb-price { justify-content: center; margin-top: 0.4rem; }
+.rb-buy .rb-price .amount { color: var(--plum); }
+.rb-buy .rb-price .unit { color: var(--ink-soft); }
+.rb-buy .rb-price .once { color: var(--taupe); }
+.rb-buy .rb-cta { margin-inline: auto; }
+.rb-buy .rb-assure { color: var(--taupe); margin-inline: auto; text-align: center; }
+.rb-buy-name {
+  font-family: var(--font-kufi); font-weight: 600;
+  font-size: 0.92rem; letter-spacing: 0.04em;
+  color: var(--gold-deep);
+}
+.rb-pay-trust {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 0.45rem 0.9rem;
+  margin-top: 1.2rem;
+  font-size: 0.78rem; color: var(--taupe);
+}
+.rb-pay-trust span {
+  border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: var(--radius-pill);
+  padding: 0.25rem 0.8rem;
+}
+.rb-policy-links {
+  margin-top: 1rem; font-size: 0.82rem; color: var(--taupe);
+}
+.rb-policy-links a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- Mid-page CTA row (ivory) ---------- */
+.rb-cta-row { text-align: center; margin-top: 1.6rem; }
+.rb-cta-row .rb-cta { margin-inline: auto; }
+.rb-cta-row .rb-assure { margin-inline: auto; text-align: center; color: var(--taupe); }
+
+/* ---------- Trust & limits ---------- */
+.rb-limits { background: var(--ivory-2); }
+.rb-limits .rb-card { background: transparent; box-shadow: none; }
+
+/* ---------- FAQ ---------- */
+.rb-faq { margin-top: 1.2rem; }
+.rb-faq details {
+  border-bottom: 1px solid rgba(201, 167, 94, 0.22);
+  padding: 0.35rem 0;
+}
+.rb-faq summary {
+  cursor: pointer; list-style: none;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  padding: 0.95rem 0;
+  font-family: var(--font-display);
+  font-size: var(--rb-read-lg); font-weight: 700; color: var(--plum);
+  line-height: 1.85;
+}
+.rb-faq summary::-webkit-details-marker { display: none; }
+.rb-faq summary::after {
+  content: '+'; flex: none;
+  color: var(--gold-deep); font-size: 1.2rem; line-height: 1.6;
+}
+.rb-faq details[open] summary::after { content: '−'; }
+.rb-faq details > p { padding: 0 0 1rem; font-size: var(--rb-read); }
+
+/* ---------- Final CTA — velvet chamber ---------- */
+.rb-final { text-align: center; padding: clamp(3rem, 7vw, 4.6rem) 0; }
+.rb-final .seal-img { width: clamp(78px, 16vw, 100px); height: auto; margin: 0 auto 1.2rem; }
+.rb-final h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4.4vw, 2.1rem);
+  color: #F8F1E3;
+  line-height: 1.75;
+  margin-bottom: 0.9rem;
+}
+.rb-final p { color: rgba(240, 233, 222, 0.78); font-size: var(--rb-read); max-width: 34rem; margin: 0 auto 1.8rem; }
+.rb-final .rb-cta { margin-inline: auto; }
+.rb-final .rb-assure { margin-inline: auto; text-align: center; }
+.rb-final .rb-alt { margin-top: 1.3rem; }
+
+/* ---------- Footer ---------- */
+.rb-footer { padding: 2.6rem 0 2.2rem; }
+.rb-footer .disclaimer {
+  font-size: 0.84rem; line-height: 2;
+  color: rgba(239, 231, 218, 0.62);
+  max-width: 46rem; margin-inline: auto; text-align: center;
+}
+.rb-footer .footer-links { justify-content: center; margin-top: 1.3rem; }
+.rb-footer .copyright {
+  text-align: center; margin-top: 1.2rem;
+  font-size: 0.8rem; color: rgba(239, 231, 218, 0.45);
+}
+
+/* ============================================================
+   MOBILE STICKY CTA — one button, price visible.
+   Revealed by rebuild.js once the hero is scrolled past.
+   ============================================================ */
+.rb-sticky {
+  position: fixed; inset-inline: 0; bottom: 0; z-index: 60;
+  display: flex; align-items: center; gap: 0.9rem;
+  padding: 0.7rem clamp(0.9rem, 4vw, 1.4rem);
+  padding-bottom: calc(0.7rem + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(180deg, rgba(36, 26, 62, 0.94), rgba(23, 16, 42, 0.985));
+  border-top: 1px solid var(--velvet-line);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transform: translateY(110%);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rb-sticky.is-on { transform: none; }
+.rb-sticky-copy { flex: 1 1 auto; min-width: 0; }
+.rb-sticky-name {
+  display: block;
+  font-size: 0.72rem; line-height: 1.5;
+  color: rgba(239, 231, 218, 0.66);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rb-sticky-price {
+  display: block;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 1.05rem; color: var(--gold-soft);
+}
+.rb-sticky .btn { flex: none; padding: 0.7rem 1.5rem; font-size: 0.95rem; }
+
+/* Desktop keeps the in-page decision points only — 4–5 is enough. */
+@media (min-width: 861px) { .rb-sticky { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-sticky { transition: none; }
+}
+
+
+/* ============================================================
+   AMBIENT BLOOM — the site-wide sound control, opted into here.
+   It lives bottom-left (physical) and the mobile sticky CTA owns
+   the bottom strip, so lift it clear of the bar on small screens.
+   ============================================================ */
+@media (max-width: 860px) {
+  .rb-body .ambient-control { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .rb-body .ambient-caption { display: none; }   /* medallion only — the bar owns the words */
+}
+
+/* A quiet UI affordance, not argument copy — must not read at body weight. */
+.rb-hint {
+  margin-top: 1.1rem;
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--taupe);
+}
+
+/* Accepted payment methods, stated at the decision point. Calm, not a warning
+   banner — it should read as clarity, not as a caveat about the product. */
+.rb-pay-methods {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(201, 167, 94, 0.22);
+}
+.rb-pay-methods .methods {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--plum);
+}
+.rb-pay-methods .methods-note {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.84rem;
+  line-height: 1.95;
+  color: var(--taupe);
+}
+.rb-pay-methods a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }
