@@ -42,6 +42,12 @@
       body.textContent = 'لم يتم خصم أي مبلغ. يمكنكِ المحاولة مرة أخرى، أو مراسلتنا على '
         + 'support@nizamok.com وسنساعدكِ في إتمام الطلب.';
     }
+    /* There is no file and no account to open, so anything that presumes a
+       completed purchase — the billing-portal line, the "first step" card —
+       is removed rather than left to contradict the heading. */
+    document.querySelectorAll('[data-shukran-onsuccess]').forEach(function (el) {
+      el.hidden = true;
+    });
     return;
   }
 
