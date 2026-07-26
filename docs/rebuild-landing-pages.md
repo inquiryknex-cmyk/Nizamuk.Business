@@ -25,14 +25,29 @@
 ## 2. الملفات
 
 ```
-site/rebuild/<slug>/index.html   الصفحة الكاملة (15 قسمًا)، ثابتة وقابلة للزحف
-site/assets/css/rebuild.css      تخطيط صفحات البيع فقط — يبني على main.css
-site/assets/js/rebuild.js        القياس + الشريط الثابت + المعرض + lightbox
-site/shukran/index.html          صفحة ما بعد الدفع (noindex)
+tools/rebuild/template.mjs         القالب الوحيد — بنية الصفحة معرَّفة هنا مرة واحدة
+tools/rebuild/content/<slug>.mjs   نسخة كل نمط: نص فقط، بلا HTML
+tools/rebuild/build.mjs            المولّد → npm run build:rebuild
+
+site/rebuild/<slug>/index.html     المخرَج الثابت (15 قسمًا)، قابل للزحف
+site/assets/css/rebuild.css        تخطيط صفحات البيع فقط — يبني على main.css
+site/assets/js/rebuild.js          القياس + الشريط الثابت + المعرض + lightbox
+site/shukran/index.html            صفحة ما بعد الدفع (noindex)
 ```
 
-بنية الصفحات متطابقة سطرًا بسطر؛ الاختلاف في النسخة فقط. عند تعديل بنية قسم،
-عدّليه في الصفحات الأربع حتى لا تتفرّق القوالب.
+**لا تعدّلي `site/rebuild/*/index.html` يدويًا** — أي تعديل يُمحى عند التوليد
+التالي. غيّري النسخة في `content/<slug>.mjs`، أو البنية في `template.mjs`،
+ثم شغّلي `npm run build:rebuild` وأدرجي المخرَج في نفس الـ commit.
+
+القالب واحد لكل الأنماط الأربعة، لذلك لا تتفرّق البنية عند تعديل قسم. الموقع
+نفسه يبقى بلا خطوة بناء وقت التشغيل: المرفوع HTML ثابت.
+
+### حجم النص
+
+الديك يحدّد النص الأساسي 18–20px على سطح المكتب و17–18px على الهاتف. `main.css`
+يضع 16.5px لكامل الموقع، وهو أقل من المطلوب هنا، لذلك تحمل `rebuild.css`
+متغيّرين — `--rb-read` (17→19px) و`--rb-read-lg` (18→20px) — يغطيان كل أسطح
+القراءة. لا تضعي أحجامًا ثابتة على نص قراءة جديد؛ استخدمي المتغيّرين.
 
 ## 3. ترتيب الأقسام
 
