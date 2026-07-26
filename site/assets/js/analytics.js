@@ -47,11 +47,26 @@
       window.dataLayer = window.dataLayer || [];
       window.gtag = function () { window.dataLayer.push(arguments); };
       window.gtag('js', new Date());
-      /* Ads personalisation stays off: the deck forbids building remarketing
-         audiences from pain-signal behaviour on these pages. */
-      window.gtag('config', ga4Id, { allow_ad_personalization_signals: false });
+
+      /* GA4 DebugView only shows devices in debug mode. Add ?debug_mode=1 to
+         any page to switch it on, and it sticks for the rest of the tab —
+         which matters because the purchase test crosses pages: landing →
+         Dodo → /shukran/. Add ?debug_mode=0 to turn it back off. */
+      var debugOn = false;
+      try {
+        var qd = new URLSearchParams(location.search).get('debug_mode');
+        if (qd === '1' || qd === 'true') sessionStorage.setItem('nz_ga_debug', '1');
+        if (qd === '0' || qd === 'false') sessionStorage.removeItem('nz_ga_debug');
+        debugOn = sessionStorage.getItem('nz_ga_debug') === '1';
+      } catch (e) { /* private mode — debug simply stays off */ }
+
+      var conf = { allow_ad_personalization_signals: false };  /* no pain-signal remarketing */
+      if (debugOn) conf.debug_mode = true;
+      window.gtag('config', ga4Id, conf);
+
       inject('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ga4Id));
       window.NIZAMOK_GA_READY = true;
+      window.NIZAMOK_GA_DEBUG = debugOn;
     }
   })();
 
