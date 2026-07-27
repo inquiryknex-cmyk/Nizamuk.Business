@@ -42,11 +42,16 @@ run_worker_first = ["/dodo", "/api/dodo/*"]
 # binding = "PURCHASE_DEDUPE"
 # id = "..."
 #
-# The hooks.nizamok.com hostname is attached in the dashboard (Workers →
-# nizamok → Settings → Domains & Routes → Add → Custom Domain). It is
-# deliberately not declared here: this file has never owned the production
-# route, and adding a `routes` block would make wrangler authoritative over
-# all of them on the next deploy.
+# Two paths reach the same handler, so no DNS work is required to go live:
+#
+#   https://nizamok.com/api/dodo/webhook   ← works immediately, nothing to set up
+#   https://hooks.nizamok.com/dodo         ← needs a Custom Domain attached first
+#
+# Point Dodo at the first one unless you specifically want the webhook on its
+# own hostname. If you do, attach it in the dashboard (Workers → nizamok →
+# Settings → Domains & Routes → Add → Custom Domain) — deliberately not
+# declared here, because this file has never owned the production route and a
+# `routes` block would make wrangler authoritative over all of them on deploy.
 # ---------------------------------------------------------------------------
 
 [vars]

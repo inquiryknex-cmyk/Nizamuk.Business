@@ -165,10 +165,19 @@ GA4 مستخدمة جديدة وتضيع نسبة البيع إلى الحملة
 | `GA4_API_SECRET` | GA4 → Admin → Data streams → Measurement Protocol API secrets | — |
 | `GA4_MEASUREMENT_ID` | متغير عادي في `wrangler.toml` | يجب أن يطابق `ga4Id` في `config.js` |
 
-النطاق `hooks.nizamok.com` يُربط من لوحة Cloudflare (Workers → nizamok →
-Settings → Domains & Routes → Add → Custom Domain). لم يُوضع في `wrangler.toml`
-عمدًا: هذا الملف لم يملك يومًا مسار الإنتاج، وإضافة `routes` تجعل wrangler
-سيّدًا على كل المسارات عند النشر التالي.
+**عنوان الـwebhook:** مساران يصلان إلى المعالج نفسه، فلا حاجة إلى أي إعداد DNS
+لبدء التشغيل:
+
+| العنوان | الإعداد المطلوب |
+|---|---|
+| `https://nizamok.com/api/dodo/webhook` | **لا شيء** — يعمل فور النشر |
+| `https://hooks.nizamok.com/dodo` | ربط Custom Domain أولًا |
+
+استخدمي الأول ما لم تكوني تريدين اسم نطاق مستقلًا للـwebhook. وإن أردتِ الثاني
+فيُربط من لوحة Cloudflare (Workers → nizamok → Settings → Domains & Routes →
+Add → Custom Domain). لم يُوضع في `wrangler.toml` عمدًا: هذا الملف لم يملك يومًا
+مسار الإنتاج، وإضافة `routes` تجعل wrangler سيّدًا على كل المسارات عند النشر
+التالي.
 
 للتحقق من المنطق قبل النشر: `npm test` (توقيع، تزوير، إعادة إرسال، تحويل
 العملات). وبعد أول عملية حقيقية، تأكّدي أن الإيراد المسجَّل **109** وليس
@@ -311,7 +320,8 @@ https://nizamok.com/rebuild/mubdia/?debug_mode=1
 - [ ] **فصل** المعرّف `G-MVH7ZVH1KJ` عن تكامل Dodo مع GA4 — لا يوضع هناك أبدًا.
       (كان مطلوبًا هنا سابقًا؛ راجعي التحذير في §5 قبل التراجع عن هذا.)
 - [ ] التأكد أن مدفوعات وضع الاختبار في Dodo لا تصل إلى الموقع الإنتاجي في GA4.
-- [ ] ربط `hooks.nizamok.com` كـCustom Domain على Worker باسم `nizamok`.
+- [ ] توجيه Dodo إلى `https://nizamok.com/api/dodo/webhook` (لا يحتاج إعدادًا).
+      أو — اختياريًا — ربط `hooks.nizamok.com` كـCustom Domain بدلًا منه.
 - [ ] ضبط السرّين `DODO_WEBHOOK_SECRET` (الوضع الحقيقي) و`GA4_API_SECRET`.
 - [ ] إنشاء KV باسم `PURCHASE_DEDUPE` وإلغاء تعليق ربطه في `wrangler.toml`.
 - [ ] التأكد أن Dodo يحترم `redirect_url` إلى `https://nizamok.com/shukran/`
