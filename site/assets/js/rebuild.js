@@ -19,10 +19,12 @@
     · quiz_fallback_click   click on the secondary «ابدئي الاختبار المجاني» link
     · scroll_50 / scroll_90 diagnostic only — NOT commercial conversions
 
-  `purchase` is NOT fired here — a click on Dodo is not a sale. It fires on
-  /shukran/ (see shukran.js), only on Dodo's own succeeded redirect, and
-  deduplicated on payment_id. This file stashes the pending checkout so that
-  page can attribute the sale to the right system.
+  `purchase` is NOT fired here — a click on Dodo is not a sale. It is fired
+  server-side by src/worker.js when Dodo's signed `payment.succeeded` webhook
+  arrives. What this file must do is hand the visitor's GA4 identity to Dodo on
+  the way out, as `metadata_*` query params: without them the webhook has no
+  way to say WHICH session bought, GA4 invents a new user, and the sale is
+  attributed to nobody.
 
   CTA hrefs are real links in the markup, so checkout works with JS disabled;
   this file only measures and reveals.
@@ -40,6 +42,36 @@
   /* Base params carried by every event on this page. */
   function base() {
     return { pattern_slug: pattern, page_path: location.pathname };
+  }
+
+  /* ---------- GA4 identity, read straight from the tag's own cookies ----------
+     There is no supported synchronous API for these, and gtag's callback form
+     is not reliable during a navigating click, so we parse the cookies gtag
+     writes. Both are best-effort: a blocked cookie or a consent tool that has
+     not run yet simply means the webhook falls back to a synthetic id, which
+     records the revenue but loses the attribution. */
+
+  function cookie(name) {
+    /* not `pattern` — that name already means the visitor's slug in this file */
+    var re = new RegExp('(?:^|; )' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '=([^;]*)');
+    var match = document.cookie.match(re);
+    return match ? decodeURIComponent(match[1]) : '';
+  }
+
+  /* _ga = GA1.1.1234567890.1234567890 — the client id is the last two fields,
+     not the whole value. Sending the whole value silently breaks the join. */
+  function ga4ClientId() {
+    var parts = cookie('_ga').split('.');
+    return parts.length >= 4 ? parts.slice(-2).join('.') : '';
+  }
+
+  /* _ga_<MEASUREMENT_ID minus the G- prefix> = GS1.1.<session_id>.<count>.… */
+  function ga4SessionId() {
+    var cfgAnalytics = (window.NIZAMOK && window.NIZAMOK.analytics) || {};
+    var suffix = String(cfgAnalytics.ga4Id || '').replace(/^G-/, '');
+    if (!suffix) return '';
+    var parts = cookie('_ga_' + suffix).split('.');
+    return parts.length >= 3 ? parts[2] : '';
   }
 
   document.querySelectorAll('[data-year]').forEach(function (el) {
@@ -82,18 +114,25 @@
     p.items = [{ item_id: 'rebuild-' + pattern, item_name: cfg.patternName || pattern, price: cfg.price || 109, quantity: 1 }];
     track('begin_checkout', p);
 
-    /* Remember which system she is buying so /shukran/ can attribute the sale.
-       Dodo's return URL carries payment_id and status but not the product, and
-       stashing it here beats threading it through a query string Dodo also
-       appends to. No personal data — pattern, price, currency only. */
+    /* Hand our GA4 identity to Dodo. Its checkout collects every query
+       parameter into the session it creates and returns the `metadata_*` ones
+       on the webhook, which is how src/worker.js learns who bought and what.
+
+       The href in the markup is already a complete, working checkout link —
+       we only decorate it. Rewriting it here (capture phase, before the
+       browser acts on the click) keeps checkout functional with JS disabled,
+       and `set` rather than `append` keeps a second click idempotent.
+
+       No personal data crosses: an opaque analytics id and a pattern slug. */
     try {
-      localStorage.setItem('nz_pending_checkout', JSON.stringify({
-        pattern: pattern,
-        name: cfg.patternName || pattern,
-        value: cfg.price || 109,
-        currency: cfg.currency || 'SAR'
-      }));
-    } catch (e) { /* private mode — purchase still fires, just without item detail */ }
+      var checkout = new URL(el.href, location.href);
+      var cid = ga4ClientId();
+      var sid = ga4SessionId();
+      if (cid) checkout.searchParams.set('metadata_ga_cid', cid);
+      if (sid) checkout.searchParams.set('metadata_ga_sid', sid);
+      checkout.searchParams.set('metadata_pattern', pattern);
+      el.href = checkout.toString();
+    } catch (e) { /* decoration is optional — never block the sale over it */ }
   }, true);
 
   /* ---------- 3. Mobile sticky bar — appears once the hero is passed ---------- */

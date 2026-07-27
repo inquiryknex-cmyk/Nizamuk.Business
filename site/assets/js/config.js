@@ -59,9 +59,16 @@ window.NIZAMOK = {
   //      the production property as real revenue, and
   //   2. it sends `value` in minor units (10900 halalas read as SAR 10,900),
   //      inflating every amount by 100×.
-  // Even once those are fixed it would double-count, because shukran.js already
-  // fires `purchase` on Dodo's succeeded redirect, deduplicated on payment_id.
-  // One conversion, one source: this site. See docs/rebuild-landing-pages.md §5.
+  // It would also double-count, because `purchase` is already sent once, from
+  // src/worker.mjs, when Dodo's signed payment.succeeded webhook arrives. That
+  // is the ONE source. Nothing in the browser fires a purchase any more.
+  //
+  // ga4Id is not only handed to gtag: rebuild.js derives the session cookie
+  // name from it (_ga_<id minus the G- prefix>) to forward the visitor's GA4
+  // identity through checkout. Change the id and that follows automatically —
+  // but the same id must also be set as GA4_MEASUREMENT_ID in wrangler.toml,
+  // or the webhook will report into a different property than the site.
+  // See docs/rebuild-landing-pages.md §5.
   analytics: {
     gtmId: '',
     ga4Id: 'G-MVH7ZVH1KJ'   // NizamOK · property 545877279 · SAR · Riyadh

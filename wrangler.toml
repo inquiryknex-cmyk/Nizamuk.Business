@@ -1,7 +1,11 @@
-# Cloudflare Workers — Static Assets configuration for NizamOk (نظامك)
-# Assets-only Worker (no server script). Everything deployable lives in ./site.
-# _headers and _redirects inside ./site are honored by Workers Static Assets.
+# Cloudflare Workers configuration for NizamOk (نظامك)
+#
+# This was an assets-only Worker until the purchase conversion moved
+# server-side. The static site is unchanged and still lives entirely in ./site
+# — _headers and _redirects there are still honored — but a Worker script now
+# sits in front of it to receive one webhook. See src/worker.js.
 name = "nizamok"
+main = "src/worker.mjs"
 compatibility_date = "2026-07-01"
 preview_urls = true
 workers_dev = false
@@ -9,3 +13,41 @@ workers_dev = false
 [assets]
 directory = "./site"
 not_found_handling = "404-page"
+binding = "ASSETS"
+# Without this, `not_found_handling` can answer /dodo with the 404 page before
+# the script ever runs. Listing the webhook paths guarantees they reach the
+# Worker; every other request still hits the asset router first, so the site
+# keeps its old behaviour and its edge caching.
+run_worker_first = ["/dodo", "/api/dodo/*"]
+
+# ---------------------------------------------------------------------------
+# Bindings and secrets — NOT set here.
+#
+# Secrets (wrangler secret put <NAME>, or dashboard → Settings → Variables):
+#   DODO_WEBHOOK_SECRET   Signing secret for the LIVE webhook endpoint. This is
+#                         the test-mode guard: hold only the live secret and
+#                         sandbox deliveries fail verification automatically.
+#   GA4_API_SECRET        GA4 → Admin → Data streams → <stream> → Measurement
+#                         Protocol API secrets → Create.
+#
+# Plain var (safe to commit, but kept with the secrets for one place to look):
+#   GA4_MEASUREMENT_ID    G-MVH7ZVH1KJ
+#
+# Optional KV namespace for retry de-duplication. Without it a Dodo retry after
+# a GA4 timeout could count one sale twice:
+#   wrangler kv namespace create PURCHASE_DEDUPE
+# then uncomment and paste the id:
+#
+# [[kv_namespaces]]
+# binding = "PURCHASE_DEDUPE"
+# id = "..."
+#
+# The hooks.nizamok.com hostname is attached in the dashboard (Workers →
+# nizamok → Settings → Domains & Routes → Add → Custom Domain). It is
+# deliberately not declared here: this file has never owned the production
+# route, and adding a `routes` block would make wrangler authoritative over
+# all of them on the next deploy.
+# ---------------------------------------------------------------------------
+
+[vars]
+GA4_MEASUREMENT_ID = "G-MVH7ZVH1KJ"
