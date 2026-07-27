@@ -54,8 +54,9 @@ window.NIZAMOK = {
   // property and, on 2026-07-26, two sandbox test payments landed in live
   // reporting as SAR 21,797.78 of revenue from a "purchaser" who never existed.
   // Two failures compounded —
-  //   1. Dodo counts the /session/cks_… checkout page itself, so an abandoned
-  //      or sandbox checkout is reported as a completed sale, and
+  //   1. Dodo fires `purchase` on any successful payment and its docs draw no
+  //      distinction between test mode and live, so a sandbox payment lands in
+  //      the production property as real revenue, and
   //   2. it sends `value` in minor units (10900 halalas read as SAR 10,900),
   //      inflating every amount by 100×.
   // Even once those are fixed it would double-count, because shukran.js already
