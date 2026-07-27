@@ -48,8 +48,19 @@ window.NIZAMOK = {
   // Set gtmId if you want to manage tags in GTM (recommended: Google Ads
   // conversion import lives there too). Set ga4Id alone for plain GA4.
   // If both are set, GTM wins and GA4 should be configured inside GTM.
-  // IMPORTANT: use the SAME property in Dodo's analytics integration, or the
-  // journey breaks across the checkout domain and purchase never ties back.
+  //
+  // DO NOT put this id into Dodo's own GA4 integration. An earlier note here
+  // said to, and it cost us: Dodo's hosted checkout then reported into this
+  // property and, on 2026-07-26, two sandbox test payments landed in live
+  // reporting as SAR 21,797.78 of revenue from a "purchaser" who never existed.
+  // Two failures compounded —
+  //   1. Dodo counts the /session/cks_… checkout page itself, so an abandoned
+  //      or sandbox checkout is reported as a completed sale, and
+  //   2. it sends `value` in minor units (10900 halalas read as SAR 10,900),
+  //      inflating every amount by 100×.
+  // Even once those are fixed it would double-count, because shukran.js already
+  // fires `purchase` on Dodo's succeeded redirect, deduplicated on payment_id.
+  // One conversion, one source: this site. See docs/rebuild-landing-pages.md §5.
   analytics: {
     gtmId: '',
     ga4Id: 'G-MVH7ZVH1KJ'   // NizamOK · property 545877279 · SAR · Riyadh
