@@ -773,9 +773,9 @@ metadata، لا كصندوق أسود أثناء أول اختبار.
 
 - [ ] GA4 → Explore → بُعد «Transaction ID» × مقياس «Purchases» ليومي 26–27
       يوليو: لا معاملة يظهر عدّها 2
-- [ ] Cloudflare → العامل `nizamok-purchase-webhook` → Edit code →
-      `const SEND_TO_GA4 = false` → Deploy، ثم `/health` يعود
-      بـ`ga4_enabled:false`
+- [x] Cloudflare → العامل `nizamok-purchase-webhook` → Edit code →
+      `const SEND_TO_GA4 = false` → Deploy — **نُفّذ 2026-07-30**،
+      و`/health` يعود بـ`ga4_enabled:false` (تحقّق مستقل بـcurl)
 - [x] **كود العامل منسوخ ومدقَّق** في `workers/purchase-webhook/` (2026-07-30):
       توقيعه سليم، لكن `client_id` اصطناعي (`dodo.…`) بلا إسناد إعلاني —
       شروط أي تفعيل مستقبلي في README الأرشيف
