@@ -2,9 +2,17 @@
   NizamOk — privacy-conscious funnel analytics.
 
   Provider order (first available wins), then silent no-op:
-    1. Cloudflare Zaraz   → window.zaraz.track(name, params)
-    2. GA4 (only if real) → window.gtag('event', name, params)   [needs window.NIZAMOK_GA_READY === true]
-    3. none configured    → fail silently (never throws, never logs)
+    1. GA4 (only if real) → window.gtag('event', name, params)   [needs window.NIZAMOK_GA_READY === true]
+    2. GTM (only if real) → window.dataLayer.push(...)           [needs window.NIZAMOK_GTM_READY === true]
+    3. Cloudflare Zaraz   → window.zaraz.track(name, params)
+    4. none configured    → fail silently (never throws, never logs)
+
+  GA4 comes FIRST on purpose. Zaraz is auto-injected on the zone, so with the
+  old Zaraz-first order every custom event — purchase and begin_checkout
+  included — was handed to Zaraz and never reached GA4, while gtag's automatic
+  page_view/scroll arrived fine (they do not pass through track()). Found
+  2026-07-30 when a verified test payment produced no purchase in DebugView.
+  Zaraz is now the fallback for when no Google tag is configured at all.
 
   PRIVACY: never pass email, name, full quiz answers, free-text, report content,
   or payment data. Only the whitelisted params below are ever sent.
@@ -74,16 +82,16 @@
     try {
       if (!name) return;
       var p = params || {};
-      if (window.zaraz && typeof window.zaraz.track === 'function') {
-        window.zaraz.track(name, p);
-        return;
-      }
       if (typeof window.gtag === 'function' && window.NIZAMOK_GA_READY === true) {
         window.gtag('event', name, p);
         return;
       }
       if (window.NIZAMOK_GTM_READY === true && window.dataLayer) {
         window.dataLayer.push(Object.assign({ event: name }, p));
+        return;
+      }
+      if (window.zaraz && typeof window.zaraz.track === 'function') {
+        window.zaraz.track(name, p);
         return;
       }
       /* no provider yet → silent */
