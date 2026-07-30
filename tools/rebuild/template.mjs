@@ -466,7 +466,7 @@ ${faqs(p.faq)}
 
 <script>window.NIZAMOK_REBUILD = { pattern: '${p.slug}', patternName: '${p.name}', price: 109, currency: 'SAR' };</script>
 <script src="/assets/js/config.js"></script>
-<script src="/assets/js/analytics.js"></script>
+<script src="/assets/js/analytics.js?v=20260730a"></script>
 <script src="/assets/js/rebuild.js?v=20260726b" defer></script>
 <script src="/assets/js/main.js?v=20260719h" defer></script>
 </body>
