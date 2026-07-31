@@ -1677,7 +1677,11 @@ html[dir="rtl"] .video-play::after { transform: translateX(-3px); }
   border-color: rgba(227, 168, 172, 0.55);
   background: radial-gradient(130% 100% at 50% 0%, rgba(227, 168, 172, 0.14), var(--card) 62%);
   text-align: center;
+  justify-content: center;
 }
+/* the short column centres its pair rather than stranding the button */
+.fork-col-quiz .fork-btn { margin-top: 0.4rem; }
+.fork-col-quiz p { margin-bottom: 1.1rem; }
 .fork-t {
   display: block; font-family: var(--font-kufi); font-weight: 600;
   font-size: 0.98rem; color: var(--plum-deep); margin-bottom: 0.5rem;

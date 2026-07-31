@@ -189,7 +189,7 @@ export function renderPage(p) {
 
       <div class="rb-hero-media">
         <div class="rb-cover-frame">
-          <img src="${coverThumb}" alt="غلاف نظام إعادة البناء، ${p.name}" width="700" height="964" fetchpriority="high">
+          <img src="${coverThumb}" alt="غلاف نظام إعادة البناء، ${p.name}" width="700" height="1050" fetchpriority="high">
         </div>
         <span class="rb-cover-cap">ملف PDF من ${p.pages} صفحة صممها، حرّرها ودقّقها فريق نظامك</span>
       </div>
