@@ -239,7 +239,10 @@
 /* ============================================================
    IVORY READING SECTIONS
    ============================================================ */
-.rb-section { padding: clamp(2.6rem, 6vw, 4.2rem) 0; }
+/* Sixteen sections of near-identical height, each isolated in its own field of
+   whitespace, is what made the page read as one endless column. Tightening the
+   gaps groups what belongs together and lets the velvet bands do the separating. */
+.rb-section { padding: clamp(1.7rem, 4vw, 3rem) 0; }
 .rb-section + .rb-section { padding-top: 0; }
 .rb-section h2 {
   font-family: var(--font-display);
@@ -597,7 +600,29 @@
 .rb-sticky .btn { flex: none; padding: 0.7rem 1.5rem; font-size: 0.95rem; }
 
 /* Desktop keeps the in-page decision points only — 4–5 is enough. */
-@media (min-width: 861px) { .rb-sticky { display: none; } }
+/* The bar used to be mobile-only, so a desktop reader crossed thirteen screens
+   with no way to buy in view. On a wide screen it becomes a slim rail that
+   finally uses the empty horizontal space instead of stacking into it. */
+@media (min-width: 861px) {
+  .rb-sticky {
+    /* the ambient bloom owns the bottom-left corner, so the rail takes the
+       other side and the two never overlap */
+    inset-inline: 1.4rem auto; bottom: 1.4rem;
+    width: min(340px, 26vw);
+    flex-direction: column; align-items: stretch; gap: 0.7rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: var(--rb-radius-lg, 18px);
+    border: 1px solid rgba(220, 192, 134, 0.45);
+    transform: translateY(140%);
+  }
+  .rb-sticky.is-on { transform: none; }
+  .rb-sticky .btn { width: 100%; }
+  .rb-sticky-quiz {
+    display: block; text-align: center;
+    font-size: 0.8rem; color: rgba(240, 233, 222, 0.72);
+    text-decoration: underline; text-underline-offset: 4px;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .rb-sticky { transition: none; }
@@ -717,3 +742,59 @@
 }
 .rb-read span { font-size: 0.84rem; line-height: 1.8; color: var(--taupe); }
 .rb-read-path b { color: var(--plum-deep); }
+
+
+/* ---------- Swipe rails on small screens ----------
+   The repeating groups were one card per row on mobile: five tools and five
+   doors alone accounted for ten full-height blocks, which is most of why the
+   page measured 17.6 screens. Side by side with a swipe they cost one screen
+   each, and the peeking next card tells her there is more without a label. */
+@media (max-width: 699px) {
+  .rb-doors,
+  .rb-tools,
+  .rb-gallery-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 76%;
+    grid-template-columns: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 1rem;
+    padding-bottom: 0.7rem;
+    scrollbar-width: none;
+  }
+  .rb-gallery-grid { grid-auto-columns: 58%; }
+  .rb-doors::-webkit-scrollbar,
+  .rb-tools::-webkit-scrollbar,
+  .rb-gallery-grid::-webkit-scrollbar { display: none; }
+  .rb-doors > *,
+  .rb-tools > *,
+  .rb-gallery-grid > * { scroll-snap-align: start; }
+  /* equal heights inside a rail, so the row does not look ragged */
+  .rb-door, .rb-tool { height: 100%; }
+  .rb-ladder-rungs {
+    grid-auto-flow: column; grid-auto-columns: 82%;
+    overflow-x: auto; scroll-snap-type: x proximity;
+    scroll-padding-inline: 1rem; padding-bottom: 0.7rem; scrollbar-width: none;
+  }
+  .rb-ladder-rungs::-webkit-scrollbar { display: none; }
+  .rb-ladder-rungs > * { scroll-snap-align: start; }
+}
+
+
+/* Rails run to the screen edge on a phone. The cut-off card at the margin says
+   "there is more this way" without a label, and the row stops looking like a
+   narrow column of its own. */
+@media (max-width: 699px) {
+  .rb-doors, .rb-tools, .rb-gallery-grid, .rb-ladder-rungs {
+    margin-inline: calc(50% - 50vw);
+    padding-inline: calc(50vw - 50% + 0.2rem);
+    scroll-padding-inline: calc(50vw - 50% + 0.2rem);
+  }
+}
+
+/* The foot bar on a phone is one tight row, so the secondary line would clip.
+   It belongs to the wide rail, where there is a column to hold it. */
+.rb-sticky-quiz { display: none; }
+@media (min-width: 861px) { .rb-sticky-quiz { display: block; } }
