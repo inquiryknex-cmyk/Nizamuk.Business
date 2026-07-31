@@ -184,7 +184,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260801c">
-  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801i">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801j">
 
   <script type="application/ld+json">
   {
@@ -597,7 +597,7 @@ ${reads(p.slug)}
     <span class="rb-sticky-name">نظام إعادة البناء، ${p.name}</span>
     <span class="rb-sticky-price">${p.pages} صفحة، 109 ر.س</span>
   </div>
-  <a class="btn btn-gold" href="#galleryH" data-rb-sticky-action data-rb-cta="preview" data-rb-pos="sticky">تصفّحي صفحات من الكتاب</a>
+  <a class="btn btn-gold" href="#galleryH" data-rb-sticky-action data-rb-cta="preview" data-rb-pos="sticky">خذي جولة داخل الكتاب؟</a>
   <a class="rb-sticky-quiz" href="/ikhtibar/?source=rebuild_${p.slug}&amp;origin=sticky" data-rb-cta="quiz" data-rb-pos="sticky">لستِ متأكدة أنه نمطكِ؟</a>
 </div>
 
@@ -610,7 +610,7 @@ ${reads(p.slug)}
 <script>window.NIZAMOK_REBUILD = { pattern: '${p.slug}', patternName: '${p.name}', price: 109, currency: 'SAR' };</script>
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
-<script src="/assets/js/rebuild.js?v=20260801i" defer></script>
+<script src="/assets/js/rebuild.js?v=20260801j" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 </body>
 </html>
