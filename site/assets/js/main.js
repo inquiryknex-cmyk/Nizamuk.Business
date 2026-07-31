@@ -11,6 +11,107 @@
   const I18N_UI = (document.documentElement.lang === 'en'
     && window.NIZAMOK_I18N_EN && window.NIZAMOK_I18N_EN.mainUi) || null;
 
+  /* ---------- Draggable floating controls ----------
+     The ambient-sound bloom and the language pill are position:fixed, so on
+     some pages they sit on top of something the visitor wants to read. Rather
+     than guess a safe corner for every page, let her move them and remember
+     where she put them.
+
+     A drag must not swallow the click: movement under DRAG_MIN px is treated
+     as a tap and the button/link behaves normally. */
+  function makeDraggable(el, key) {
+    if (!el || el.dataset.draggableReady) return;
+    el.dataset.draggableReady = '1';
+
+    var DRAG_MIN = 5;
+    var MARGIN = 8;
+    var STORE = 'nizamok_pos_' + key;
+    var startX, startY, baseLeft, baseTop, moved, dragging;
+
+    function clamp(left, top) {
+      var r = el.getBoundingClientRect();
+      var maxL = window.innerWidth - r.width - MARGIN;
+      var maxT = window.innerHeight - r.height - MARGIN;
+      return {
+        left: Math.min(Math.max(left, MARGIN), Math.max(MARGIN, maxL)),
+        top: Math.min(Math.max(top, MARGIN), Math.max(MARGIN, maxT))
+      };
+    }
+
+    function place(left, top) {
+      var p = clamp(left, top);
+      el.style.left = p.left + 'px';
+      el.style.top = p.top + 'px';
+      el.style.right = 'auto';
+      el.style.bottom = 'auto';
+      /* the idle float animation fights an explicit top — drop it once moved */
+      el.style.animation = 'none';
+      return p;
+    }
+
+    /* restore */
+    try {
+      var saved = JSON.parse(localStorage.getItem(STORE) || 'null');
+      if (saved && typeof saved.left === 'number') place(saved.left, saved.top);
+    } catch (e) { /* private mode — the control just keeps its default corner */ }
+
+    el.style.touchAction = 'none';
+    el.classList.add('is-draggable');
+
+    el.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0 && e.pointerType === 'mouse') return;
+      var r = el.getBoundingClientRect();
+      startX = e.clientX; startY = e.clientY;
+      baseLeft = r.left; baseTop = r.top;
+      moved = false; dragging = true;
+      el.setPointerCapture(e.pointerId);
+    });
+
+    el.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - startX, dy = e.clientY - startY;
+      if (!moved && Math.abs(dx) + Math.abs(dy) < DRAG_MIN) return;
+      moved = true;
+      el.classList.add('is-dragging');
+      place(baseLeft + dx, baseTop + dy);
+    });
+
+    function end(e) {
+      if (!dragging) return;
+      dragging = false;
+      el.classList.remove('is-dragging');
+      try { el.releasePointerCapture(e.pointerId); } catch (err) { /* already released */ }
+      if (moved) {
+        var r = el.getBoundingClientRect();
+        try { localStorage.setItem(STORE, JSON.stringify({ left: r.left, top: r.top })); } catch (err) {}
+      }
+    }
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+
+    /* a drag that ends over the control would otherwise fire its click */
+    el.addEventListener('click', function (e) {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+    }, true);
+
+    /* keyboard: nudge with the arrows while focused, 12px a step */
+    el.addEventListener('keydown', function (e) {
+      var d = { ArrowLeft: [-12, 0], ArrowRight: [12, 0], ArrowUp: [0, -12], ArrowDown: [0, 12] }[e.key];
+      if (!d) return;
+      e.preventDefault();
+      var r = el.getBoundingClientRect();
+      var p = place(r.left + d[0], r.top + d[1]);
+      try { localStorage.setItem(STORE, JSON.stringify(p)); } catch (err) {}
+    });
+
+    /* a rotated phone must not strand the control off-screen */
+    window.addEventListener('resize', function () {
+      if (!el.style.left) return;
+      place(parseFloat(el.style.left), parseFloat(el.style.top));
+    });
+  }
+  window.nizamokMakeDraggable = makeDraggable;
+
   /* ---------- Mobile nav ---------- */
   const toggle = document.querySelector('.nav-toggle');
   const links = document.querySelector('.nav-links');
@@ -398,6 +499,7 @@
     window.addEventListener('pagehide', savePosition);
 
     document.body.appendChild(ambientSoundControl);
+    makeDraggable(ambientSoundControl, 'ambient');
 
     // Reflect the persisted choice. Never autoplay: if it was on last visit, show
     // the «استئناف الصوت» (paused) state and resume on the next interaction.
@@ -413,7 +515,8 @@
      Arabic is the primary experience; a single small side button is the only
      switcher. Each page declares its counterpart via <body data-lang-alt>. */
   function initLangSwitch() {
-    if (document.querySelector('.lang-switch')) return;  // static button already in markup
+    var existing = document.querySelector('.lang-switch');
+    if (existing) { makeDraggable(existing, 'lang'); return; }  // static button already in markup
     var alt = document.body && document.body.getAttribute('data-lang-alt');
     if (!alt) return;
     var en = document.documentElement.lang === 'en';
@@ -426,6 +529,7 @@
     a.setAttribute('aria-label', en ? 'النسخة العربية' : 'English version');
     a.title = en ? 'العربية' : 'English';
     document.body.appendChild(a);
+    makeDraggable(a, 'lang');
   }
 
   /* ---------- Waiting list form ---------- */

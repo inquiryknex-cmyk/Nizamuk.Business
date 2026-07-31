@@ -1742,3 +1742,29 @@ html[lang="en"] .ambient-caption { direction: ltr; }
 @media (max-width: 640px) {
   .lang-switch { top: 78px; left: 10px; width: 44px; height: 44px; }
 }
+
+/* ============================================================
+   DRAGGABLE FLOATING CONTROLS
+   The sound bloom and the language pill can be moved off whatever
+   they happen to be covering; JS writes left/top and remembers it.
+   ============================================================ */
+.is-draggable { cursor: grab; }
+.is-draggable:active { cursor: grabbing; }
+.is-dragging {
+  cursor: grabbing;
+  opacity: 0.9;
+  transition: none !important;
+  animation: none !important;
+}
+/* the hint appears once, on hover, and never on touch where there is no hover */
+@media (hover: hover) {
+  .is-draggable::after {
+    content: '';
+    position: absolute; inset: -6px;
+    border-radius: inherit;
+    border: 1px dashed transparent;
+    transition: border-color 0.25s ease;
+    pointer-events: none;
+  }
+  .is-draggable:hover::after { border-color: rgba(201, 167, 94, 0.45); }
+}
