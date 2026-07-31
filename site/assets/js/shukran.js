@@ -6,12 +6,12 @@
 
   What makes this safe to fire client-side:
 
-    · It requires Dodo's own return parameters. Dodo redirects here with
+    - It requires Dodo's own return parameters. Dodo redirects here with
       ?payment_id=pay_…&status=succeeded. No payment_id, or any status other
       than succeeded, and nothing is sent.
-    · It is deduplicated on payment_id in localStorage, so refreshing, going
+    - It is deduplicated on payment_id in localStorage, so refreshing, going
       back, or re-opening the link never counts a second sale.
-    · The item detail comes from the checkout the visitor actually started
+    - The item detail comes from the checkout the visitor actually started
       (stashed by rebuild.js), not from a URL parameter.
 
   What this still is NOT: cryptographic proof of payment. A determined person

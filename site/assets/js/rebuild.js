@@ -11,13 +11,13 @@
       };
 
   Events go through the shared trackEvent pipeline in analytics.js
-  (Zaraz → GA4 → silent no-op). Never email, names, or free text.
+  (Zaraz -> GA4 -> silent no-op). Never email, names, or free text.
 
-    · view_book_page        once per view, with book_pattern + campaign UTMs
-    · view_product_preview  first time the visitor opens a product page image
-    · begin_checkout        click on a CTA whose href IS the Dodo checkout
-    · quiz_click_from_book  click on the secondary «اكتشفي نمطكِ» quiz button
-    · scroll_50 / scroll_90 diagnostic only — NOT commercial conversions
+    - view_book_page        once per view, with book_pattern + campaign UTMs
+    - view_product_preview  first time the visitor opens a product page image
+    - begin_checkout        click on a CTA whose href IS the Dodo checkout
+    - quiz_click_from_book  click on the secondary «اكتشفي نمطكِ» quiz button
+    - scroll_50 / scroll_90 diagnostic only — NOT commercial conversions
 
   view_book_page replaces the former view_landing_page, and
   quiz_click_from_book replaces quiz_fallback_click. They are renames, not

@@ -4,7 +4,7 @@
   IMPORTANT:
   - Never put private MailerLite API keys here (this file ships to browsers).
   - To go live with email capture: paste MailerLite embedded-form action URLs
-    below (Forms → Embed form → HTML code → form action="...").
+    below (Forms -> Embed form -> HTML code -> form action="...").
   - Until endpoints are set, forms degrade gracefully: results are kept in
     localStorage and the visitor still gets her reading.
 */
@@ -28,8 +28,8 @@ window.NIZAMOK = {
   },
 
   // Interdash showcase video.
-  // type: 'mp4'  → self-hosted file (put it at src, e.g. '/assets/video/interdash.mp4')
-  // type: 'youtube' → src is the YouTube video ID (not the full URL)
+  // type: 'mp4'  -> self-hosted file (put it at src, e.g. '/assets/video/interdash.mp4')
+  // type: 'youtube' -> src is the YouTube video ID (not the full URL)
   // Leave src empty to show the premium "coming soon" poster instead.
   interdash: {
     video: {
@@ -52,7 +52,7 @@ window.NIZAMOK = {
   // journey breaks across the checkout domain and purchase never ties back.
   analytics: {
     gtmId: '',
-    ga4Id: 'G-MVH7ZVH1KJ'   // NizamOK · property 545877279 · SAR · Riyadh
+    ga4Id: 'G-MVH7ZVH1KJ'   // NizamOK - property 545877279 - SAR - Riyadh
   },
 
   pricing: {

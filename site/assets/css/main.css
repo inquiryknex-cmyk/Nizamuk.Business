@@ -161,7 +161,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .kufi { font-family: var(--font-kufi); }
 .script { font-family: var(--font-script); }
 
-/* Mandala ornament divider — ✦ between drawn lines with dots */
+/* Mandala ornament divider — * between drawn lines with dots */
 .ornament {
   display: flex; align-items: center; justify-content: center; gap: 0.8rem;
   margin: 1.6rem auto; color: var(--gold);
@@ -593,6 +593,32 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   display: flex; align-items: center; justify-content: center;
 }
 .video-shell iframe, .video-shell video { width: 100%; height: 100%; border: 0; object-fit: cover; }
+/* The click target that stands in for the video until she asks for it. */
+.video-facade {
+  position: relative; display: block; width: 100%; height: 100%;
+  padding: 0; border: 0; cursor: pointer; background: transparent;
+}
+.video-facade img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.video-play {
+  position: absolute; inset: 0; margin: auto;
+  width: 68px; height: 68px; border-radius: 50%;
+  background: rgba(20, 12, 38, 0.62);
+  border: 1px solid rgba(220, 192, 134, 0.6);
+  box-shadow: 0 14px 34px -12px rgba(0, 0, 0, 0.8);
+  transition: transform 0.4s ease, background 0.4s ease;
+}
+.video-play::after {
+  content: ''; position: absolute; inset: 0; margin: auto;
+  width: 0; height: 0;
+  border-block: 11px solid transparent;
+  border-inline-end: 18px solid var(--gold-soft);
+  border-inline-start: 0;
+  transform: translateX(3px);
+}
+html[dir="rtl"] .video-play::after { transform: translateX(-3px); }
+.video-facade:hover .video-play { transform: scale(1.08); background: rgba(20, 12, 38, 0.78); }
+.video-facade:focus-visible { outline: 2px solid var(--gold-soft); outline-offset: 3px; }
+
 .video-poster { text-align: center; color: #EFE6D6; padding: 1.5rem; }
 .video-poster .kufi { font-size: 1.4rem; color: var(--gold-soft); margin-bottom: 0.5rem; }
 .video-poster p { font-size: 0.9rem; opacity: 0.8; }
@@ -1094,7 +1120,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   font-size: 1.08rem; font-weight: 700; color: var(--lavender-soft);
   margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.6rem;
 }
-.mirrors h3::before { content: '✦'; color: var(--lavender); font-size: 0.85rem; }
+.mirrors h3::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex: none; background: var(--lavender); }
 .mirrors p {
   color: rgba(239, 231, 218, 0.88); font-size: 0.95rem; line-height: 2;
   margin-bottom: 0.9rem;
@@ -1103,7 +1129,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 
 .reading { border-top: 1px dashed rgba(214, 186, 128, 0.3); padding-top: 1.9rem; margin-top: 1.6rem; }
 .reading h3 { font-size: 1.12rem; font-weight: 700; color: var(--gold-soft); margin: 1.5rem 0 0.5rem; display: flex; align-items: center; gap: 0.6rem; }
-.reading h3::before { content: '✦'; color: var(--gold); font-size: 0.8rem; }
+.reading h3::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex: none; background: var(--gold); }
 .reading p { color: rgba(239, 231, 218, 0.85); font-size: 0.98rem; }
 .sent-note { font-size: 0.86rem; color: rgba(239, 231, 218, 0.6); text-align: center; margin-top: 1.7rem; }
 .sent-note a { color: var(--gold-soft); text-decoration: underline; }
@@ -1335,6 +1361,40 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   border: 1px solid rgba(220, 192, 134, 0.3);
 }
 .mx-orb img { width: 58%; height: auto; opacity: 0.96; }
+
+/* The quiz card shows the real thing: a handset holding an actual result screen. */
+.mx-phone {
+  position: relative; margin: 0 auto; max-width: 236px;
+  padding: 0.55rem 0.55rem 0.5rem;
+  border-radius: 26px;
+  border: 1px solid rgba(220, 192, 134, 0.42);
+  background: linear-gradient(160deg, rgba(58, 43, 96, 0.9), rgba(24, 16, 44, 0.96));
+  box-shadow: 0 34px 62px -26px rgba(4, 2, 10, 0.92), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mx-card:hover .mx-phone { transform: translateY(-4px) rotate(-1deg); }
+.reduced-motion .mx-phone { transform: none !important; }
+.mx-phone-glow {
+  position: absolute; inset: -26% -18% auto; height: 70%; z-index: -1;
+  background: radial-gradient(ellipse at 50% 40%, rgba(201, 167, 94, 0.3), rgba(36, 26, 62, 0) 70%);
+  filter: blur(6px);
+}
+.mx-phone-notch {
+  position: absolute; top: 0.55rem; left: 50%; transform: translateX(-50%);
+  width: 52px; height: 4px; border-radius: 3px;
+  background: rgba(220, 192, 134, 0.3);
+}
+.mx-phone img {
+  display: block; width: 100%; height: auto;
+  border-radius: 20px;
+  /* the shot is a tall card; show its head, where the pattern and the bars are */
+  aspect-ratio: 0.78; object-fit: cover; object-position: top center;
+}
+.mx-phone figcaption {
+  margin-top: 0.6rem; text-align: center;
+  font-size: 0.72rem; line-height: 1.7;
+  color: rgba(240, 233, 222, 0.6);
+}
 
 .mx-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.9rem; }
 .mx-tag {
@@ -1733,7 +1793,7 @@ select:focus-visible,
    Ambient sound — opt-in blossom control (matches the site's flower motif).
    A recognisable flower at all times: a soft upward bud when off, a full bloom
    with gold glow + sound-wave ripples when playing. A small caption states its
-   purpose. Lavender→rose petals, gold core, gold sparkles (dashboard palette).
+   purpose. Lavender->rose petals, gold core, gold sparkles (dashboard palette).
    ============================================================ */
 /* Clip the decorative flower art that bleeds ~10px past the edges so the page
    never scrolls horizontally. `clip` (not `hidden`) prevents scroll without

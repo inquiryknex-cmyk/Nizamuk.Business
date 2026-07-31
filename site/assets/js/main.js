@@ -197,12 +197,23 @@
     const v = (CONFIG.interdash && CONFIG.interdash.video) || {};
     if (v.aspect === '4:5') shell.classList.add('portrait');
     if (v.src && v.type === 'mp4') {
+      /* Facade: the poster is all that loads. The <video> element, and with it
+         several megabytes, is created only when she actually asks to watch.
+         Before this, `preload="metadata"` alone pulled the whole file on the
+         home page and dominated its weight. */
       shell.innerHTML =
-        '<video controls playsinline preload="metadata"' +
-        (v.poster ? ' poster="' + v.poster + '"' : '') +
-        ' src="' + v.src + '"></video>';
-      const vid = shell.querySelector('video');
-      if (vid) {
+        '<button type="button" class="video-facade" aria-label="شغّلي العرض">' +
+        (v.poster ? '<img src="' + v.poster + '" alt="" loading="lazy" decoding="async">' : '') +
+        '<span class="video-play" aria-hidden="true"></span>' +
+        '</button>';
+
+      shell.querySelector('.video-facade').addEventListener('click', function () {
+        shell.innerHTML =
+          '<video controls playsinline autoplay preload="auto"' +
+          (v.poster ? ' poster="' + v.poster + '"' : '') +
+          ' src="' + v.src + '"></video>';
+        const vid = shell.querySelector('video');
+        if (!vid) return;
         let played = false;
         vid.addEventListener('play', function () {
           if (played) return; played = true; // once per page session
@@ -212,7 +223,7 @@
             source_section: shell.closest('#interdash') ? 'home_interdash' : 'interdash_page'
           });
         });
-      }
+      });
     } else if (v.src && v.type === 'youtube') {
       shell.innerHTML =
         '<iframe src="https://www.youtube-nocookie.com/embed/' + v.src +
@@ -265,9 +276,9 @@
        with a small caption so its purpose is clear. It stays a recognisable
        flower at all times: a soft upward bud when off, a full bloom + gold glow
        + sound-wave ripples when playing. Caption + aria-label update with state:
-         initial → «ابدئي الرحلة الصوتية»  (start)
-         playing → «إيقاف الصوت»            (stop)
-         paused  → «استئناف الصوت»          (resume) */
+         initial -> «ابدئي الرحلة الصوتية»  (start)
+         playing -> «إيقاف الصوت»            (stop)
+         paused  -> «استئناف الصوت»          (resume) */
     var LABELS = (I18N_UI && I18N_UI.ambient) ||
       { initial: 'ابدئي الرحلة الصوتية', playing: 'إيقاف الصوت', paused: 'استئناف الصوت' };
     // Two petal rings (8 outer + 5 inner, offset) — layered like the site's
@@ -368,7 +379,7 @@
     function stopSavingPosition() { if (posTimer) { clearInterval(posTimer); posTimer = null; } }
 
     function handleFailure() {
-      // Missing asset or playback error → reset cleanly, no error loop, no broken UI.
+      // Missing asset or playback error -> reset cleanly, no error loop, no broken UI.
       assetUnavailable = true;
       ambientSoundEnabled = false;
       pendingResume = false;
@@ -409,7 +420,7 @@
           reflectUI(); fadeTo(TARGET_VOL, FADE_MS); startSavingPosition();
         }).catch(function () {
           if (userInitiated) handleFailure();
-          else {                                   // autoplay blocked → wait for a gesture
+          else {                                   // autoplay blocked -> wait for a gesture
             ambientSoundEnabled = false; writeState({ enabled: false });
             pendingResume = true; reflectUI(); armResume();
           }
@@ -454,13 +465,13 @@
       if (ambientSoundEnabled) {
         ambientSoundEnabled = false;
         writeState({ enabled: false });
-        reflectUI();          // → «استئناف الصوت»
+        reflectUI();          // -> «استئناف الصوت»
         stopAmbient();
       } else {
         ambientSoundEnabled = true;
         writeState({ enabled: true });
-        reflectUI();          // → «إيقاف الصوت» (optimistic; reset on failure)
-        startAmbient(true);   // click is a user gesture → playback is allowed
+        reflectUI();          // -> «إيقاف الصوت» (optimistic; reset on failure)
+        startAmbient(true);   // click is a user gesture -> playback is allowed
       }
     }
     ambientSoundControl.addEventListener('click', toggle);
@@ -556,7 +567,7 @@
 
     const payload = {
       email: email.trim(),
-      // MailerLite's default "name" field = first name → usable as {$name} in emails.
+      // MailerLite's default "name" field = first name -> usable as {$name} in emails.
       fields: { name: name.trim(), pattern: pattern, source: 'interdash_waitlist' }
     };
 
