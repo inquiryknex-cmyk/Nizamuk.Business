@@ -1533,6 +1533,59 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   .art-type img, .art-item-img img { width: 120px; }
 }
 
+/* the fork — two doors, side by side, for two different readers */
+.fork {
+  margin: 2.2rem 0;
+  border: 1px solid rgba(201, 167, 94, 0.4);
+  border-radius: var(--radius-lg);
+  background: rgba(201, 167, 94, 0.05);
+  padding: 1.5rem 1.3rem 1.4rem;
+}
+.fork-h {
+  display: block; text-align: center;
+  font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.02rem; color: var(--plum-deep); margin-bottom: 1.2rem;
+}
+.fork-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.fork-col {
+  background: var(--card);
+  border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: var(--radius-md);
+  padding: 1.2rem 1.1rem;
+  display: flex; flex-direction: column;
+}
+.fork-col-quiz {
+  border-color: rgba(227, 168, 172, 0.55);
+  background: radial-gradient(130% 100% at 50% 0%, rgba(227, 168, 172, 0.14), var(--card) 62%);
+  text-align: center;
+}
+.fork-t {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 0.98rem; color: var(--plum-deep); margin-bottom: 0.5rem;
+}
+.fork-col p { font-size: 0.88rem !important; line-height: 1.95; margin-bottom: 0.9rem; }
+.fork-picks { display: grid; gap: 0.4rem; margin-top: auto; }
+.fork-picks a {
+  display: block; min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.86rem; line-height: 1.4;
+  color: var(--plum-deep) !important; text-decoration: none;
+  border: 1px solid rgba(201, 167, 94, 0.32);
+  border-radius: var(--radius-md);
+  background: rgba(201, 167, 94, 0.05);
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+.fork-picks a:hover {
+  border-color: var(--gold); background: rgba(201, 167, 94, 0.14);
+  transform: translateY(-1px);
+}
+.fork-btn {
+  margin-top: auto; min-height: 50px;
+  white-space: normal; line-height: 1.45;
+  font-size: 0.95rem; padding-inline: 1.2rem;
+}
+@media (max-width: 620px) { .fork-cols { grid-template-columns: 1fr; } }
+
 .art-kicker {
   display: block; text-align: center;
   font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em;
