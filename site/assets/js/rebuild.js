@@ -133,6 +133,24 @@
     }).observe(hero);
   })();
 
+  /* ---------- Persistent bar: look inside first, buy after ---------- */
+  var stickyPromoted = false;
+  function promoteSticky() {
+    if (stickyPromoted) return;
+    var bar = document.querySelector('[data-rb-sticky]');
+    var action = bar && bar.querySelector('[data-rb-sticky-action]');
+    var checkout = bar && bar.getAttribute('data-checkout');
+    if (!action || !checkout) return;
+    stickyPromoted = true;
+
+    action.setAttribute('href', checkout);
+    action.setAttribute('rel', 'nofollow noopener');
+    action.setAttribute('data-rb-cta', 'buy');
+    action.textContent = 'احصلي عليه الآن';
+    bar.classList.add('is-promoted');
+    track('sticky_promoted', base());
+  }
+
   /* ---------- 4. Product gallery — only show shots that actually exist ----------
      Every figure starts hidden. We probe its image; a figure appears only once
      its file loads. The section itself stays hidden until at least one does, so
@@ -175,6 +193,11 @@
       box.hidden = false;
       document.body.style.overflow = 'hidden';
       box.querySelector('.rb-lightbox-close').focus();
+
+      /* She has now seen a real page. The persistent bar stops inviting her in
+         and starts offering the book, because the offer finally answers a
+         question she has asked. */
+      promoteSticky();
 
       if (!previewTracked) {
         previewTracked = true;

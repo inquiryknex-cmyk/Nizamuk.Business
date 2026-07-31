@@ -798,3 +798,14 @@
    It belongs to the wide rail, where there is a column to hold it. */
 .rb-sticky-quiz { display: none; }
 @media (min-width: 861px) { .rb-sticky-quiz { display: block; } }
+
+/* The bar changes character once she has seen a page: from an invitation in
+   to an offer. A quiet warm-up marks the moment without announcing it. */
+.rb-sticky.is-promoted { border-color: rgba(220, 192, 134, 0.7); }
+.rb-sticky.is-promoted .btn { animation: rb-sticky-wake 0.9s ease-out 1; }
+@keyframes rb-sticky-wake {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.035); }
+  100% { transform: scale(1); }
+}
+.reduced-motion .rb-sticky.is-promoted .btn { animation: none; }

@@ -368,6 +368,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 
 .section { padding: clamp(4.5rem, 9vw, 7.5rem) 0; position: relative; }
 .section-head { text-align: center; max-width: 760px; margin-inline: auto; margin-bottom: clamp(2.6rem, 6vw, 4.2rem); }
+.section-head h1,
 .section-head h2 { font-size: clamp(1.7rem, 3.8vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; }
 .section-head p { color: var(--ink-soft); font-size: 1.02rem; }
 .velvet .section-head p { color: rgba(239, 231, 218, 0.75); }
@@ -1465,6 +1466,7 @@ html[dir="rtl"] .video-play::after { transform: translateX(-3px); }
   padding: clamp(3rem, 8vw, 5.5rem) 0;
 }
 .mx-dash .container { position: relative; z-index: 1; }
+.mx-dash .section-head h1,
 .mx-dash .section-head h2 { color: #F8F1E3; }
 .mx-dash .section-head p { color: rgba(240, 233, 222, 0.78); }
 .mx-screens {

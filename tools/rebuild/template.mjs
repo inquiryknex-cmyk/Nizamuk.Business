@@ -183,8 +183,8 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260801b">
-  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801h">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260801c">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801i">
 
   <script type="application/ld+json">
   {
@@ -583,15 +583,21 @@ ${reads(p.slug)}
   </div>
 </footer>
 
-<!-- Persistent CTA: a bar across the foot on a phone, a rail in the empty
-     margin on a wide screen. Either way the price and the button stay in view
-     for the twelve screens between the hero and the closing call. -->
-<div class="rb-sticky" data-rb-sticky>
+<!-- Persistent invitation: a bar across the foot on a phone, a rail in the
+     empty margin on a wide screen.
+
+     It opens by offering a look inside, not a purchase. A woman who has not
+     yet seen a page of the book has no reason to be asked for 109 riyals every
+     screen; being asked repeatedly reads as pressure, not as help.
+
+     Once she has actually opened a page, rebuild.js swaps it to the purchase
+     ask. By then the offer answers a question she has already asked. -->
+<div class="rb-sticky" data-rb-sticky data-checkout="${checkout}">
   <div class="rb-sticky-copy">
     <span class="rb-sticky-name">نظام إعادة البناء، ${p.name}</span>
-    <span class="rb-sticky-price">109 ر.س</span>
+    <span class="rb-sticky-price">${p.pages} صفحة، 109 ر.س</span>
   </div>
-  <a class="btn btn-gold" href="${checkout}" rel="nofollow noopener" data-rb-cta="buy" data-rb-pos="sticky">احصلي عليه الآن</a>
+  <a class="btn btn-gold" href="#galleryH" data-rb-sticky-action data-rb-cta="preview" data-rb-pos="sticky">تصفّحي صفحات من الكتاب</a>
   <a class="rb-sticky-quiz" href="/ikhtibar/?source=rebuild_${p.slug}&amp;origin=sticky" data-rb-cta="quiz" data-rb-pos="sticky">لستِ متأكدة أنه نمطكِ؟</a>
 </div>
 
@@ -604,7 +610,7 @@ ${reads(p.slug)}
 <script>window.NIZAMOK_REBUILD = { pattern: '${p.slug}', patternName: '${p.name}', price: 109, currency: 'SAR' };</script>
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
-<script src="/assets/js/rebuild.js?v=20260801c" defer></script>
+<script src="/assets/js/rebuild.js?v=20260801i" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 </body>
 </html>
