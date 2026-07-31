@@ -605,13 +605,58 @@
   document.querySelectorAll('form[data-waitlist]').forEach(f =>
     f.addEventListener('submit', submitWaitlist));
 
+  /* ---------- Support links that survive a missing mail client ----------
+     Every contact route on the site is a `mailto:`. On a desktop browser with
+     no default mail handler, clicking one does nothing at all: no window, no
+     error, no address. On /shukran/ that is the worst possible failure, a
+     woman who paid and received nothing pressing a button that is silently
+     dead.
+
+     We do not preventDefault, so a phone still opens its mail app as before.
+     Alongside it we copy the address and say so, which is the whole rescue on
+     a machine where the link itself leads nowhere. */
+  function initMailtoFallback() {
+    var links = document.querySelectorAll('a[href^="mailto:"]');
+    if (!links.length) return;
+
+    var toast = null, hideTimer = null;
+    function say(msg) {
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'mail-toast';
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.classList.add('is-on');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () { toast.classList.remove('is-on'); }, 6000);
+    }
+
+    links.forEach(function (a) {
+      var address = a.getAttribute('href').replace(/^mailto:/i, '').split('?')[0];
+      if (!address) return;
+      a.addEventListener('click', function () {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(address).then(
+            function () { say('نُسخ العنوان: ' + address); },
+            function () { say('العنوان: ' + address); }
+          );
+        } else {
+          say('العنوان: ' + address);
+        }
+      });
+    });
+  }
+
   /* ---------- Footer year ---------- */
   document.querySelectorAll('[data-year]').forEach(el =>
     (el.textContent = String(new Date().getFullYear())));
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); initAmbientSound(); initLangSwitch(); });
+    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); initAmbientSound(); initLangSwitch(); initMailtoFallback(); });
   } else {
-    initMotion(); initVideo(); initAmbientSound(); initLangSwitch();
+    initMotion(); initVideo(); initAmbientSound(); initLangSwitch(); initMailtoFallback();
   }
 })();
