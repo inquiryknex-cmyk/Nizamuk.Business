@@ -1181,6 +1181,85 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
    these only add what an article has and a legal page does not.
    ============================================================ */
 
+/* breadcrumb — matches the BreadcrumbList schema on the same page */
+.crumbs {
+  max-width: 760px; margin: 0 auto 1rem;
+  font-size: 0.82rem; color: var(--taupe);
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+}
+.crumbs a { color: var(--gold-deep); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs span[aria-hidden] { opacity: 0.5; }
+
+/* table of contents — jump links for a long article */
+.toc {
+  border: 1px solid rgba(201, 167, 94, 0.35);
+  border-radius: var(--radius-md);
+  background: rgba(201, 167, 94, 0.05);
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.8rem;
+}
+.toc-h {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 0.94rem; color: var(--plum-deep); margin-bottom: 0.6rem;
+}
+.toc ol { padding-inline-start: 1.2rem; margin: 0; }
+.toc li { margin-bottom: 0.35rem; font-size: 0.9rem; }
+.toc a { color: var(--ink-soft); text-decoration: none; }
+.toc a:hover { color: var(--gold-deep); text-decoration: underline; }
+/* sticky header would otherwise swallow the heading a jump link lands on */
+.legal-card h2[id], .legal-card h3[id] { scroll-margin-top: 90px; }
+
+/* the four rumination types, each carrying its cover and its book */
+.art-types { display: grid; gap: 1.2rem; margin: 1.6rem 0 1.8rem; }
+.art-type {
+  display: flex; gap: 1.1rem; align-items: flex-start;
+  border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: var(--radius-md);
+  background: rgba(255, 253, 248, 0.7);
+  padding: 1.1rem;
+}
+.art-type img {
+  width: 86px; height: auto; flex: none;
+  border-radius: 6px; box-shadow: var(--shadow-ivory);
+}
+.art-type-h {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.02rem; color: var(--plum-deep); margin-bottom: 0.4rem;
+}
+.art-type p { font-size: 0.9rem !important; line-height: 1.95; margin-bottom: 0.5rem; }
+.art-type-fix { color: var(--ink-soft); }
+.art-type a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+/* article index */
+.art-list { display: grid; gap: 1.4rem; }
+.art-item {
+  display: flex; gap: 1.3rem; align-items: flex-start;
+  background: var(--card);
+  border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-ivory);
+  padding: 1.4rem;
+}
+.art-item-img img { width: 110px; height: auto; border-radius: 8px; display: block; }
+.art-item-kicker {
+  display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+  color: var(--gold-deep); margin-bottom: 0.35rem;
+}
+.art-item h3 { font-size: 1.15rem; color: var(--plum-deep); margin-bottom: 0.25rem; }
+.art-item h3 a { color: inherit; text-decoration: none; }
+.art-item h3 a:hover { color: var(--gold-deep); }
+.art-item-meta { font-size: 0.8rem; color: var(--taupe); margin-bottom: 0.6rem; }
+.art-item p { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.95; }
+.art-item-more {
+  display: inline-block; margin-top: 0.7rem;
+  font-size: 0.88rem; font-weight: 700; color: var(--gold-deep);
+}
+@media (max-width: 560px) {
+  .art-type, .art-item { flex-direction: column; align-items: center; text-align: center; }
+  .art-type img, .art-item-img img { width: 120px; }
+}
+
 .art-kicker {
   display: block; text-align: center;
   font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em;
