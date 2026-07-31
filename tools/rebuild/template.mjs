@@ -183,7 +183,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260801b">
   <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801h">
 
   <script type="application/ld+json">
@@ -227,7 +227,7 @@ export function renderPage(p) {
   }
   </script>
 </head>
-<body class="rb-body" data-ambient>
+<body class="rb-body" data-ambient data-lang-alt="/en/">
 
 <!-- ============================================================
      HERO, velvet chamber
@@ -605,7 +605,7 @@ ${reads(p.slug)}
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
 <script src="/assets/js/rebuild.js?v=20260801c" defer></script>
-<script src="/assets/js/main.js?v=20260719h" defer></script>
+<script src="/assets/js/main.js?v=20260801b" defer></script>
 </body>
 </html>
 `;
