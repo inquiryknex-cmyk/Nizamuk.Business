@@ -88,13 +88,21 @@
 
     /* begin_checkout is a commercial signal, so it is spent only on a link
        that genuinely leaves for Dodo. A mislabelled or relative href — an
-       ordinary in-page navigation — must never be counted as checkout intent. */
-    if (href.indexOf('checkout.dodopayments.com') === -1) return;
+       ordinary in-page navigation — must never be counted as checkout intent.
+       Two hosts qualify: the full checkout URL used by the 109 button, and the
+       dodo.pe shortlinks used by the smaller rungs lower down the page. */
+    if (href.indexOf('checkout.dodopayments.com') === -1 && href.indexOf('dodo.pe/') === -1) return;
+
+    /* Which rung she took. Without this every rung would report the price of
+       the full system, and a 19 SAR sale would land in GA4 as 109. */
+    var level = el.getAttribute('data-level') || 'rebuild';
+    var price = parseInt(el.getAttribute('data-price'), 10) || cfg.price || 109;
 
     /* begin_checkout — intent only. Value is the listed price, not revenue. */
-    p.value = cfg.price || 109;
+    p.value = price;
     p.currency = cfg.currency || 'SAR';
-    p.items = [{ item_id: 'rebuild-' + pattern, item_name: cfg.patternName || pattern, price: cfg.price || 109, quantity: 1 }];
+    p.level = level;
+    p.items = [{ item_id: level + '-' + pattern, item_name: cfg.patternName || pattern, price: price, quantity: 1 }];
     track('begin_checkout', p);
 
     /* Remember which system she is buying so /shukran/ can attribute the sale.
@@ -105,7 +113,8 @@
       localStorage.setItem('nz_pending_checkout', JSON.stringify({
         pattern: pattern,
         name: cfg.patternName || pattern,
-        value: cfg.price || 109,
+        level: level,
+        value: price,
         currency: cfg.currency || 'SAR'
       }));
     } catch (e) { /* private mode — purchase still fires, just without item detail */ }

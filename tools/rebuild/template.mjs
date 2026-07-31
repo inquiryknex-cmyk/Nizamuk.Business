@@ -9,6 +9,29 @@
   للتوليد: npm run build:rebuild
 */
 
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+/* الروابط الأدنى في السلّم تُقرأ من config.js لا تُكرَّر هنا، فيبقى مصدر
+   الحقيقة واحدًا. لاحظي اختلاف المفاتيح عن مسارات الصفحات عمدًا، وهو موثّق
+   في config.js نفسه: asirat في الرابط، asira في المفتاح. */
+const CONFIG_KEY = { mubdia: 'mubdia', asirat: 'asira', mutafadia: 'mutafadiya', kafua: 'kafua' };
+
+function lowerRungs(slug) {
+  const src = readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'site', 'assets', 'js', 'config.js'), 'utf8');
+  const key = CONFIG_KEY[slug];
+  const block = new RegExp(key + "\\s*:\\s*\\{([^}]*)\\}").exec(src);
+  if (!block) throw new Error('config.js: لا مدخل للنمط ' + key);
+  const pick = (level) => {
+    const m = new RegExp(level + "\\s*:\\s*'([^']+)'").exec(block[1]);
+    if (!m) throw new Error(`config.js: لا رابط ${level} للنمط ${key}`);
+    return m[1];
+  };
+  return { lamhat: pick('lamhat'), juthur: pick('juthur') };
+}
+
 const li = (a) => a.map(t => `          <li>${t}</li>`).join('\n');
 const fitLi = (a) => a.map(t => `            <li>${t}</li>`).join('\n');
 
@@ -100,7 +123,8 @@ export function renderPage(p) {
   const buy = (pos, label) => `<a class="btn btn-gold rb-cta" href="${checkout}" data-rb-cta="buy" data-rb-pos="${pos}">${nb(label)}</a>`;
   const cover = `https://nizamok.com/assets/product/${p.slug}/cover-og.jpg?v=4`;   // social card
   const coverThumb = `/assets/product/${p.slug}/cover-thumb.webp?v=4`;              // hero + gallery tile
-  const coverFull = `/assets/product/${p.slug}/cover.webp?v=4`;                     // lightbox
+  const coverFull = `/assets/product/${p.slug}/cover.webp?v=4`;
+  const rungs = lowerRungs(p.slug);                     // lightbox
 
   return `<!doctype html>
 <html lang="ar" dir="rtl">
@@ -131,7 +155,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
-  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260731b">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801c">
 
   <script type="application/ld+json">
   {
@@ -440,6 +464,45 @@ ${faqs(p.faq, p.slug)}
     </div>
   </section>
 
+  <!-- ====== 14.5, درجة أصغر لمن لم تحسم ======
+       تأتي بعد الأسئلة الشائعة عمدًا: من وصلت إلى هنا قرأت كل شيء ولم تشترِ
+       بعد، وهذه هي اللحظة التي تغادر فيها. والقسم مرتّب تحت زر الشراء بصريًا
+       لا بجانبه، فالنظام الكامل يبقى العرض الأول والدعوة الأخيرة له. -->
+  <section class="rb-section rb-ladder" aria-labelledby="ladderH">
+    <div class="container rb-narrow">
+      <div class="rb-ladder-card">
+        <h2 id="ladderH">لستِ مستعدة لهذا النظام بعد؟</h2>
+        <p class="rb-ladder-lead">مئة وتسعة ريالات قرار، ولا نريد أن تشتري وأنتِ غير واثقة. أمامكِ ثلاثة أبواب أصغر، وكلها تفتح على النمط نفسه.</p>
+
+        <div class="rb-ladder-rungs">
+          <a class="rb-rung rb-rung-look" href="#galleryH" data-ev="ladder_inside_look" data-level="look">
+            <span class="rb-rung-k rb-rung-free">بلا مقابل</span>
+            <b>انظري داخل الكتاب أولًا</b>
+            <span class="rb-rung-d">صفحات حقيقية من الملف الذي تستلمينه، لا وصفًا له. اقرئيها بحجمها الكامل ثم قرّري.</span>
+          </a>
+
+          <a class="rb-rung" href="${rungs.lamhat}" target="_blank" rel="noopener"
+             data-rb-cta="buy" data-rb-pos="ladder" data-level="lamhat" data-price="19"
+             data-ev="ladder_down_click">
+            <span class="rb-rung-k">19 ر.س</span>
+            <b>لمحات نمطكِ</b>
+            <span class="rb-rung-d">قراءة مركّزة لما يحدث في يومكِ الآن: أين تتعطلين، وما السلوك الذي يخدعكِ وأنتِ تحسبينه إنجازًا.</span>
+          </a>
+
+          <a class="rb-rung" href="${rungs.juthur}" target="_blank" rel="noopener"
+             data-rb-cta="buy" data-rb-pos="ladder" data-level="juthur" data-price="49"
+             data-ev="ladder_down_click">
+            <span class="rb-rung-k">49 ر.س</span>
+            <b>جذور نمطكِ</b>
+            <span class="rb-rung-d">كتابٌ في أصل النمط: من أين بدأ، وما الشعور الذي يحميه، ولماذا يعود كلما ظننتِ أنكِ تجاوزتِه.</span>
+          </a>
+        </div>
+
+        <p class="rb-ladder-note">والترتيب يصف عمق السؤال لا شرط الشراء. إن بدأتِ من درجة أصغر ثم أردتِ النظام الكامل، فلا شيء يضيع، فكل واحدة تُقرأ وحدها وتكفي وحدها.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ====== 15, CTA النهائي (velvet) ====== -->
   <section class="velvet rb-final" aria-labelledby="finalH">    <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:6%;opacity:0.4" loading="lazy">
     <div class="container rb-narrow">
@@ -487,7 +550,7 @@ ${faqs(p.faq, p.slug)}
 <script>window.NIZAMOK_REBUILD = { pattern: '${p.slug}', patternName: '${p.name}', price: 109, currency: 'SAR' };</script>
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
-<script src="/assets/js/rebuild.js?v=20260731a" defer></script>
+<script src="/assets/js/rebuild.js?v=20260801c" defer></script>
 <script src="/assets/js/main.js?v=20260719h" defer></script>
 </body>
 </html>

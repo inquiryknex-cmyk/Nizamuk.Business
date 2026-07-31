@@ -27,7 +27,7 @@
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
-  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260731b">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801c">
 
   <script type="application/ld+json">
   {
@@ -448,6 +448,45 @@
     </div>
   </section>
 
+  <!-- ====== 14.5, درجة أصغر لمن لم تحسم ======
+       تأتي بعد الأسئلة الشائعة عمدًا: من وصلت إلى هنا قرأت كل شيء ولم تشترِ
+       بعد، وهذه هي اللحظة التي تغادر فيها. والقسم مرتّب تحت زر الشراء بصريًا
+       لا بجانبه، فالنظام الكامل يبقى العرض الأول والدعوة الأخيرة له. -->
+  <section class="rb-section rb-ladder" aria-labelledby="ladderH">
+    <div class="container rb-narrow">
+      <div class="rb-ladder-card">
+        <h2 id="ladderH">لستِ مستعدة لهذا النظام بعد؟</h2>
+        <p class="rb-ladder-lead">مئة وتسعة ريالات قرار، ولا نريد أن تشتري وأنتِ غير واثقة. أمامكِ ثلاثة أبواب أصغر، وكلها تفتح على النمط نفسه.</p>
+
+        <div class="rb-ladder-rungs">
+          <a class="rb-rung rb-rung-look" href="#galleryH" data-ev="ladder_inside_look" data-level="look">
+            <span class="rb-rung-k rb-rung-free">بلا مقابل</span>
+            <b>انظري داخل الكتاب أولًا</b>
+            <span class="rb-rung-d">صفحات حقيقية من الملف الذي تستلمينه، لا وصفًا له. اقرئيها بحجمها الكامل ثم قرّري.</span>
+          </a>
+
+          <a class="rb-rung" href="https://dodo.pe/lamhat-kafua-inter" target="_blank" rel="noopener"
+             data-rb-cta="buy" data-rb-pos="ladder" data-level="lamhat" data-price="19"
+             data-ev="ladder_down_click">
+            <span class="rb-rung-k">19 ر.س</span>
+            <b>لمحات نمطكِ</b>
+            <span class="rb-rung-d">قراءة مركّزة لما يحدث في يومكِ الآن: أين تتعطلين، وما السلوك الذي يخدعكِ وأنتِ تحسبينه إنجازًا.</span>
+          </a>
+
+          <a class="rb-rung" href="https://dodo.pe/juthur-kafua-inter" target="_blank" rel="noopener"
+             data-rb-cta="buy" data-rb-pos="ladder" data-level="juthur" data-price="49"
+             data-ev="ladder_down_click">
+            <span class="rb-rung-k">49 ر.س</span>
+            <b>جذور نمطكِ</b>
+            <span class="rb-rung-d">كتابٌ في أصل النمط: من أين بدأ، وما الشعور الذي يحميه، ولماذا يعود كلما ظننتِ أنكِ تجاوزتِه.</span>
+          </a>
+        </div>
+
+        <p class="rb-ladder-note">والترتيب يصف عمق السؤال لا شرط الشراء. إن بدأتِ من درجة أصغر ثم أردتِ النظام الكامل، فلا شيء يضيع، فكل واحدة تُقرأ وحدها وتكفي وحدها.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ====== 15, CTA النهائي (velvet) ====== -->
   <section class="velvet rb-final" aria-labelledby="finalH">    <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:6%;opacity:0.4" loading="lazy">
     <div class="container rb-narrow">
@@ -498,7 +537,7 @@
 <script>window.NIZAMOK_REBUILD = { pattern: 'kafua', patternName: 'الكفؤة المنهكة', price: 109, currency: 'SAR' };</script>
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
-<script src="/assets/js/rebuild.js?v=20260731a" defer></script>
+<script src="/assets/js/rebuild.js?v=20260801c" defer></script>
 <script src="/assets/js/main.js?v=20260719h" defer></script>
 </body>
 </html>
