@@ -2133,3 +2133,27 @@ html[lang="en"] .ambient-caption { direction: ltr; }
 }
 .mail-toast.is-on { opacity: 1; transform: translateY(0); }
 .reduced-motion .mail-toast { transition: none; }
+
+/* ---------- Comparison table inside an article ----------
+   Wide content must scroll inside its own box, never push the page sideways. */
+.art-table-wrap { overflow-x: auto; margin: 1.6rem 0; -webkit-overflow-scrolling: touch; }
+.art-table {
+  width: 100%; min-width: 34rem; border-collapse: collapse;
+  font-size: 0.9rem; line-height: 1.85; text-align: start;
+}
+.art-table caption {
+  caption-side: top; text-align: start;
+  font-size: 0.84rem; color: var(--taupe); padding-bottom: 0.7rem;
+}
+.art-table th, .art-table td {
+  padding: 0.7rem 0.85rem; vertical-align: top; text-align: start;
+  border-bottom: 1px solid rgba(201, 167, 94, 0.22);
+}
+.art-table thead th {
+  font-family: var(--font-kufi); font-weight: 600; font-size: 0.85rem;
+  color: var(--plum-deep); background: rgba(201, 167, 94, 0.09);
+  border-bottom: 1px solid rgba(201, 167, 94, 0.4);
+}
+.art-table tbody th { font-weight: 700; color: var(--plum-deep); white-space: nowrap; }
+.art-table tbody td { color: var(--ink-soft); }
+.art-table tbody tr:last-child th, .art-table tbody tr:last-child td { border-bottom: 0; }
