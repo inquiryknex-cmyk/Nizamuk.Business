@@ -8,7 +8,8 @@
     "build:rebuild": "node tools/rebuild/build.mjs",
     "preview": "wrangler dev",
     "deploy": "wrangler deploy",
-    "indexnow": "node tools/indexnow.mjs"
+    "indexnow": "node tools/indexnow.mjs",
+    "sitemap:images": "node tools/sitemap-images.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.110.0"
