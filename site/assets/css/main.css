@@ -1176,6 +1176,77 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .legal-card a { color: var(--gold-deep); text-decoration: underline; }
 
 /* ============================================================
+   ARTICLES (/maqalat/…) — bridge content
+   Rides .legal-card so an article inherits the whole ivory sheet;
+   these only add what an article has and a legal page does not.
+   ============================================================ */
+
+.art-kicker {
+  display: block; text-align: center;
+  font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em;
+  color: var(--gold-deep); margin-bottom: 0.7rem;
+}
+.art-byline {
+  text-align: center; font-size: 0.88rem;
+  color: var(--taupe); margin-top: 0.35rem;
+}
+.art-lead {
+  font-size: 1.06rem !important; line-height: 2.15;
+  color: var(--ink) !important;
+}
+/* Legal pages never run two paragraphs together — an h2 always separates
+   them — so .legal-card leans on the global margin reset. An article does,
+   and without this the body reads as one unbroken block. */
+.legal-card > p { margin-bottom: 1.15rem; line-height: 2.05; }
+.legal-card > ul { margin-bottom: 1.15rem; }
+.legal-card h3 {
+  font-size: 1.02rem; color: var(--plum-deep);
+  margin: 1.3rem 0 0.4rem;
+}
+.art-pull {
+  border-inline-start: 3px solid var(--gold);
+  background: rgba(201, 167, 94, 0.07);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 1.1rem 1.3rem;
+  margin: 1.5rem 0;
+  font-family: var(--font-quote);
+  font-size: 1.02rem !important; line-height: 2.05;
+  color: var(--plum-deep) !important;
+}
+.art-note {
+  margin-top: 2rem; padding-top: 1.2rem;
+  border-top: 1px solid rgba(201, 167, 94, 0.3);
+  font-size: 0.84rem !important; color: var(--taupe) !important;
+}
+
+/* The quiz door, mid-article. Deliberately the loudest element on the
+   page — an article reader is cold, and this is the only ask. */
+.art-bridge {
+  text-align: center;
+  margin: 2.4rem 0;
+  padding: 1.9rem 1.4rem 1.7rem;
+  border: 1px solid rgba(227, 168, 172, 0.55);
+  border-radius: var(--radius-lg);
+  background: radial-gradient(130% 100% at 50% 0%, rgba(227, 168, 172, 0.16), rgba(255, 253, 248, 0.4) 65%);
+}
+.art-bridge-h {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+  color: var(--plum-deep); margin-bottom: 0.6rem;
+}
+.art-bridge p { margin-bottom: 1.3rem; }
+.art-bridge-btn {
+  font-size: clamp(0.98rem, 2.6vw, 1.08rem);
+  padding: 1.05rem 2.4rem; min-height: 52px;
+  max-width: 100%; white-space: normal; line-height: 1.5;
+}
+
+@media (max-width: 430px) {
+  .art-bridge { padding-inline: 1rem; }
+  .art-bridge-btn { padding-inline: 1.3rem; }
+}
+
+/* ============================================================
    UTILITIES / MEDIA
    ============================================================ */
 
