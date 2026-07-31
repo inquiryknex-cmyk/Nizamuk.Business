@@ -98,9 +98,9 @@ export function renderPage(p) {
     + '?quantity=1&showDiscounts=false&country=SA&paymentCurrency=SAR'
     + '&showCurrencySelector=false&redirect_url=' + encodeURIComponent('https://nizamok.com/shukran/');
   const buy = (pos, label) => `<a class="btn btn-gold rb-cta" href="${checkout}" data-rb-cta="buy" data-rb-pos="${pos}">${nb(label)}</a>`;
-  const cover = `https://nizamok.com/assets/product/${p.slug}/cover-og.jpg`;   // social card
-  const coverThumb = `/assets/product/${p.slug}/cover-thumb.webp`;              // hero + gallery tile
-  const coverFull = `/assets/product/${p.slug}/cover.webp`;                     // lightbox
+  const cover = `https://nizamok.com/assets/product/${p.slug}/cover-og.jpg?v=4`;   // social card
+  const coverThumb = `/assets/product/${p.slug}/cover-thumb.webp?v=4`;              // hero + gallery tile
+  const coverFull = `/assets/product/${p.slug}/cover.webp?v=4`;                     // lightbox
 
   return `<!doctype html>
 <html lang="ar" dir="rtl">
