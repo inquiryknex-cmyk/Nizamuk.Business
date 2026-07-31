@@ -166,6 +166,65 @@
    hides the billing-portal line this way on a payment that did not succeed. */
 .rb-alt[hidden] { display: none; }
 
+/* ---------- Uncertainty escape hatch (book-first) ----------
+   The funnel sells the book; the quiz is the fallback for a visitor who cannot
+   place her own pattern. So this block is deliberately subordinate to the buy
+   button on every axis at once — it sits BELOW it (never in the same row),
+   outlined instead of filled, one step smaller, and narrower. A hairline rule
+   separates the two so the eye reads them as primary → alternative, not as a
+   pair of equal choices. */
+.rb-uncertain {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(201, 167, 94, 0.22);
+  max-width: 26rem;              /* matches .rb-cta so the rule aligns with it */
+}
+.rb-uncertain-q {
+  margin: 0 0 0.7rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--taupe);
+}
+.rb-quiz-btn {
+  display: inline-flex;
+  /* Always strictly narrower than .rb-cta (min(100%, 26rem)) — including on a
+     360px phone, where a plain max-width would let both buttons fill the
+     container and read as equals. The percentage guarantees the gap survives
+     at every width. */
+  width: min(86%, 21rem);
+  min-height: 44px;              /* touch target floor */
+  padding: 0.7rem 1.15rem;
+  font-size: 0.9rem;             /* .rb-cta is 1.03rem */
+  font-weight: 600;              /* .btn is 700 */
+  line-height: 1.45;
+  text-align: center;
+  white-space: normal;           /* the label is long — it must wrap, not clip */
+  box-shadow: none;              /* no lift: only the primary gets presence */
+}
+.rb-quiz-btn:hover { transform: none; }
+
+/* On the velvet chambers (hero + final CTA) the ghost variant already flips to
+   gold-on-dark via main.css; this only softens the border further so it never
+   competes with the gold button directly above it. */
+.velvet .rb-uncertain { border-top-color: rgba(214, 186, 128, 0.2); }
+.velvet .rb-uncertain-q { color: rgba(239, 231, 218, 0.66); }
+
+/* Inside a FAQ <details> the block is flush left with the answer text. */
+.rb-faq .rb-uncertain { margin-top: 1.1rem; max-width: 24rem; }
+
+/* Centred wherever the surrounding CTA is centred. */
+.rb-final .rb-uncertain,
+.rb-buy .rb-uncertain,
+.rb-cta-row .rb-uncertain { margin-inline: auto; text-align: center; }
+.rb-final .rb-quiz-btn,
+.rb-buy .rb-quiz-btn,
+.rb-cta-row .rb-quiz-btn { margin-inline: auto; }
+
+@media (max-width: 430px) {
+  .rb-uncertain { margin-top: 1.25rem; padding-top: 1rem; }
+  .rb-quiz-btn { font-size: 0.875rem; padding-inline: 0.9rem; }
+}
+
 /* Short trust strip under the hero CTA */
 .rb-trust {
   display: flex; flex-wrap: wrap; gap: 0.55rem 1.1rem;

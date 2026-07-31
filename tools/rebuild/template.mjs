@@ -32,9 +32,32 @@ const shots = (a) => a.map(s => {
         </figure>`;
 }).join('\n');
 
-const faqs = (a) => a.map(f => `        <details>
+/* Source-aware quiz destinations, keyed by page slug.
+   NOTE the deliberate slug ≠ source mismatch on two of them: the /rebuild/
+   directories are `mutafadia` and `kafua`, while the agreed campaign sources
+   are `mutafadiya` and `kafuaa`. This map is the ONLY place the two spellings
+   are reconciled — never derive the quiz URL from p.slug. */
+const QUIZ_URL = {
+  mubdia:     'https://nizamok.com/ikhtibar/?source=mubdia&origin=book_page',
+  asirat:     'https://nizamok.com/ikhtibar/?source=asirat&origin=book_page',
+  mutafadia:  'https://nizamok.com/ikhtibar/?source=mutafadiya&origin=book_page',
+  kafua:      'https://nizamok.com/ikhtibar/?source=kafuaa&origin=book_page'
+};
+
+/* The uncertainty escape hatch. Book-first means this is never a peer of the
+   purchase button: it sits BELOW it, stacked (never side by side), outlined
+   rather than filled, smaller, and narrower. */
+const uncertain = (slug, pos) => `<div class="rb-uncertain">
+          <p class="rb-uncertain-q">لستِ متأكدة أن هذا نمطكِ؟</p>
+          <a class="btn btn-ghost rb-quiz-btn" href="${QUIZ_URL[slug]}" data-rb-cta="quiz" data-rb-pos="${pos}">اكتشفي نمطكِ مجانًا خلال 3 دقائق</a>
+        </div>`;
+
+/* Any bare /ikhtibar/ href inside authored FAQ copy is upgraded to the
+   source-aware URL at build time, so no un-attributed quiz link can survive
+   in the content files. */
+const faqs = (a, slug) => a.map(f => `        <details>
           <summary>${f.q}</summary>
-          <p>${f.a}</p>
+          <p>${f.a.replace(/href="\/ikhtibar\/"/g, `href="${QUIZ_URL[slug]}"`)}</p>
         </details>`).join('\n');
 
 const ASSURE = 'دفعة واحدة · وصول رقمي بعد إتمام الدفع · السعر شامل الضرائب';
@@ -108,7 +131,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
-  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726e">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260731b">
 
   <script type="application/ld+json">
   {
@@ -183,7 +206,7 @@ ${li(p.promises)}
 
         ${buy('hero', p.buyLabel)}
         <span class="rb-assure">${ASSURE}</span>
-        <span class="rb-alt">لستِ متأكدة أن هذا نمطكِ؟ <a href="/ikhtibar/" data-rb-cta="quiz" data-rb-pos="hero">ابدئي الاختبار المجاني</a></span>
+        ${uncertain(p.slug, 'hero')}
 
         <p class="rb-trust">
           <span>ملف PDF تطبيقي</span>
@@ -412,7 +435,12 @@ ${fitLi(p.fitNo)}
     <div class="container rb-narrow">
       <h2 id="faqH">الأسئلة الشائعة</h2>
       <div class="rb-faq">
-${faqs(p.faq)}
+${faqs(p.faq, p.slug)}
+        <details>
+          <summary>ماذا لو لم أكن متأكدة أن هذا هو نمطي؟</summary>
+          <p>يمكنكِ البدء باختبار نظامكِ المجاني. خلال نحو 3 دقائق ستتعرفين إلى النمط الأقرب لطريقتكِ في التعامل مع المهام والطاقة والقرارات، ثم نوجّهكِ إلى النظام الأنسب لكِ.</p>
+          ${uncertain(p.slug, 'faq')}
+        </details>
       </div>
     </div>
   </section>
@@ -428,7 +456,7 @@ ${faqs(p.faq)}
       <p>${FINAL_LEAD}</p>
       ${buy('final', p.buyLabel)}
       <span class="rb-assure">${ASSURE}</span>
-      <span class="rb-alt">لستِ متأكدة أن هذا نمطكِ؟ <a href="/ikhtibar/" data-rb-cta="quiz" data-rb-pos="final">ابدئي الاختبار المجاني</a></span>
+      ${uncertain(p.slug, 'final')}
     </div>
   </section>
 
@@ -439,7 +467,7 @@ ${faqs(p.faq)}
     <p class="disclaimer">${DISCLAIMER} <a href="mailto:support@nizamok.com" style="color:var(--gold-soft)">support@nizamok.com</a></p>
     <nav class="footer-links" aria-label="روابط الموقع">
       <a href="/">الرئيسية</a>
-      <a href="/ikhtibar/">الاختبار المجاني</a>
+      <a href="${QUIZ_URL[p.slug]}">الاختبار المجاني</a>
       <a href="/privacy/">الخصوصية</a>
       <a href="/terms/">الشروط</a>
       <a href="/refund/">سياسة الاسترداد</a>
@@ -466,8 +494,8 @@ ${faqs(p.faq)}
 
 <script>window.NIZAMOK_REBUILD = { pattern: '${p.slug}', patternName: '${p.name}', price: 109, currency: 'SAR' };</script>
 <script src="/assets/js/config.js"></script>
-<script src="/assets/js/analytics.js?v=20260730a"></script>
-<script src="/assets/js/rebuild.js?v=20260726b" defer></script>
+<script src="/assets/js/analytics.js?v=20260731a"></script>
+<script src="/assets/js/rebuild.js?v=20260731a" defer></script>
 <script src="/assets/js/main.js?v=20260719h" defer></script>
 </body>
 </html>

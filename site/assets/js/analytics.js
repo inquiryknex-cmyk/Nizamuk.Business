@@ -111,6 +111,9 @@
     if (d.pattern) params.pattern_slug = d.pattern;
     if (d.level)   params.product_level = d.level;
     if (d.section) params.source_section = d.section;
+    /* Carried by the quiz's recommended-book card (recommended_book_click). */
+    if (d.recommendedPattern) params.recommended_pattern = d.recommendedPattern;
+    if (d.quizSource)         params.quiz_source = d.quizSource;
     track(d.ev, params);
   }, true);
 })();

@@ -12,6 +12,48 @@
 (function () {
   'use strict';
 
+  /* ---------- Attribution continuity ----------
+     A woman can arrive here from a Google ad (gclid), from one of the four
+     book pages (source/origin), or from any campaign (utm_*). When the result
+     sends her onward to a /rebuild/ page, those identifiers must travel with
+     her — dropping them here would orphan the click from the ad that paid for
+     it. Only our own internal destinations are rewritten; off-site checkout
+     links are left exactly as configured. */
+  var ATTRIB_KEYS = ['gclid', 'gbraid', 'wbraid', 'source', 'origin',
+                     'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+
+  function attribParams() {
+    var out = {};
+    try {
+      var q = new URLSearchParams(location.search);
+      ATTRIB_KEYS.forEach(function (k) {
+        var v = q.get(k);
+        if (v) out[k] = v;
+      });
+    } catch (e) { /* ancient browser — attribution simply does not travel */ }
+    return out;
+  }
+
+  /* The book page she came from, if any. 'direct' when she reached the quiz
+     on her own rather than from a book page or campaign. */
+  function quizSource() {
+    var a = attribParams();
+    return a.source || a.utm_source || 'direct';
+  }
+
+  /* Appends the carried params to one of our own paths, without disturbing
+     any query string the path already has. */
+  function withAttrib(path) {
+    if (!path || /^https?:/i.test(path)) return path;   // off-site → untouched
+    var a = attribParams();
+    var keys = Object.keys(a);
+    if (!keys.length) return path;
+    var qs = keys.map(function (k) {
+      return encodeURIComponent(k) + '=' + encodeURIComponent(a[k]);
+    }).join('&');
+    return path + (path.indexOf('?') === -1 ? '?' : '&') + qs;
+  }
+
   const CONFIG = window.NIZAMOK || {};
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $ = (id) => document.getElementById(id);
@@ -643,7 +685,9 @@
        keeps its direct checkout link. Falls back to checkout if the map is
        missing, so a config slip can never leave the card dead. */
     const rebuildPage = !I18N ? ((CONFIG.rebuildPages || {})[dom] || '') : '';
-    const rebuildDest = rebuildPage || links.rebuild;
+    /* withAttrib only touches our own path; the checkout fallback is off-site
+       and passes through unchanged. */
+    const rebuildDest = rebuildPage ? withAttrib(rebuildPage) : links.rebuild;
     const rebuildSameTab = !!rebuildPage;
     $('resultPath').innerHTML =
       '<h3>' + T.pathHeading + '</h3>' +
@@ -654,7 +698,8 @@
         pathCard('tier-juthur', T.cardJuthur.label, T.cardJuthur.title, T.cardJuthur.desc,
           prices.juthur, links.juthur, T.cardJuthur.cta, 'juthur_click', dom, 'juthur') +
         pathCard('tier-rebuild', T.cardRebuild.label, T.cardRebuild.title, T.cardRebuild.desc,
-          prices.rebuild, rebuildDest, T.cardRebuild.cta, 'rebuild_click', dom, 'rebuild', rebuildSameTab) +
+          prices.rebuild, rebuildDest, T.cardRebuild.cta, 'recommended_book_click', dom, 'rebuild', rebuildSameTab,
+          ' data-recommended-pattern="' + dom + '" data-quiz-source="' + quizSource() + '"') +
       '</div>' +
       '<div class="waitlist-banner">' +
         '<p>' + T.waitlistBanner((((CONFIG.interdash || {}).monthlyPriceSAR) || 29)) + '</p>' +
@@ -673,10 +718,10 @@
 
   /* sameTab: for links to our own pages. Off-site checkout links keep opening
      in a new tab so her result stays behind her; an internal page should not. */
-  function pathCard(tier, label, title, desc, price, link, cta, ev, pattern, level, sameTab) {
+  function pathCard(tier, label, title, desc, price, link, cta, ev, pattern, level, sameTab, extraData) {
     const has = !!link;
     const target = sameTab ? '' : ' target="_blank" rel="noopener"';
-    const data = ev ? ' data-ev="' + ev + '" data-pattern="' + pattern + '" data-level="' + level + '" data-section="quiz_result"' : '';
+    const data = ev ? ' data-ev="' + ev + '" data-pattern="' + pattern + '" data-level="' + level + '" data-section="quiz_result"' + (extraData || '') : '';
     return '<div class="path-card ' + tier + '">' +
       '<span class="step-label">' + label + '</span>' +
       '<h4>' + title + '</h4>' +
