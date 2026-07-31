@@ -11,13 +11,18 @@
       };
 
   Events go through the shared trackEvent pipeline in analytics.js
-  (Zaraz → GA4 → silent no-op). Never email, names, or free text.
+  (Zaraz -> GA4 -> silent no-op). Never email, names, or free text.
 
-    · view_landing_page     once per view, with pattern + campaign UTMs
-    · view_product_preview  first time the visitor opens a product page image
-    · begin_checkout        click on any CTA heading to Dodo
-    · quiz_fallback_click   click on the secondary «ابدئي الاختبار المجاني» link
-    · scroll_50 / scroll_90 diagnostic only — NOT commercial conversions
+    - view_book_page        once per view, with book_pattern + campaign UTMs
+    - view_product_preview  first time the visitor opens a product page image
+    - begin_checkout        click on a CTA whose href IS the Dodo checkout
+    - quiz_click_from_book  click on the secondary «اكتشفي نمطكِ» quiz button
+    - scroll_50 / scroll_90 diagnostic only — NOT commercial conversions
+
+  view_book_page replaces the former view_landing_page, and
+  quiz_click_from_book replaces quiz_fallback_click. They are renames, not
+  additions: firing both names for one page view or one click would be the
+  same action counted twice.
 
   `purchase` is NOT fired here — a click on Dodo is not a sale. It fires on
   /shukran/ (see shukran.js), only on Dodo's own succeeded redirect, and
@@ -39,7 +44,7 @@
 
   /* Base params carried by every event on this page. */
   function base() {
-    return { pattern_slug: pattern, page_path: location.pathname };
+    return { book_pattern: pattern, pattern_slug: pattern, page_path: location.pathname };
   }
 
   document.querySelectorAll('[data-year]').forEach(function (el) {
@@ -49,16 +54,19 @@
   if (window.__nzRebuildBound) return;
   window.__nzRebuildBound = true;
 
-  /* ---------- 1. Landing view, with campaign context ---------- */
-  (function landingView() {
+  /* ---------- 1. Book page view, with campaign context ----------
+     Guarded by the same __nzRebuildBound flag as everything below, so a
+     double-included script can never double-count the view. */
+  (function bookPageView() {
     var p = base();
+    p.page_location = location.href;
     var q = new URLSearchParams(location.search);
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) {
       var v = q.get(k);
       if (v) p[k] = v;
     });
     if (q.get('gclid')) p.has_gclid = true;
-    track('view_landing_page', p);
+    track('view_book_page', p);
   })();
 
   /* ---------- 2. Checkout intent + quiz fallback ---------- */
@@ -67,14 +75,21 @@
     if (!el) return;
 
     var kind = el.getAttribute('data-rb-cta');           // 'buy' | 'quiz'
+    var href = el.getAttribute('href') || '';
     var p = base();
     p.cta_position = el.getAttribute('data-rb-pos') || 'unknown';
 
     if (kind === 'quiz') {
-      p.destination = el.getAttribute('href') || '/ikhtibar/';
-      track('quiz_fallback_click', p);
+      p.page_origin = 'book_page';
+      p.quiz_destination = href;
+      track('quiz_click_from_book', p);
       return;
     }
+
+    /* begin_checkout is a commercial signal, so it is spent only on a link
+       that genuinely leaves for Dodo. A mislabelled or relative href — an
+       ordinary in-page navigation — must never be counted as checkout intent. */
+    if (href.indexOf('checkout.dodopayments.com') === -1) return;
 
     /* begin_checkout — intent only. Value is the listed price, not revenue. */
     p.value = cfg.price || 109;

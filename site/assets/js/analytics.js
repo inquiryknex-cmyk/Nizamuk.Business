@@ -2,10 +2,10 @@
   NizamOk — privacy-conscious funnel analytics.
 
   Provider order (first available wins), then silent no-op:
-    1. GA4 (only if real) → window.gtag('event', name, params)   [needs window.NIZAMOK_GA_READY === true]
-    2. GTM (only if real) → window.dataLayer.push(...)           [needs window.NIZAMOK_GTM_READY === true]
-    3. Cloudflare Zaraz   → window.zaraz.track(name, params)
-    4. none configured    → fail silently (never throws, never logs)
+    1. GA4 (only if real) -> window.gtag('event', name, params)   [needs window.NIZAMOK_GA_READY === true]
+    2. GTM (only if real) -> window.dataLayer.push(...)           [needs window.NIZAMOK_GTM_READY === true]
+    3. Cloudflare Zaraz   -> window.zaraz.track(name, params)
+    4. none configured    -> fail silently (never throws, never logs)
 
   GA4 comes FIRST on purpose. Zaraz is auto-injected on the zone, so with the
   old Zaraz-first order every custom event — purchase and begin_checkout
@@ -58,8 +58,8 @@
 
       /* GA4 DebugView only shows devices in debug mode. Add ?debug_mode=1 to
          any page to switch it on, and it sticks for the rest of the tab —
-         which matters because the purchase test crosses pages: landing →
-         Dodo → /shukran/. Add ?debug_mode=0 to turn it back off. */
+         which matters because the purchase test crosses pages: landing ->
+         Dodo -> /shukran/. Add ?debug_mode=0 to turn it back off. */
       var debugOn = false;
       try {
         var qd = new URLSearchParams(location.search).get('debug_mode');
@@ -94,7 +94,7 @@
         window.zaraz.track(name, p);
         return;
       }
-      /* no provider yet → silent */
+      /* no provider yet -> silent */
     } catch (e) { /* never break the user experience */ }
   }
 
@@ -111,6 +111,9 @@
     if (d.pattern) params.pattern_slug = d.pattern;
     if (d.level)   params.product_level = d.level;
     if (d.section) params.source_section = d.section;
+    /* Carried by the quiz's recommended-book card (recommended_book_click). */
+    if (d.recommendedPattern) params.recommended_pattern = d.recommendedPattern;
+    if (d.quizSource)         params.quiz_source = d.quizSource;
     track(d.ev, params);
   }, true);
 })();

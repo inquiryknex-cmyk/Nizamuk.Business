@@ -5,7 +5,7 @@
   هو ملف المحتوى في ./content/<slug>.mjs فقط. البنية معرَّفة هنا مرة واحدة،
   فلا تتفرّق القوالب عند تعديل قسم.
 
-  المخرَج HTML ثابت يُلتزم به في المستودع — الموقع نفسه بلا خطوة بناء.
+  المخرَج HTML ثابت يُلتزم به في المستودع، الموقع نفسه بلا خطوة بناء.
   للتوليد: npm run build:rebuild
 */
 
@@ -32,12 +32,35 @@ const shots = (a) => a.map(s => {
         </figure>`;
 }).join('\n');
 
-const faqs = (a) => a.map(f => `        <details>
+/* Source-aware quiz destinations, keyed by page slug.
+   NOTE the deliberate slug ≠ source mismatch on two of them: the /rebuild/
+   directories are `mutafadia` and `kafua`, while the agreed campaign sources
+   are `mutafadiya` and `kafuaa`. This map is the ONLY place the two spellings
+   are reconciled، never derive the quiz URL from p.slug. */
+const QUIZ_URL = {
+  mubdia:     'https://nizamok.com/ikhtibar/?source=mubdia&origin=book_page',
+  asirat:     'https://nizamok.com/ikhtibar/?source=asirat&origin=book_page',
+  mutafadia:  'https://nizamok.com/ikhtibar/?source=mutafadiya&origin=book_page',
+  kafua:      'https://nizamok.com/ikhtibar/?source=kafuaa&origin=book_page'
+};
+
+/* The uncertainty escape hatch. Book-first means this is never a peer of the
+   purchase button: it sits BELOW it, stacked (never side by side), outlined
+   rather than filled, smaller, and narrower. */
+const uncertain = (slug, pos) => `<div class="rb-uncertain">
+          <p class="rb-uncertain-q">لستِ متأكدة أن هذا نمطكِ؟</p>
+          <a class="btn btn-ghost rb-quiz-btn" href="${QUIZ_URL[slug]}" data-rb-cta="quiz" data-rb-pos="${pos}">اكتشفي نمطكِ مجانًا خلال 3 دقائق</a>
+        </div>`;
+
+/* Any bare /ikhtibar/ href inside authored FAQ copy is upgraded to the
+   source-aware URL at build time, so no un-attributed quiz link can survive
+   in the content files. */
+const faqs = (a, slug) => a.map(f => `        <details>
           <summary>${f.q}</summary>
-          <p>${f.a}</p>
+          <p>${f.a.replace(/href="\/ikhtibar\/"/g, `href="${QUIZ_URL[slug]}"`)}</p>
         </details>`).join('\n');
 
-const ASSURE = 'دفعة واحدة · وصول رقمي بعد إتمام الدفع · السعر شامل الضرائب';
+const ASSURE = 'دفعة واحدة، وصول رقمي بعد إتمام الدفع، السعر شامل الضرائب';
 const CLOSING = 'إن تعرفتِ على أكثر من ثلاثة مشاهد، فالمشكلة ليست أنكِ لا تعرفين ماذا تفعلين. المشكلة أن هناك نمطًا يعيد ترتيب قراركِ في اللحظة الحاسمة.';
 const SAFETY = 'هذه نتائج تطبيقية محتملة وليست ضمانًا. مقدار الفائدة يعتمد على ملاءمة النمط واستمرار التطبيق والسياق الشخصي.';
 const LIMITS = 'نظامك منصة عربية للتفكير الذاتي والإدارة السلوكية العملية للنساء. يساعدكِ هذا المنتج على تسمية نمط متكرر وتجربة استجابات أكثر وعيًا وتنظيمًا. لا يقدم تشخيصًا نفسيًا أو طبيًا، ولا يعد بنتيجة مضمونة، ولا يستبدل العلاج أو الرعاية المتخصصة عند الحاجة. النتائج تختلف باختلاف التطبيق والسياق.';
@@ -65,11 +88,11 @@ export function renderPage(p) {
   const nb = (s) => s.replace(/109 ر\.س/g, '109\u00A0ر.س');
   /* Checkout URL. The dodo.pe shortener DROPS query params, so we link the
      product page directly and carry them ourselves:
-       country=SA               → billing country starts on Saudi Arabia
-       paymentCurrency=SAR      → she is charged in riyals
-       showCurrencySelector=false → the 109 ر.س promised on this page is the
+       country=SA               billing country starts on Saudi Arabia
+       paymentCurrency=SAR      she is charged in riyals
+       showCurrencySelector=false the 109 ر.س promised on this page is the
                                     number she sees at checkout, always
-       redirect_url             → back to /shukran/ after payment
+       redirect_url             back to /shukran/ after payment
      Country stays editable so GCC buyers outside KSA are not blocked. */
   const checkout = `https://checkout.dodopayments.com/buy/${p.productId}`
     + '?quantity=1&showDiscounts=false&country=SA&paymentCurrency=SAR'
@@ -108,13 +131,13 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
-  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726e">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260731b">
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "نظام إعادة البناء — ${p.name}",
+    "name": "نظام إعادة البناء، ${p.name}",
     "description": "ملف PDF عربي تطبيقي من ${p.pages} صفحة لنمط ${p.name}: خمس مراحل، خمس أدوات، تجربة توقيعية مكتوبة، صفحات تطبيق، وخطط 7 و30 و90 يومًا.",
     "url": "https://nizamok.com/rebuild/${p.slug}/",
     "image": "${cover}",
@@ -138,17 +161,14 @@ export function renderPage(p) {
 <body class="rb-body" data-ambient>
 
 <!-- ============================================================
-     HERO — velvet chamber
+     HERO, velvet chamber
      ============================================================ -->
-<div class="velvet rb-hero" data-rb-hero>
-  <span class="k-star" aria-hidden="true" style="top:9%;inset-inline-start:6%">✦</span>
-  <span class="k-star" aria-hidden="true" style="top:26%;inset-inline-end:5%;font-size:0.7rem">✦</span>
-  <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:2%;opacity:0.42">
+<div class="velvet rb-hero" data-rb-hero>  <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:2%;opacity:0.42">
   <img class="flower fl-l" src="/assets/img/flower-l.png" alt="" width="220" height="220" style="bottom:4%;opacity:0.32" loading="lazy">
 
   <div class="container">
     <header class="rb-topbar">
-      <a class="brand" href="/" aria-label="نظامك — الصفحة الرئيسية">
+      <a class="brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
         <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="40" height="40">
         <img class="wordmark-img" src="/assets/img/wordmark.png" alt="NizamOk" width="112" height="28">
       </a>
@@ -169,7 +189,7 @@ export function renderPage(p) {
 
       <div class="rb-hero-media">
         <div class="rb-cover-frame">
-          <img src="${coverThumb}" alt="غلاف نظام إعادة البناء — ${p.name}" width="700" height="964" fetchpriority="high">
+          <img src="${coverThumb}" alt="غلاف نظام إعادة البناء، ${p.name}" width="700" height="964" fetchpriority="high">
         </div>
         <span class="rb-cover-cap">ملف PDF من ${p.pages} صفحة صممها، حرّرها ودقّقها فريق نظامك</span>
       </div>
@@ -183,7 +203,7 @@ ${li(p.promises)}
 
         ${buy('hero', p.buyLabel)}
         <span class="rb-assure">${ASSURE}</span>
-        <span class="rb-alt">لستِ متأكدة أن هذا نمطكِ؟ <a href="/ikhtibar/" data-rb-cta="quiz" data-rb-pos="hero">ابدئي الاختبار المجاني</a></span>
+        ${uncertain(p.slug, 'hero')}
 
         <p class="rb-trust">
           <span>ملف PDF تطبيقي</span>
@@ -198,7 +218,7 @@ ${li(p.promises)}
 
 <main>
 
-  <!-- ====== 2 — مرآة التعرف ====== -->
+  <!-- ====== 2, مرآة التعرف ====== -->
   <section class="rb-section" aria-labelledby="mirrorH">
     <div class="container rb-narrow">
       <div class="rb-card">
@@ -211,23 +231,21 @@ ${li(p.mirror)}
     </div>
   </section>
 
-  <!-- ====== 3 — إعادة التأطير ====== -->
+  <!-- ====== 3, إعادة التأطير ====== -->
   <section class="rb-section" aria-labelledby="reframeH">
     <div class="container rb-narrow">
       <h2 id="reframeH">${p.reframeH}</h2>
       <p>${p.reframe}</p>
 
       <div class="rb-cta-row">
-        ${buy('reframe', 'أريد أن أفهم هذا النمط وأعيد بناء طريقتي — 109 ر.س')}
+        ${buy('reframe', 'أريد أن أفهم هذا النمط وأعيد بناء طريقتي، 109 ر.س')}
         <span class="rb-assure">${ASSURE}</span>
       </div>
     </div>
   </section>
 
-  <!-- ====== 4 — الآلية الخاصة بالنمط (velvet) ====== -->
-  <section class="velvet rb-mech" aria-labelledby="mechH">
-    <span class="k-star" aria-hidden="true" style="top:12%;inset-inline-end:7%">✦</span>
-    <img class="flower fl-l" src="/assets/img/flower-l.png" alt="" width="220" height="220" style="top:6%;opacity:0.3" loading="lazy">
+  <!-- ====== 4, الآلية الخاصة بالنمط (velvet) ====== -->
+  <section class="velvet rb-mech" aria-labelledby="mechH">    <img class="flower fl-l" src="/assets/img/flower-l.png" alt="" width="220" height="220" style="top:6%;opacity:0.3" loading="lazy">
     <div class="container rb-narrow rb-section">
       <span class="kicker">الآلية الخاصة بالنمط</span>
       <h2 id="mechH" class="rb-mech-name">${p.mechanism}</h2>
@@ -239,7 +257,7 @@ ${doors(p.doors)}
     </div>
   </section>
 
-  <!-- ====== 5 — ماذا تستلمين؟ ====== -->
+  <!-- ====== 5, ماذا تستلمين؟ ====== -->
   <section class="rb-section" aria-labelledby="getH">
     <div class="container rb-narrow">
       <div class="rb-card">
@@ -247,12 +265,12 @@ ${doors(p.doors)}
         <ul class="rb-list" role="list">
 ${li(receiveList(p.pages))}
         </ul>
-        <p class="rb-value">${p.pages} صفحة مصممة · 5 مراحل · 5 أدوات · تجربة توقيعية · صفحات تطبيق · خطة 30 يومًا · مسار 90 يومًا</p>
+        <p class="rb-value">${p.pages} صفحة مصممة، 5 مراحل، 5 أدوات، تجربة توقيعية، صفحات تطبيق، خطة 30 يومًا، مسار 90 يومًا</p>
       </div>
     </div>
   </section>
 
-  <!-- ====== 6 — الأدوات الخمس ====== -->
+  <!-- ====== 6, الأدوات الخمس ====== -->
   <section class="rb-section" aria-labelledby="toolsH">
     <div class="container rb-narrow">
       <h2 id="toolsH">الأدوات الخمس</h2>
@@ -262,7 +280,7 @@ ${tools(p.tools)}
     </div>
   </section>
 
-  <!-- ====== 7 — قلب النظام ====== -->
+  <!-- ====== 7, قلب النظام ====== -->
   <section class="rb-section" aria-labelledby="heartH">
     <div class="container rb-narrow">
       <div class="rb-card">
@@ -271,17 +289,17 @@ ${tools(p.tools)}
         <div class="rb-signature">
           <p>${p.signatureBody}</p>
         </div>
-        <p class="rb-relapse"><b>شكل العودة الذي يعلّمكِ النظام كشفه —</b> ${p.relapse}</p>
+        <p class="rb-relapse"><b>شكل العودة الذي يعلّمكِ النظام كشفه</b> ${p.relapse}</p>
 
         <div class="rb-cta-row">
-          ${buy('mechanism', 'ابدئي بالنظام الكامل — 109 ر.س')}
+          ${buy('mechanism', 'ابدئي بالنظام الكامل، 109 ر.س')}
           <span class="rb-assure">${ASSURE}</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ====== 8 — معرض المنتج الحقيقي ======
+  <!-- ====== 8, معرض المنتج الحقيقي ======
        Every figure is hidden until rebuild.js confirms its file loads, so the
        section only ever shows real pages from the file the buyer receives.
        Drop the shots at the data-src paths below to light them up. -->
@@ -297,7 +315,7 @@ ${shots(p.shots)}
     </div>
   </section>
 
-  <!-- ====== 9 — رحلة التطبيق ====== -->
+  <!-- ====== 9, رحلة التطبيق ====== -->
   <section class="rb-section" aria-labelledby="journeyH">
     <div class="container rb-narrow">
       <h2 id="journeyH">كيف تسير رحلة التطبيق؟</h2>
@@ -322,7 +340,7 @@ ${shots(p.shots)}
     </div>
   </section>
 
-  <!-- ====== 10 — ما الذي قد يتغير عمليًا؟ ====== -->
+  <!-- ====== 10, ما الذي قد يتغير عمليًا؟ ====== -->
   <section class="rb-section" aria-labelledby="outcomesH">
     <div class="container rb-narrow">
       <div class="rb-card">
@@ -336,7 +354,7 @@ ${li(p.outcomes)}
     </div>
   </section>
 
-  <!-- ====== 11 — هل هذا النظام لكِ؟ ====== -->
+  <!-- ====== 11, هل هذا النظام لكِ؟ ====== -->
   <section class="rb-section" aria-labelledby="fitH">
     <div class="container rb-narrow">
       <h2 id="fitH">هل هذا النظام لكِ؟</h2>
@@ -357,14 +375,14 @@ ${fitLi(p.fitNo)}
     </div>
   </section>
 
-  <!-- ====== 12 — القيمة والسعر ====== -->
+  <!-- ====== 12, القيمة والسعر ====== -->
   <section class="rb-section" aria-labelledby="priceH">
     <div class="container rb-narrow">
       <h2 id="priceH">لماذا 109 ر.س؟</h2>
       <p>${WHY_PRICE}</p>
 
       <div class="rb-buy">
-        <span class="rb-buy-name">نظام إعادة البناء · ${p.name}</span>
+        <span class="rb-buy-name">نظام إعادة البناء، ${p.name}</span>
         <p class="rb-price">
           <span class="amount">109</span>
           <span class="unit">ر.س</span>
@@ -389,46 +407,48 @@ ${fitLi(p.fitNo)}
           <span class="methods-note">بطاقات مدى المشتركة مع فيزا أو ماستركارد مقبولة. إن لم تتم العملية، راسلينا على <a href="mailto:support@nizamok.com">support@nizamok.com</a> ونساعدكِ.</span>
         </p>
         <p class="rb-policy-links">
-          <a href="/refund/">سياسة الاسترداد</a> · <a href="/terms/">الشروط</a> · <a href="/privacy/">الخصوصية</a>
+          <a href="/refund/">سياسة الاسترداد</a>، <a href="/terms/">الشروط</a>، <a href="/privacy/">الخصوصية</a>
         </p>
       </div>
     </div>
   </section>
 
-  <!-- ====== 13 — الثقة والحدود ====== -->
+  <!-- ====== 13, الثقة والحدود ====== -->
   <section class="rb-section rb-limits" aria-labelledby="limitsH">
     <div class="container rb-narrow">
       <div class="rb-card">
-        <h2 id="limitsH">ما الذي يَعِد به نظامك — وما الذي لا يَعِد به؟</h2>
+        <h2 id="limitsH">ما الذي يَعِد به نظامك، وما الذي لا يَعِد به؟</h2>
         <p>${LIMITS}</p>
-        <p>تنطبق سياسة المنتجات الرقمية المنشورة في موقع نظامك: <a href="/refund/">سياسة الاسترداد</a> · <a href="/terms/">شروط الاستخدام</a> · <a href="/privacy/">الخصوصية</a>.</p>
+        <p>تنطبق سياسة المنتجات الرقمية المنشورة في موقع نظامك: <a href="/refund/">سياسة الاسترداد</a>، <a href="/terms/">شروط الاستخدام</a>، <a href="/privacy/">الخصوصية</a>.</p>
         <p>للدعم قبل أو بعد الشراء: <a href="mailto:support@nizamok.com">support@nizamok.com</a></p>
       </div>
     </div>
   </section>
 
-  <!-- ====== 14 — الأسئلة الشائعة ====== -->
+  <!-- ====== 14, الأسئلة الشائعة ====== -->
   <section class="rb-section" aria-labelledby="faqH">
     <div class="container rb-narrow">
       <h2 id="faqH">الأسئلة الشائعة</h2>
       <div class="rb-faq">
-${faqs(p.faq)}
+${faqs(p.faq, p.slug)}
+        <details>
+          <summary>ماذا لو لم أكن متأكدة أن هذا هو نمطي؟</summary>
+          <p>يمكنكِ البدء باختبار نظامكِ المجاني. خلال نحو 3 دقائق ستتعرفين إلى النمط الأقرب لطريقتكِ في التعامل مع المهام والطاقة والقرارات، ثم نوجّهكِ إلى النظام الأنسب لكِ.</p>
+          ${uncertain(p.slug, 'faq')}
+        </details>
       </div>
     </div>
   </section>
 
-  <!-- ====== 15 — CTA النهائي (velvet) ====== -->
-  <section class="velvet rb-final" aria-labelledby="finalH">
-    <span class="k-star" aria-hidden="true" style="top:16%;inset-inline-start:13%">✦</span>
-    <span class="k-star" aria-hidden="true" style="top:28%;inset-inline-end:15%;font-size:0.7rem">✦</span>
-    <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:6%;opacity:0.4" loading="lazy">
+  <!-- ====== 15, CTA النهائي (velvet) ====== -->
+  <section class="velvet rb-final" aria-labelledby="finalH">    <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:6%;opacity:0.4" loading="lazy">
     <div class="container rb-narrow">
       <img class="seal-img" src="/assets/img/seal.png" alt="" width="100" height="100" loading="lazy">
       <h2 id="finalH">${p.h1}</h2>
       <p>${FINAL_LEAD}</p>
       ${buy('final', p.buyLabel)}
       <span class="rb-assure">${ASSURE}</span>
-      <span class="rb-alt">لستِ متأكدة أن هذا نمطكِ؟ <a href="/ikhtibar/" data-rb-cta="quiz" data-rb-pos="final">ابدئي الاختبار المجاني</a></span>
+      ${uncertain(p.slug, 'final')}
     </div>
   </section>
 
@@ -439,7 +459,7 @@ ${faqs(p.faq)}
     <p class="disclaimer">${DISCLAIMER} <a href="mailto:support@nizamok.com" style="color:var(--gold-soft)">support@nizamok.com</a></p>
     <nav class="footer-links" aria-label="روابط الموقع">
       <a href="/">الرئيسية</a>
-      <a href="/ikhtibar/">الاختبار المجاني</a>
+      <a href="${QUIZ_URL[p.slug]}">الاختبار المجاني</a>
       <a href="/privacy/">الخصوصية</a>
       <a href="/terms/">الشروط</a>
       <a href="/refund/">سياسة الاسترداد</a>
@@ -449,10 +469,10 @@ ${faqs(p.faq)}
   </div>
 </footer>
 
-<!-- Mobile sticky CTA — one button, price visible -->
+<!-- Mobile sticky CTA, one button, price visible -->
 <div class="rb-sticky" data-rb-sticky>
   <div class="rb-sticky-copy">
-    <span class="rb-sticky-name">نظام إعادة البناء · ${p.name}</span>
+    <span class="rb-sticky-name">نظام إعادة البناء، ${p.name}</span>
     <span class="rb-sticky-price">109 ر.س</span>
   </div>
   <a class="btn btn-gold" href="${checkout}" data-rb-cta="buy" data-rb-pos="sticky">احصلي عليه الآن</a>
@@ -466,8 +486,8 @@ ${faqs(p.faq)}
 
 <script>window.NIZAMOK_REBUILD = { pattern: '${p.slug}', patternName: '${p.name}', price: 109, currency: 'SAR' };</script>
 <script src="/assets/js/config.js"></script>
-<script src="/assets/js/analytics.js?v=20260730a"></script>
-<script src="/assets/js/rebuild.js?v=20260726b" defer></script>
+<script src="/assets/js/analytics.js?v=20260801a"></script>
+<script src="/assets/js/rebuild.js?v=20260731a" defer></script>
 <script src="/assets/js/main.js?v=20260719h" defer></script>
 </body>
 </html>

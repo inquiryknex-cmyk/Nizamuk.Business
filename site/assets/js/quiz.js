@@ -1,16 +1,58 @@
 /* ============================================================
-   اختبار نظامك — cinematic two-act quiz engine, v3.
+   اختبار نظامك، cinematic two-act quiz engine, v3.
    Mechanic per scene: choose الأقرب (required), then optionally
-   ONE more answer that also resembles her — تشبهني أيضًا. A woman
+   ONE more answer that also resembles her، تشبهني أيضًا. A woman
    can genuinely live in two patterns; she should never be forced
    to brand one answer as completely false. Scoring: closest +2,
-   second +1, nothing subtracted — every selection adds signal,
+   second +1, nothing subtracted، every selection adds signal,
    nothing is negative. Max two selections keeps diagnostic power. Options are
    shuffled per session to kill position bias. Results include tie
    handling, a clarity marker, and computed precision mirrors.
    ============================================================ */
 (function () {
   'use strict';
+
+  /* ---------- Attribution continuity ----------
+     A woman can arrive here from a Google ad (gclid), from one of the four
+     book pages (source/origin), or from any campaign (utm_*). When the result
+     sends her onward to a /rebuild/ page, those identifiers must travel with
+     her، dropping them here would orphan the click from the ad that paid for
+     it. Only our own internal destinations are rewritten; off-site checkout
+     links are left exactly as configured. */
+  var ATTRIB_KEYS = ['gclid', 'gbraid', 'wbraid', 'source', 'origin',
+                     'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+
+  function attribParams() {
+    var out = {};
+    try {
+      var q = new URLSearchParams(location.search);
+      ATTRIB_KEYS.forEach(function (k) {
+        var v = q.get(k);
+        if (v) out[k] = v;
+      });
+    } catch (e) { /* ancient browser، attribution simply does not travel */ }
+    return out;
+  }
+
+  /* The book page she came from, if any. 'direct' when she reached the quiz
+     on her own rather than from a book page or campaign. */
+  function quizSource() {
+    var a = attribParams();
+    return a.source || a.utm_source || 'direct';
+  }
+
+  /* Appends the carried params to one of our own paths, without disturbing
+     any query string the path already has. */
+  function withAttrib(path) {
+    if (!path || /^https?:/i.test(path)) return path;   // off-site -> untouched
+    var a = attribParams();
+    var keys = Object.keys(a);
+    if (!keys.length) return path;
+    var qs = keys.map(function (k) {
+      return encodeURIComponent(k) + '=' + encodeURIComponent(a[k]);
+    }).join('&');
+    return path + (path.indexOf('?') === -1 ? '?' : '&') + qs;
+  }
 
   const CONFIG = window.NIZAMOK || {};
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -21,30 +63,30 @@
     mubdia: {
       name: 'المبدعة المشتّتة',
       truth: 'أنتِ لا تنقصكِ الأفكار؛ تنقصكِ فكرة واحدة تصل.',
-      headline: 'أنتِ لا تهربين من الإنجاز — أنتِ تهربين من منتصف الطريق. البداية تعطيكِ نسخة جديدة منكِ، لكنها تسحبكِ من الشيء الذي كان على وشك الوصول.',
+      headline: 'أنتِ لا تهربين من الإنجاز، أنتِ تهربين من منتصف الطريق. البداية تعطيكِ نسخة جديدة منكِ، لكنها تسحبكِ من الشيء الذي كان على وشك الوصول.',
       wound: 'الذي يتكرر ليس نقص قدرة، بل صعوبة البقاء مع الفكرة عندما يبهت بريقها وتطلب صبرًا بدل حماس.',
-      step: 'اختاري مشروعًا واحدًا تركتِه وهو يستاهل، واحميه من أي فكرة جديدة سبعة أيام فقط. لا تلغي الأفكار — أوقفيها في الموقف.'
+      step: 'اختاري مشروعًا واحدًا تركتِه وهو يستاهل، واحميه من أي فكرة جديدة سبعة أيام فقط. لا تلغي الأفكار، أوقفيها في الموقف.'
     },
     asira: {
       name: 'أسيرة الكمال',
       truth: 'نقص العمل لا يعني نقصًا فيكِ.',
-      headline: 'أنتِ لا تخافين من العمل — تخافين من لحظة ظهوره أمام عين أخرى. لذلك صار التعديل بيتًا آمنًا تسكنين فيه بدل التسليم.',
+      headline: 'أنتِ لا تخافين من العمل، تخافين من لحظة ظهوره أمام عين أخرى. لذلك صار التعديل بيتًا آمنًا تسكنين فيه بدل التسليم.',
       wound: 'الذي يتكرر أن جودة الشغل التصقت بقيمتكِ أنتِ؛ فصارت كل ملاحظة محتملة على العمل تهديدًا لكِ شخصيًا.',
-      step: 'أرسلي نسخة «جيدة» من شغلكِ لشخص واحد تثقين به — قبل أن تصير مثالية. راقبي: العالم لن ينهار.'
+      step: 'أرسلي نسخة «جيدة» من شغلكِ لشخص واحد تثقين به، قبل أن تصير مثالية. راقبي: العالم لن ينهار.'
     },
     mutafadiya: {
       name: 'المتفادية الذكية',
       truth: 'أنتِ لا تتجنبين المهمة، بل الشعور الذي خلفها.',
-      headline: 'أنتِ لستِ كسولة — يومكِ مليء بالإنجاز الصغير. لكن الباب الواحد المهم يكبر في الخيال كل يوم تأجيل، حتى صار أكبر من حجمه.',
-      wound: 'الذي يتكرر أن الشعور خلف المهمة — توتر، حكم، مواجهة — يصل قبلها، فتشترين هدنة يومية بثمن أسبوع.',
-      step: 'افتحي الباب عشر دقائق فقط: الرسالة، الملف، المكالمة. المطلوب ليس الإنهاء — المطلوب أن يعود الواقع إلى حجمه.'
+      headline: 'أنتِ لستِ كسولة، يومكِ مليء بالإنجاز الصغير. لكن الباب الواحد المهم يكبر في الخيال كل يوم تأجيل، حتى صار أكبر من حجمه.',
+      wound: 'الذي يتكرر أن الشعور خلف المهمة، توتر، حكم، مواجهة، يصل قبلها، فتشترين هدنة يومية بثمن أسبوع.',
+      step: 'افتحي الباب عشر دقائق فقط: الرسالة، الملف، المكالمة. المطلوب ليس الإنهاء، المطلوب أن يعود الواقع إلى حجمه.'
     },
     kafua: {
       name: 'الكفؤة المنهَكة',
       truth: 'أن تكوني قادرة لا يعني أن تكوني متاحة دائمًا.',
-      headline: 'الجميع يظن أنكِ بخير لأنكِ دائمًا تتصرفين. لكن قدرتكِ صارت تصريح دخول مفتوحًا للجميع — إلا أنتِ.',
+      headline: 'الجميع يظن أنكِ بخير لأنكِ دائمًا تتصرفين. لكن قدرتكِ صارت تصريح دخول مفتوحًا للجميع، إلا أنتِ.',
       wound: 'الذي يتكرر أن كل «نعم» سريعة تشتري راحة العلاقة لحظة، وتدفع ثمنها من طاقتكِ ومشروعكِ وما يخصكِ.',
-      step: 'قبل الموافقة القادمة، اسألي بصمت: ما ثمن هذه النعم؟ واحجزي ساعة أسبوعية لكِ وحدكِ — موعدًا لا يُلغى.'
+      step: 'قبل الموافقة القادمة، اسألي بصمت: ما ثمن هذه النعم؟ واحجزي ساعة أسبوعية لكِ وحدكِ، موعدًا لا يُلغى.'
     }
   };
 
@@ -55,18 +97,18 @@
       act: 1, scene: 'بعد ما يهدأ البيت',
       text: 'هدأ البيت أخيرًا، وصارت عندكِ ساعة كاملة لكِ وحدكِ. بصراحة… كيف تنتهي هذه الساعة غالبًا؟',
       options: [
-        { p: 'mubdia',     t: 'أفتحها بحماس على مشروعي، ثم أخرج منها بفكرة جديدة أحلى من المشروع نفسه — وأنام وأنا أخطط لها.' },
+        { p: 'mubdia',     t: 'أفتحها بحماس على مشروعي، ثم أخرج منها بفكرة جديدة أحلى من المشروع نفسه، وأنام وأنا أخطط لها.' },
         { p: 'asira',      t: 'أشتغل فعلًا… لكن أقضيها كلها في تحسين شيء شبه جاهز؛ أرتّب وأجمّل ولا «أنهي».' },
-        { p: 'mutafadiya', t: 'أقول أبدأ بالشيء المهم، وأنتهي بإنجاز أشياء صغيرة كثيرة — والمهم ما فتحته.' },
+        { p: 'mutafadiya', t: 'أقول أبدأ بالشيء المهم، وأنتهي بإنجاز أشياء صغيرة كثيرة، والمهم ما فتحته.' },
         { p: 'kafua',      t: 'تذوب على رسالة «محتاجينك شوي» أو طلب طارئ؛ تصير ساعة الآخرين، مو ساعتي.' }
       ]
     },
     {
       act: 1, scene: 'مجموعة العائلة',
-      text: 'في مجموعة الواتساب، طُلب منكِ ترتيب مناسبة قريبة — والكل واثق أنكِ «ما تقصّرين». ماذا يحدث داخلكِ؟',
+      text: 'في مجموعة الواتساب، طُلب منكِ ترتيب مناسبة قريبة، والكل واثق أنكِ «ما تقصّرين». ماذا يحدث داخلكِ؟',
       options: [
         { p: 'kafua',      t: 'أكتب «أبشروا» في نفس الدقيقة… وأحس بثقلها بعد ما أرسلها.' },
-        { p: 'asira',      t: 'أقبل، وأُتعب نفسي في التفاصيل حتى تطلع مثالية — وأي ملاحظة صغيرة تجرحني أكثر مما تستحق.' },
+        { p: 'asira',      t: 'أقبل، وأُتعب نفسي في التفاصيل حتى تطلع مثالية، وأي ملاحظة صغيرة تجرحني أكثر مما تستحق.' },
         { p: 'mutafadiya', t: 'أتأخر في الرد وأنا أعرف أني سأقبل؛ صار التأجيل طريقتي في تأخير الحسم.' },
         { p: 'mubdia',     t: 'أتحمس وأقترح أفكارًا تجعلها مناسبة مختلفة… ثم يخف حماسي قبل التنفيذ ويبقى الحمل عليّ.' }
       ]
@@ -78,7 +120,7 @@
         { p: 'mubdia',     t: 'وصلتُ الدرس الثالث… ثم لمعَت دورة أو فكرة ثانية، وانتقل الحماس لها.' },
         { p: 'asira',      t: 'أعدتُ الدرس الواحد أكثر من مرة، وما سمحت لنفسي أتقدم قبل أن «أتقن» الذي فات.' },
         { p: 'mutafadiya', t: 'أجّلت أول واجب فيها؛ وكل ما كبر التأجيل، صار فتح المنصة نفسها أثقل.' },
-        { p: 'kafua',      t: 'كل ما جئتُ أفتحها سبقني طلبُ أحدٍ اعتاد أني «ما أقصّر»؛ وقتي يُصرف على الجميع أولًا — ودورتي تنتظر دوري أنا.' }
+        { p: 'kafua',      t: 'كل ما جئتُ أفتحها سبقني طلبُ أحدٍ اعتاد أني «ما أقصّر»؛ وقتي يُصرف على الجميع أولًا، ودورتي تنتظر دوري أنا.' }
       ]
     },
     {
@@ -86,14 +128,14 @@
       text: 'قبل النوم، تفتحين إنستغرام فتجدين امرأة بعمركِ أطلقت مشروعًا يشبه الذي في رأسكِ. ما الجملة الأصدق التي تمر داخلكِ؟',
       options: [
         { p: 'asira',      t: '«شغلي أجمل من هذا… بس مو جاهز، وما راح أنزل شيئًا ناقصًا يتكلمون عليه.»' },
-        { p: 'mubdia',     t: '«أنا عندي أفكار أقوى بكثير؛ المشكلة مو الأفكار…» — وأفتح ملاحظاتي المليئة، إثباتًا.' },
+        { p: 'mubdia',     t: '«أنا عندي أفكار أقوى بكثير؛ المشكلة مو الأفكار…»، وأفتح ملاحظاتي المليئة، إثباتًا.' },
         { p: 'mutafadiya', t: 'أطفئ الجوال بسرعة؛ منظرها قرّب مني شعورًا ما أبغى أواجهه الليلة.' },
-        { p: 'kafua',      t: '«هي فاضية لنفسها… أنا وقتي موزَّع على الكل إلا نفسي.» — وأكمل التصفح وأنا متعبة.' }
+        { p: 'kafua',      t: '«هي فاضية لنفسها… أنا وقتي موزَّع على الكل إلا نفسي.»، وأكمل التصفح وأنا متعبة.' }
       ]
     },
     {
       act: 1, scene: 'الموسم',
-      text: 'يقترب موسم مزدحم — رمضان، أعراس، اختبارات، ضغط دوام. ماذا يحدث لمشروعكِ أنتِ؟',
+      text: 'يقترب موسم مزدحم، رمضان، أعراس، اختبارات، ضغط دوام. ماذا يحدث لمشروعكِ أنتِ؟',
       options: [
         { p: 'kafua',      t: 'لا يسألني أحد إن كنتُ متفرغة؛ لازم أستلم الموسم كله، ومشروعي أول ما يُهمَّش.' },
         { p: 'mutafadiya', t: 'أقول «بعد الموسم أبدأ بقوة»؛ صارت المواسم مواعيد مؤجلة تلد بعضها.' },
@@ -103,12 +145,12 @@
     },
     {
       act: 1, scene: 'دفتر بداية السنة',
-      text: 'عندكِ دفتر أنيق — أو ملاحظات في الجوال — فيه خطط بدايات السنوات. لو فتحتيه الآن، ماذا سيحكي عنكِ؟',
+      text: 'عندكِ دفتر أنيق، أو ملاحظات في الجوال، فيه خطط بدايات السنوات. لو فتحتيه الآن، ماذا سيحكي عنكِ؟',
       options: [
         { p: 'mubdia',     t: 'خمس خطط لخمسة مشاريع مختلفة، كل واحدة بحماس البداية… وأول صفحة فقط.' },
         { p: 'asira',      t: 'خطة واحدة مُعادة بصياغة «أدق» كل مرة؛ صار التخطيط نفسه هو مشروعي.' },
         { p: 'mutafadiya', t: 'خطة واضحة وممتازة… والخطوة الأولى فيها بالذات هي التي ما بدأت.' },
-        { p: 'kafua',      t: 'أهدافي مكتوبة في آخر الصفحة — بعد قائمة أهداف البيت والأهل والدوام.' }
+        { p: 'kafua',      t: 'أهدافي مكتوبة في آخر الصفحة، بعد قائمة أهداف البيت والأهل والدوام.' }
       ]
     },
     // ---- الفصل الثاني: الصوت الذي لا يسمعه أحد ----
@@ -126,7 +168,7 @@
       act: 2, scene: 'منتصف الطريق',
       text: 'في منتصف أي مشروع تأتي لحظة يبهت فيها البريق. ماذا تفعل هذه اللحظة بكِ؟',
       options: [
-        { p: 'mubdia',     t: 'أفسّرها إشارة أن الفكرة «مو هي» — وأصدّق فجأة أن فكرتي القادمة هي الصح.' },
+        { p: 'mubdia',     t: 'أفسّرها إشارة أن الفكرة «مو هي»، وأصدّق فجأة أن فكرتي القادمة هي الصح.' },
         { p: 'asira',      t: 'أفسّرها دليلًا أني يجب أن أرفع المستوى أكثر… قبل أن يراه أحد.' },
         { p: 'mutafadiya', t: 'أحوّلها إلى انشغال منطقي بأشياء أخف، وأؤجل قلب المشروع نفسه.' },
         { p: 'kafua',      t: 'ألوم نفسي على «الترف»: الحماس رفاهية، والواجبات أولى.' }
@@ -134,7 +176,7 @@
     },
     {
       act: 2, scene: 'الراحة المُرّة',
-      text: 'تجلسين أخيرًا لتستريحي بلا هدف — شاي، هدوء، لا أحد يطلب شيئًا. من الداخل… متى تنقطع الراحة؟',
+      text: 'تجلسين أخيرًا لتستريحي بلا هدف، شاي، هدوء، لا أحد يطلب شيئًا. من الداخل… متى تنقطع الراحة؟',
       options: [
         { p: 'kafua',      t: 'بإحساس أن أحدًا قد يحتاجني الآن؛ أرتاح «بأذنٍ واحدة صاحية».' },
         { p: 'asira',      t: 'بتذكُّر الشيء غير المكتمل؛ ما أعرف أرتاح وفي البال شيء «مو تمام».' },
@@ -144,12 +186,12 @@
     },
     {
       act: 2, scene: 'كلامهم عنكِ',
-      text: 'أي عبارة قيلت عنكِ وظلمتكِ — لأن قائلها لم يرَ القصة كاملة؟',
+      text: 'أي عبارة قيلت عنكِ وظلمتكِ، لأن قائلها لم يرَ القصة كاملة؟',
       options: [
-        { p: 'mubdia',     t: '«ما تكمّلين شي» — وما شافوا كم أحمل من بدايات صادقة تتجاذبني.' },
-        { p: 'asira',      t: '«معقّدة وتدققين» — وما حسّوا أن الذي يهزني هو حكمهم لو ظهر فيه خطأ.' },
-        { p: 'mutafadiya', t: '«كسل وتسويف» — وما دروا كم مرة اقتربتُ… وانسحبتُ من ثقل ما خلف الباب.' },
-        { p: 'kafua',      t: '«قوية وما ينكسر لها خاطر» — وما انتبهوا أني أنكسر بصمت من كثرة ما أُحمَّل.' }
+        { p: 'mubdia',     t: '«ما تكمّلين شي»، وما شافوا كم أحمل من بدايات صادقة تتجاذبني.' },
+        { p: 'asira',      t: '«معقّدة وتدققين»، وما حسّوا أن الذي يهزني هو حكمهم لو ظهر فيه خطأ.' },
+        { p: 'mutafadiya', t: '«كسل وتسويف»، وما دروا كم مرة اقتربتُ… وانسحبتُ من ثقل ما خلف الباب.' },
+        { p: 'kafua',      t: '«قوية وما ينكسر لها خاطر»، وما انتبهوا أني أنكسر بصمت من كثرة ما أُحمَّل.' }
       ]
     },
     {
@@ -166,9 +208,9 @@
       act: 2, scene: 'لو صدقتِ مع نفسكِ',
       text: 'بعيدًا عن الخطط الكبيرة: أي خطوة صغيرة، لو فعلتِها هذا الأسبوع، ستشعرين أنكِ كنتِ صادقة مع نفسكِ؟',
       options: [
-        { p: 'mubdia',     t: 'أرجع لمشروع واحد تركته وهو يستاهل — وأحميه من أي فكرة جديدة، سبعة أيام فقط.' },
+        { p: 'mubdia',     t: 'أرجع لمشروع واحد تركته وهو يستاهل، وأحميه من أي فكرة جديدة، سبعة أيام فقط.' },
         { p: 'asira',      t: 'أرسل نسخة «جيدة» من شغلي لشخص واحد… قبل أن تصير مثالية.' },
-        { p: 'mutafadiya', t: 'أفتح الملف — أو الرسالة — التي أدور حولها من أسابيع. عشر دقائق فقط.' },
+        { p: 'mutafadiya', t: 'أفتح الملف، أو الرسالة، التي أدور حولها من أسابيع. عشر دقائق فقط.' },
         { p: 'kafua',      t: 'أحجز ساعة لي وحدي في الأسبوع، وأُعلمهم أنها موعد «ما ينلغي».' }
       ]
     }
@@ -195,34 +237,34 @@
     });
   }
   const T = I18N ? I18N.t : {
-    act1: 'الفصل الأول — مشاهد من يومكِ',
-    act2: 'الفصل الثاني — الصوت الذي لا يسمعه أحد',
-    scene: (n, name) => 'المشهد ' + n + ' · ' + name,
+    act1: 'الفصل الأول، مشاهد من يومكِ',
+    act2: 'الفصل الثاني، الصوت الذي لا يسمعه أحد',
+    scene: (n, name) => 'المشهد ' + n + ': ' + name,
     markClosest: 'الأقرب إليّ',
     markSecond: 'تشبهني أيضًا',
     promptClosest: 'اختاري الإجابة الأقرب إليكِ، ثم أضيفي إجابة ثانية إن كانت تشبهكِ أيضًا.',
-    promptSecond: 'أضيفي إجابة ثانية إن كانت تشبهكِ أيضًا — اختيارُها لكِ.',
+    promptSecond: 'أضيفي إجابة ثانية إن كانت تشبهكِ أيضًا، اختيارُها لكِ.',
     emailInvalid: 'يرجى إدخال بريدٍ إلكتروني صحيح.',
     emailPreparing: 'نفتح القراءة ونجهّز تقريركِ الأول...',
     pctSign: '٪',
-    teaserColead: (a, b) => 'نتيجتكِ نادرة: نمطان يتقاسمان قيادتكِ هذه الفترة — <b>' + a + '</b> و<b>' + b + '</b> يعملان معًا. قراءتكِ الكاملة تفكك هذا التحالف.',
-    teaserHigh: (pct) => 'نمطكِ واضح بدرجة عالية — ظهر بنسبة <b>' + pct + '٪</b>، وهذا وضوح لا يظهر عند الكثيرات. ومعه نمط خفي يعمل في الظل… قراءتكِ الكاملة تكشفه.',
-    teaserNormal: (pct) => 'ظهر نمطكِ الغالب بنسبة <b>' + pct + '٪</b> — ومعه نمط خفي يعمل في الخلفية. قراءتكِ الكاملة تكشفه، مع خريطة مزيجكِ ومرايا دقيقة من إجاباتكِ أنتِ.',
-    hiddenColead: (name, pct) => '✦ نتيجة نادرة: <b>' + name + '</b> تقاسمكِ القيادة بنسبة ' + pct + '٪ — النمطان يعملان معًا هذه الفترة.',
-    hiddenNormal: (name, pct) => '✦ نمطكِ الخفي: <b>' + name + '</b> بنسبة ' + pct + '٪ — يعمل في الظل عندما يتعب نمطكِ الغالب.',
-    mirrorsHeading: 'مرايا دقيقة — من إجاباتكِ أنتِ',
-    mirrorEcho: (name) => 'نمط «' + name + '» ظهر مرارًا في اختياركِ الثاني دون أن يتصدر مرة — هذا صدى يرافق نمطكِ الغالب: لا يقود قراراتكِ، لكنه يلوّنها من الخلف.',
-    mirrorInner: 'يومكِ من الخارج لا يفضحكِ — لكن في «الصوت الداخلي» كانت إجاباتكِ محسومة. نمطكِ يسكن قراراتكِ الصامتة أكثر من سلوككِ الظاهر، ولهذا لا يلاحظه مَن حولكِ.',
-    mirrorOuter: 'اللافت أن نمطكِ ظاهر في تفاصيل يومكِ أكثر مما تعترف به قناعاتكِ الداخلية — جسدكِ ويومكِ يعرفان قبل أن يقتنع رأسكِ.',
-    mirrorSilent: (name) => 'طوال اثني عشر مشهدًا لم تلمسي نمط «' + name + '» ولا مرة — هذا الباب ليس معركتكِ أصلًا. لا تصرفي طاقتكِ على نصائح كُتبت لامرأة أخرى.',
+    teaserColead: (a, b) => 'نتيجتكِ نادرة: نمطان يتقاسمان قيادتكِ هذه الفترة، <b>' + a + '</b> و<b>' + b + '</b> يعملان معًا. قراءتكِ الكاملة تفكك هذا التحالف.',
+    teaserHigh: (pct) => 'نمطكِ واضح بدرجة عالية، ظهر بنسبة <b>' + pct + '٪</b>، وهذا وضوح لا يظهر عند الكثيرات. ومعه نمط خفي يعمل في الظل… قراءتكِ الكاملة تكشفه.',
+    teaserNormal: (pct) => 'ظهر نمطكِ الغالب بنسبة <b>' + pct + '٪</b>، ومعه نمط خفي يعمل في الخلفية. قراءتكِ الكاملة تكشفه، مع خريطة مزيجكِ ومرايا دقيقة من إجاباتكِ أنتِ.',
+    hiddenColead: (name, pct) => 'نتيجة نادرة: <b>' + name + '</b> تقاسمكِ القيادة بنسبة ' + pct + '٪، النمطان يعملان معًا هذه الفترة.',
+    hiddenNormal: (name, pct) => 'نمطكِ الخفي: <b>' + name + '</b> بنسبة ' + pct + '٪، يعمل في الظل عندما يتعب نمطكِ الغالب.',
+    mirrorsHeading: 'مرايا دقيقة، من إجاباتكِ أنتِ',
+    mirrorEcho: (name) => 'نمط «' + name + '» ظهر مرارًا في اختياركِ الثاني دون أن يتصدر مرة، هذا صدى يرافق نمطكِ الغالب: لا يقود قراراتكِ، لكنه يلوّنها من الخلف.',
+    mirrorInner: 'يومكِ من الخارج لا يفضحكِ، لكن في «الصوت الداخلي» كانت إجاباتكِ محسومة. نمطكِ يسكن قراراتكِ الصامتة أكثر من سلوككِ الظاهر، ولهذا لا يلاحظه مَن حولكِ.',
+    mirrorOuter: 'اللافت أن نمطكِ ظاهر في تفاصيل يومكِ أكثر مما تعترف به قناعاتكِ الداخلية، جسدكِ ويومكِ يعرفان قبل أن يقتنع رأسكِ.',
+    mirrorSilent: (name) => 'طوال اثني عشر مشهدًا لم تلمسي نمط «' + name + '» ولا مرة، هذا الباب ليس معركتكِ أصلًا. لا تصرفي طاقتكِ على نصائح كُتبت لامرأة أخرى.',
     pathHeading: 'مساركِ حسب نمطكِ',
-    pathIntro: 'ثلاث مراحل بعمقٍ متدرج — طُوّرت السلسلة عبر منهج يجمع بين علم النفس السلوكي، والتحليل التحريري، وتمارين التطبيق العملي.',
-    cardLamhat: { label: 'الخطوة 1 · متاحة الآن', title: 'لمحات نظامكِ', desc: 'قراءة مركّزة لما يحدث الآن في يومكِ: أين تتعطلين، وما السلوك الذي يخدعكِ.', cta: 'افتحي لمحاتكِ' },
-    cardJuthur: { label: 'الخطوة 2 · القراءة الأعمق', title: 'جذور نمطكِ', desc: 'كتاب في أصل النمط: لماذا بدأ، وما الشعور الذي يحميه، ولماذا يعود.', cta: 'اقرئي الجذور' },
-    cardRebuild: { label: 'الخطوة 3 · التحول العملي', title: 'نظام إعادة البناء', desc: 'نظام عملي كامل يحوّل الفهم إلى حركة: مراحل، أدوات، وخطوات تناسب نمطكِ.', cta: 'ابدئي إعادة البناء' },
+    pathIntro: 'ثلاث مراحل بعمقٍ متدرج، طُوّرت السلسلة عبر منهج يجمع بين علم النفس السلوكي، والتحليل التحريري، وتمارين التطبيق العملي.',
+    cardLamhat: { label: 'الخطوة الأولى، متاحة الآن', title: 'لمحات نظامكِ', desc: 'قراءة مركّزة لما يحدث الآن في يومكِ: أين تتعطلين، وما السلوك الذي يخدعكِ.', cta: 'افتحي لمحاتكِ' },
+    cardJuthur: { label: 'الخطوة الثانية، القراءة الأعمق', title: 'جذور نمطكِ', desc: 'كتاب في أصل النمط: لماذا بدأ، وما الشعور الذي يحميه، ولماذا يعود.', cta: 'اقرئي الجذور' },
+    cardRebuild: { label: 'الخطوة الثالثة، التحول العملي', title: 'نظام إعادة البناء', desc: 'نظام عملي كامل يحوّل الفهم إلى حركة: مراحل، أدوات، وخطوات تناسب نمطكِ.', cta: 'ابدئي إعادة البناء' },
     price: (v) => v + ' ريال',
     soon: 'قريبًا',
-    waitlistBanner: (price) => '<b>لوحة نمطكِ التفاعلية — قريبًا.</b> مساحة يومية تنظّم مهامكِ وطاقتكِ حسب نمطكِ، باشتراك شهري ' + price + ' ريالًا عند الإطلاق.',
+    waitlistBanner: (price) => '<b>لوحة نمطكِ التفاعلية، قريبًا.</b> مساحة يومية تنظّم مهامكِ وطاقتكِ حسب نمطكِ، باشتراك شهري ' + price + ' ريالًا عند الإطلاق.',
     waitlistCta: 'انضمي إلى قائمة الانتظار',
     interdashUrl: null   // fall back to CONFIG.urls.interdash
   };
@@ -240,8 +282,8 @@
   /* ---------- State ---------- */
   const state = {
     index: 0,
-    phase: 'closest',          // 'closest' → required pick; 'second' → optional extra pick
-    answers: [],               // per question: {closest, second|null} — ORIGINAL indices
+    phase: 'closest',          // 'closest' -> required pick; 'second' -> optional extra pick
+    answers: [],               // per question: {closest, second|null}، ORIGINAL indices
     actBreakShown: false,
     lastResult: null
   };
@@ -327,11 +369,11 @@
     }
   }
 
-  /* Selection rules — never more than two answers:
-     · no closest yet → this pick becomes الأقرب
-     · tap الأقرب again → clears the scene (change of heart)
-     · tap the current second → unselects it
-     · tap another option → becomes/replaces قريبة أيضًا, then auto-advance */
+  /* Selection rules، never more than two answers:
+     - no closest yet -> this pick becomes الأقرب
+     - tap الأقرب again -> clears the scene (change of heart)
+     - tap the current second -> unselects it
+     - tap another option -> becomes/replaces قريبة أيضًا, then auto-advance */
   function choose(i) {
     const saved = state.answers[state.index] || { closest: null, second: null };
 
@@ -406,8 +448,8 @@
   }
 
   /* ---------- Scoring & signature analysis ----------
-     closest = the repeating response → +2
-     second  = a genuinely near echo  → +1
+     closest = the repeating response -> +2
+     second  = a genuinely near echo  -> +1
      Nothing is subtracted: recognizing yourself in a pattern is signal;
      not choosing one is simply silence, not rejection. */
   function calculateResult() {
@@ -450,12 +492,12 @@
     };
   }
 
-  /* ---------- Precision mirrors — computed, never invented ---------- */
+  /* ---------- Precision mirrors، computed, never invented ---------- */
   function buildMirrors(r) {
     const dom = r.order[0];
     const mirrors = [];
 
-    // 1) The echo pattern: often «قريبة أيضًا», rarely the lead — a companion
+    // 1) The echo pattern: often «قريبة أيضًا», rarely the lead، a companion
     //    mechanism that follows her dominant pattern without steering.
     const echo = Object.keys(patterns).find(p =>
       p !== dom && r.secCount[p] >= 3 && r.closeCount[p] <= 1);
@@ -472,7 +514,7 @@
       mirrors.push(T.mirrorOuter);
     }
 
-    // 3) The silent door: a pattern she never touched in 12 scenes — not as
+    // 3) The silent door: a pattern she never touched in 12 scenes، not as
     //    closest, not even as a near echo. That silence is information.
     const silent = Object.keys(patterns)
       .filter(p => p !== dom && p !== echo && r.closeCount[p] === 0 && r.secCount[p] === 0)
@@ -484,7 +526,7 @@
     return mirrors.slice(0, 3);
   }
 
-  /* ---------- Calculation → staged reveal ---------- */
+  /* ---------- Calculation -> staged reveal ---------- */
   function beginCalculation() {
     showPanel('calcPanel');
     state.lastResult = calculateResult();
@@ -525,7 +567,7 @@
     }
   }
 
-  /* ---------- Email gate → MailerLite (per-pattern form) ---------- */
+  /* ---------- Email gate -> MailerLite (per-pattern form) ---------- */
   async function submitEmail(e) {
     e.preventDefault();
     const email = $('email').value.trim();
@@ -556,7 +598,7 @@
     };
 
     const ml = CONFIG.mailerLite || {};
-    // Only the form matching HER pattern is ever used — never all four.
+    // Only the form matching HER pattern is ever used، never all four.
     const endpoint = (ml.formEndpoints || {})[dominant] || ml.endpoint || '';
     try {
       if (ml.enabled && endpoint) {
@@ -566,7 +608,7 @@
         fd.append('ml-submit', '1');
         fd.append('anticsrf', 'true');
         await fetch(endpoint, { method: 'POST', body: fd, mode: 'no-cors' });
-        // Funnel event — pattern + status only, never the email address.
+        // Funnel event، pattern + status only, never the email address.
         if (window.trackEvent) window.trackEvent('report_email_submit', { pattern_slug: dominant, submission_status: 'success', page_path: location.pathname });
       }
     } catch (err) {
@@ -619,7 +661,7 @@
     $('readingStep').textContent = P.step;
     $('sentTo').textContent = email || 'بريدكِ';
 
-    // Precision mirrors — computed from her actual answer signature.
+    // Precision mirrors، computed from her actual answer signature.
     const mirrors = buildMirrors(r);
     const mWrap = $('resultMirrors');
     if (mWrap) {
@@ -637,13 +679,15 @@
     const prices = CONFIG.pricing || {};
 
     /* إعادة البناء now goes to her pattern's sales page rather than straight to
-       checkout — that page carries the mirror, the mechanism, real pages of the
+       checkout، that page carries the mirror, the mechanism, real pages of the
        product and the price justification, which a bare payment form cannot.
        Arabic only: those pages have no English rendition, so the English quiz
        keeps its direct checkout link. Falls back to checkout if the map is
        missing, so a config slip can never leave the card dead. */
     const rebuildPage = !I18N ? ((CONFIG.rebuildPages || {})[dom] || '') : '';
-    const rebuildDest = rebuildPage || links.rebuild;
+    /* withAttrib only touches our own path; the checkout fallback is off-site
+       and passes through unchanged. */
+    const rebuildDest = rebuildPage ? withAttrib(rebuildPage) : links.rebuild;
     const rebuildSameTab = !!rebuildPage;
     $('resultPath').innerHTML =
       '<h3>' + T.pathHeading + '</h3>' +
@@ -654,7 +698,8 @@
         pathCard('tier-juthur', T.cardJuthur.label, T.cardJuthur.title, T.cardJuthur.desc,
           prices.juthur, links.juthur, T.cardJuthur.cta, 'juthur_click', dom, 'juthur') +
         pathCard('tier-rebuild', T.cardRebuild.label, T.cardRebuild.title, T.cardRebuild.desc,
-          prices.rebuild, rebuildDest, T.cardRebuild.cta, 'rebuild_click', dom, 'rebuild', rebuildSameTab) +
+          prices.rebuild, rebuildDest, T.cardRebuild.cta, 'recommended_book_click', dom, 'rebuild', rebuildSameTab,
+          ' data-recommended-pattern="' + dom + '" data-quiz-source="' + quizSource() + '"') +
       '</div>' +
       '<div class="waitlist-banner">' +
         '<p>' + T.waitlistBanner((((CONFIG.interdash || {}).monthlyPriceSAR) || 29)) + '</p>' +
@@ -673,10 +718,10 @@
 
   /* sameTab: for links to our own pages. Off-site checkout links keep opening
      in a new tab so her result stays behind her; an internal page should not. */
-  function pathCard(tier, label, title, desc, price, link, cta, ev, pattern, level, sameTab) {
+  function pathCard(tier, label, title, desc, price, link, cta, ev, pattern, level, sameTab, extraData) {
     const has = !!link;
     const target = sameTab ? '' : ' target="_blank" rel="noopener"';
-    const data = ev ? ' data-ev="' + ev + '" data-pattern="' + pattern + '" data-level="' + level + '" data-section="quiz_result"' : '';
+    const data = ev ? ' data-ev="' + ev + '" data-pattern="' + pattern + '" data-level="' + level + '" data-section="quiz_result"' + (extraData || '') : '';
     return '<div class="path-card ' + tier + '">' +
       '<span class="step-label">' + label + '</span>' +
       '<h4>' + title + '</h4>' +
@@ -721,7 +766,7 @@
     });
     $('actContinueBtn').addEventListener('click', () => { state.index++; renderQuestion(); });
     $('prevBtn').addEventListener('click', prev);
-    // «تابعي» — continue with only the closest answer (the second is optional).
+    // «تابعي»، continue with only the closest answer (the second is optional).
     const nextBtn = $('nextBtn');
     if (nextBtn) nextBtn.addEventListener('click', advance);
     $('toEmailBtn').addEventListener('click', () => showPanel('emailPanel'));

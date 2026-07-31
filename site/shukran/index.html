@@ -15,7 +15,7 @@
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260801a">
   <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260726e">
 
   <script>
@@ -23,7 +23,7 @@
     Dodo appends the buyer's EMAIL (and a license_key when enabled) to this
     return URL. GA4 collects page_location on its automatic page_view, so left
     alone the customer's email address would be sent to Analytics as part of the
-    URL — personal data in analytics, against GA4's own terms.
+    URL، personal data in analytics, against GA4's own terms.
 
     This runs in <head>, before config.js / analytics.js load at the end of body,
     so the address is gone from the URL before any tag reads it. payment_id and
@@ -45,14 +45,11 @@
 </head>
 <body class="rb-body">
 
-<div class="velvet rb-hero">
-  <span class="k-star" aria-hidden="true" style="top:12%;inset-inline-start:8%">✦</span>
-  <span class="k-star" aria-hidden="true" style="top:30%;inset-inline-end:7%;font-size:0.7rem">✦</span>
-  <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:3%;opacity:0.4">
+<div class="velvet rb-hero">  <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:3%;opacity:0.4">
 
   <div class="container">
     <header class="rb-topbar">
-      <a class="brand" href="/" aria-label="نظامك — الصفحة الرئيسية">
+      <a class="brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
         <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="40" height="40">
         <img class="wordmark-img" src="/assets/img/wordmark.png" alt="NizamOk" width="112" height="28">
       </a>
@@ -65,11 +62,11 @@
       <h1 data-shukran-head style="font-family:var(--font-display);font-size:clamp(1.6rem,4.6vw,2.3rem);color:#F8F1E3;line-height:1.75;margin-bottom:0.9rem">شكرًا لكِ. نظامكِ في طريقه إليكِ.</h1>
       <p data-shukran-body>يصلكِ ملف النظام (PDF) ورابط التحميل وتأكيد العملية على البريد الذي استخدمتِه في الدفع. إن لم تجديه خلال دقائق، تحققي من مجلد «الرسائل غير المرغوب فيها» قبل مراسلتنا.</p>
       <a class="btn btn-gold rb-cta" href="mailto:support@nizamok.com">لم يصلكِ شيء؟ راسلي الدعم</a>
-      <span class="rb-assure">support@nizamok.com — اذكري بريد الشراء واسم النظام حتى نصل إلى طلبكِ بسرعة.</span>
+      <span class="rb-assure">support@nizamok.com، اذكري بريد الشراء واسم النظام حتى نصل إلى طلبكِ بسرعة.</span>
       <!--
         Self-serve recovery, for the commonest failure by far: the delivery mail
         lands in spam. The entitlement lives with Dodo, so she can let herself in
-        without waiting on support. Static business-level link — safe to publish;
+        without waiting on support. Static business-level link, safe to publish;
         the per-customer magic links from Dodo's dashboard never go on a page.
       -->
       <span class="rb-alt" data-shukran-onsuccess>ملفكِ محفوظ في حسابكِ أيضًا. من <a href="https://customer.dodopayments.com/login/bus_0NhEjsrF19N6c8BTCWh85" target="_blank" rel="noopener">بوابة الطلبات</a> أدخلي البريد الذي استخدمتِه في الدفع ليصلكِ رابط الدخول.</span>
@@ -83,7 +80,7 @@
       <div class="rb-card">
         <h2>ما الخطوة الأولى؟</h2>
         <ul class="rb-list" role="list">
-          <li>احفظي الملف على جهازكِ أولًا، ثم افتحي خريطة نمطكِ قبل أي شيء آخر — لا تبدئي بالأدوات.</li>
+          <li>احفظي الملف على جهازكِ أولًا، ثم افتحي خريطة نمطكِ قبل أي شيء آخر، لا تبدئي بالأدوات.</li>
           <li>اكتبي موقفًا حقيقيًا حدث معكِ خلال الأسبوع الماضي بجانب الخريطة.</li>
           <li>اختاري أداة واحدة فقط لأول سبعة أيام. الأدوات الخمس دفعة واحدة تُربك ولا تُثبّت.</li>
         </ul>
@@ -118,13 +115,13 @@
   here with its own payment_id and status=succeeded. It is deduplicated on
   payment_id so a refresh or a back-navigation never double-counts.
 
-  This is not cryptographic proof of payment — a crafted URL could fake it. For
+  This is not cryptographic proof of payment, a crafted URL could fake it. For
   a server-verified conversion, use Dodo's webhook or its native GA4/GTM
   integration; this is the documented fallback. See
   docs/rebuild-landing-pages.md §القياس.
 -->
 <script src="/assets/js/config.js"></script>
-<script src="/assets/js/analytics.js?v=20260730a"></script>
+<script src="/assets/js/analytics.js?v=20260801a"></script>
 <script src="/assets/js/shukran.js?v=20260726b"></script>
 <script>
   document.querySelectorAll('[data-year]').forEach(function (el) {
