@@ -1176,6 +1176,111 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .legal-card a { color: var(--gold-deep); text-decoration: underline; }
 
 /* ============================================================
+   THE PATH (/almasar/) — every product, and why it is ordered so
+   ============================================================ */
+
+.crumbs-velvet { color: rgba(240, 233, 222, 0.6); margin-bottom: 1.6rem; }
+.crumbs-velvet a { color: var(--gold-soft); }
+
+/* four movements — the logic, before any price is mentioned */
+.ms-moves {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.2rem; margin-bottom: 2rem;
+}
+.ms-move {
+  border: 1px solid rgba(220, 192, 134, 0.26);
+  border-radius: var(--radius-md);
+  background: rgba(255, 250, 240, 0.05);
+  padding: 1.5rem 1.3rem;
+  text-align: center;
+}
+.ms-move-n {
+  display: block; font-family: var(--font-quote);
+  font-size: 1.25rem; color: var(--gold-soft); margin-bottom: 0.7rem;
+}
+.ms-move p { font-size: 0.88rem; line-height: 2; color: rgba(240, 233, 222, 0.78); }
+.ms-note {
+  text-align: center; font-size: 0.9rem; line-height: 2;
+  color: rgba(240, 233, 222, 0.72);
+}
+
+/* the rungs */
+.ms-rungs { display: grid; gap: 1.6rem; }
+.ms-rung {
+  background: var(--card);
+  border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-ivory);
+  padding: clamp(1.4rem, 3.5vw, 2.2rem);
+}
+/* the paid centrepiece gets the gold edge; nothing else changes shape */
+.ms-rung.is-flagship { border-color: rgba(201, 167, 94, 0.75); box-shadow: var(--shadow-ivory), var(--glow-gold); }
+.ms-rung.is-soon { opacity: 0.92; }
+
+.ms-rung-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem 1rem;
+  padding-bottom: 0.9rem; margin-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(201, 167, 94, 0.28);
+}
+.ms-step {
+  flex: 1 1 100%;
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--gold-deep);
+}
+.ms-rung-head h3 { font-size: clamp(1.2rem, 3.2vw, 1.5rem); color: var(--plum-deep); margin: 0; }
+.ms-price {
+  margin-inline-start: auto;
+  font-family: var(--font-kufi); font-weight: 600; font-size: 1.1rem;
+  color: var(--plum-deep); white-space: nowrap;
+}
+.ms-price.free {
+  background: var(--tier-lamhat); color: #EAF3EF;
+  padding: 0.2rem 0.8rem; border-radius: var(--radius-pill); font-size: 0.9rem;
+}
+
+.ms-rung-body { display: flex; gap: 1.8rem; align-items: flex-start; }
+.ms-rung-text { flex: 1 1 60%; }
+.ms-rung-side { flex: 0 0 auto; max-width: 44%; }
+
+.ms-q {
+  font-family: var(--font-quote); font-size: 1.02rem; line-height: 1.95;
+  color: var(--gold-deep); margin-bottom: 0.7rem;
+}
+.ms-rung-text > p { font-size: 0.94rem; color: var(--ink-soft); line-height: 2.05; margin-bottom: 0.9rem; }
+.ms-list { list-style: none; margin: 0 0 1.3rem; padding: 0; }
+.ms-list li {
+  position: relative; padding-inline-start: 1.3rem; margin-bottom: 0.45rem;
+  font-size: 0.9rem; color: var(--ink-soft); line-height: 1.9;
+}
+.ms-list li::before {
+  content: ''; position: absolute; inset-inline-start: 0; top: 0.62em;
+  width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg);
+}
+.ms-cta { min-height: 48px; white-space: normal; line-height: 1.45; text-align: center; }
+
+/* a fan of the four covers — one per pattern, so "نسخة لكل نمط" is shown not claimed */
+.ms-fan { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+.ms-fan img {
+  width: 100%; height: auto; border-radius: 6px; display: block;
+  box-shadow: 0 12px 26px -12px rgba(46, 27, 65, 0.45);
+}
+.ms-side-quiz {
+  text-align: center; padding: 1.4rem 1.2rem;
+  border: 1px dashed rgba(201, 167, 94, 0.5); border-radius: var(--radius-md);
+}
+.ms-seal { width: 72px; height: 72px; object-fit: contain; margin-bottom: 0.6rem; }
+.ms-side-quiz span { display: block; font-size: 0.82rem; color: var(--taupe); line-height: 1.9; }
+.ms-side-phone img { width: 100%; max-width: 220px; height: auto; border-radius: 18px; box-shadow: var(--shadow-ivory); display: block; }
+
+@media (max-width: 720px) {
+  .ms-rung-body { flex-direction: column; }
+  .ms-rung-side { max-width: 100%; width: 100%; order: -1; }
+  .ms-fan { grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+  .ms-side-phone img { margin-inline: auto; }
+  .ms-price { margin-inline-start: 0; }
+}
+
+/* ============================================================
    ARTICLES (/maqalat/…) — bridge content
    Rides .legal-card so an article inherits the whole ivory sheet;
    these only add what an article has and a legal page does not.
