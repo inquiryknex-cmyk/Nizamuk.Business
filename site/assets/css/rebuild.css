@@ -691,3 +691,29 @@
   .rb-ladder-rungs { grid-template-columns: repeat(3, 1fr); }
   .rb-rung { align-content: start; }
 }
+
+/* Onward reading. Quiet rows, not cards: this is a corridor out of the page,
+   not a third offer competing with the two above it. */
+.rb-reads {
+  display: grid; gap: 0.35rem;
+  margin-top: 1.4rem; padding-top: 1.2rem;
+  border-top: 1px dashed rgba(201, 167, 94, 0.35);
+}
+.rb-reads-h {
+  font-family: var(--font-kufi); font-weight: 600;
+  font-size: 0.9rem; color: var(--plum-deep); margin-bottom: 0.3rem;
+}
+.rb-read {
+  display: grid; gap: 0.15rem;
+  padding: 0.6rem 0.75rem; min-height: 44px;
+  border-radius: var(--rb-radius, 12px);
+  text-decoration: none; color: inherit;
+  transition: background 0.3s ease;
+}
+.rb-read:hover { background: rgba(201, 167, 94, 0.09); }
+.rb-read b {
+  font-size: 0.94rem; font-weight: 700; color: var(--gold-deep);
+  text-decoration: underline; text-underline-offset: 4px;
+}
+.rb-read span { font-size: 0.84rem; line-height: 1.8; color: var(--taupe); }
+.rb-read-path b { color: var(--plum-deep); }

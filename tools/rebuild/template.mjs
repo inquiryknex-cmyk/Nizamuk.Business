@@ -16,6 +16,32 @@ import { fileURLToPath } from 'node:url';
 /* الروابط الأدنى في السلّم تُقرأ من config.js لا تُكرَّر هنا، فيبقى مصدر
    الحقيقة واحدًا. لاحظي اختلاف المفاتيح عن مسارات الصفحات عمدًا، وهو موثّق
    في config.js نفسه: asirat في الرابط، asira في المفتاح. */
+/* Each book page passes onward to the reading that matches its pattern, and to
+   the path page. Before this the only internal links out of these pages were
+   /refund/, /terms/ and /privacy/, so the pages most likely to earn a link
+   passed nothing on. */
+const RELATED = {
+  mubdia: [
+    ['/maqalat/al-taswif-laysa-mushkilat-waqt/', 'التسويف ليس مشكلة وقت', 'لماذا يبهت الحماس عند المنتصف، ولماذا لا ينفع الجدول.'],
+    ['/maqalat/mbti-wa-mada-baad/', 'عرفتِ نمطكِ ولم يتغيّر شيء', 'عن اختبارات الشخصية، وعن السؤال الذي لا تسأله.']
+  ],
+  asirat: [
+    ['/maqalat/limadha-tufakkir-alnisa-kathiran/', 'لماذا تفكر النساء كثيرًا', 'الاجترار، ولماذا يبدو نافعًا فيصعب تركه.'],
+    ['/maqalat/al-taswif-laysa-mushkilat-waqt/', 'التسويف ليس مشكلة وقت', 'حين يكون التأجيل خوفًا من الحكم لا كسلًا.']
+  ],
+  mutafadia: [
+    ['/maqalat/al-taswif-laysa-mushkilat-waqt/', 'التسويف ليس مشكلة وقت', 'أنتِ لا تؤجّلين المهمة، بل الشعور الذي يقف على بابها.'],
+    ['/maqalat/mbti-wa-mada-baad/', 'عرفتِ نمطكِ ولم يتغيّر شيء', 'عن اختبارات الشخصية، وعن السؤال الذي لا تسأله.']
+  ],
+  kafua: [
+    ['/maqalat/limadha-tufakkir-alnisa-kathiran/', 'لماذا تفكر النساء كثيرًا', 'الاجترار حين يمتلئ رأسكِ بما يخص الجميع إلا نفسكِ.'],
+    ['/maqalat/al-taswif-laysa-mushkilat-waqt/', 'التسويف ليس مشكلة وقت', 'لماذا يتأجّل الشيء الوحيد الذي لا ينتظره أحد غيركِ.']
+  ]
+};
+
+const reads = (slug) => (RELATED[slug] || []).map(([href, t, d]) =>
+  `          <a class="rb-read" href="${href}"><b>${t}</b><span>${d}</span></a>`).join('\n');
+
 const CONFIG_KEY = { mubdia: 'mubdia', asirat: 'asira', mutafadia: 'mutafadiya', kafua: 'kafua' };
 
 function lowerRungs(slug) {
@@ -120,7 +146,10 @@ export function renderPage(p) {
   const checkout = `https://checkout.dodopayments.com/buy/${p.productId}`
     + '?quantity=1&showDiscounts=false&country=SA&paymentCurrency=SAR'
     + '&showCurrencySelector=false&redirect_url=' + encodeURIComponent('https://nizamok.com/shukran/');
-  const buy = (pos, label) => `<a class="btn btn-gold rb-cta" href="${checkout}" data-rb-cta="buy" data-rb-pos="${pos}">${nb(label)}</a>`;
+  /* rel="nofollow": eight followed links per page to a payment host is a large
+     leak from the four pages most likely to earn links, and Dodo gains nothing
+     from our ranking signals. */
+  const buy = (pos, label) => `<a class="btn btn-gold rb-cta" href="${checkout}" rel="nofollow noopener" data-rb-cta="buy" data-rb-pos="${pos}">${nb(label)}</a>`;
   const cover = `https://nizamok.com/assets/product/${p.slug}/cover-og.jpg?v=4`;   // social card
   const coverThumb = `/assets/product/${p.slug}/cover-thumb.webp?v=4`;              // hero + gallery tile
   const coverFull = `/assets/product/${p.slug}/cover.webp?v=4`;
@@ -155,7 +184,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260719h">
-  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801c">
+  <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801d">
 
   <script type="application/ld+json">
   {
@@ -178,7 +207,23 @@ export function renderPage(p) {
       "url": "https://nizamok.com/rebuild/${p.slug}/",
       "availability": "https://schema.org/InStock",
       "itemCondition": "https://schema.org/NewCondition"
-    }
+    },
+    "isRelatedTo": [
+      {
+        "@type": "Product",
+        "name": "لمحات نظامك، ${p.name}",
+        "description": "قراءة عربية مركّزة لما يتكرر في يوم ${p.name}: أين تتعطل، وما السلوك الذي يخدعها.",
+        "brand": { "@type": "Brand", "name": "نظامك" },
+        "offers": { "@type": "Offer", "price": "19", "priceCurrency": "SAR", "availability": "https://schema.org/InStock" }
+      },
+      {
+        "@type": "Product",
+        "name": "جذور نمطكِ، ${p.name}",
+        "description": "كتاب عربي في أصل النمط: من أين بدأ، وما الشعور الذي يحميه، ولماذا يعود.",
+        "brand": { "@type": "Brand", "name": "نظامك" },
+        "offers": { "@type": "Offer", "price": "49", "priceCurrency": "SAR", "availability": "https://schema.org/InStock" }
+      }
+    ]
   }
   </script>
 </head>
@@ -481,7 +526,7 @@ ${faqs(p.faq, p.slug)}
             <span class="rb-rung-d">صفحات حقيقية من الملف الذي تستلمينه، لا وصفًا له. اقرئيها بحجمها الكامل ثم قرّري.</span>
           </a>
 
-          <a class="rb-rung" href="${rungs.lamhat}" target="_blank" rel="noopener"
+          <a class="rb-rung" href="${rungs.lamhat}" target="_blank" rel="nofollow noopener"
              data-rb-cta="buy" data-rb-pos="ladder" data-level="lamhat" data-price="19"
              data-ev="ladder_down_click">
             <span class="rb-rung-k">19 ر.س</span>
@@ -489,13 +534,19 @@ ${faqs(p.faq, p.slug)}
             <span class="rb-rung-d">قراءة مركّزة لما يحدث في يومكِ الآن: أين تتعطلين، وما السلوك الذي يخدعكِ وأنتِ تحسبينه إنجازًا.</span>
           </a>
 
-          <a class="rb-rung" href="${rungs.juthur}" target="_blank" rel="noopener"
+          <a class="rb-rung" href="${rungs.juthur}" target="_blank" rel="nofollow noopener"
              data-rb-cta="buy" data-rb-pos="ladder" data-level="juthur" data-price="49"
              data-ev="ladder_down_click">
             <span class="rb-rung-k">49 ر.س</span>
             <b>جذور نمطكِ</b>
             <span class="rb-rung-d">كتابٌ في أصل النمط: من أين بدأ، وما الشعور الذي يحميه، ولماذا يعود كلما ظننتِ أنكِ تجاوزتِه.</span>
           </a>
+        </div>
+
+        <div class="rb-reads">
+          <span class="rb-reads-h">وقبل أن تقرّري، اقرئي</span>
+${reads(p.slug)}
+          <a class="rb-read rb-read-path" href="/almasar/"><b>مسار نظامك كاملًا</b><span>الاختبار والكتب الأربعة ومنطق ترتيبها، في صفحة واحدة.</span></a>
         </div>
 
         <p class="rb-ladder-note">والترتيب يصف عمق السؤال لا شرط الشراء. إن بدأتِ من درجة أصغر ثم أردتِ النظام الكامل، فلا شيء يضيع، فكل واحدة تُقرأ وحدها وتكفي وحدها.</p>
@@ -538,7 +589,7 @@ ${faqs(p.faq, p.slug)}
     <span class="rb-sticky-name">نظام إعادة البناء، ${p.name}</span>
     <span class="rb-sticky-price">109 ر.س</span>
   </div>
-  <a class="btn btn-gold" href="${checkout}" data-rb-cta="buy" data-rb-pos="sticky">احصلي عليه الآن</a>
+  <a class="btn btn-gold" href="${checkout}" rel="nofollow noopener" data-rb-cta="buy" data-rb-pos="sticky">احصلي عليه الآن</a>
 </div>
 
 <!-- Lightbox -->
