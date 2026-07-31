@@ -652,6 +652,145 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .team-note { font-size: 0.88rem; color: var(--taupe); margin-top: 1.5rem; }
 
 /* ============================================================
+   REBUILD BAND (#rebuild) — the advanced tier, on velvet
+   Ivory product cards float on the plum band, the same way the lamhat
+   cards sit on ivory. Everything is prefixed .rbh- so it never leaks
+   into the lamhat grid it borrows .product-card / .cover from.
+   ============================================================ */
+
+/* --- three pillars: what the system actually is --- */
+.rbh-pillars {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.4rem; margin-bottom: 2.6rem;
+}
+.rbh-pillar {
+  background: rgba(255, 250, 240, 0.05);
+  border: 1px solid rgba(220, 192, 134, 0.26);
+  border-radius: var(--radius-md);
+  padding: 1.6rem 1.4rem 1.5rem;
+  text-align: center;
+}
+.rbh-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid rgba(220, 192, 134, 0.5);
+  font-family: var(--font-quote); font-size: 1rem; color: var(--gold-soft);
+  margin-bottom: 0.85rem;
+}
+.rbh-pt {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.08rem; color: #F8F1E3; margin-bottom: 0.5rem;
+}
+.rbh-pillar p { font-size: 0.88rem; line-height: 2; color: rgba(240, 233, 222, 0.78); }
+
+/* --- the ladder: where this tier sits in the path --- */
+.rbh-ladder {
+  border: 1px solid rgba(220, 192, 134, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 1.9rem 1.6rem 1.6rem;
+  margin-bottom: 2.6rem;
+  background: rgba(15, 7, 28, 0.28);
+}
+.rbh-ladder-h {
+  display: block; text-align: center;
+  font-family: var(--font-quote); font-size: 1.15rem;
+  color: var(--gold-soft); margin-bottom: 1.4rem;
+}
+.rbh-rungs {
+  list-style: none; display: grid; gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+.rbh-rungs li {
+  position: relative;
+  border: 1px solid rgba(220, 192, 134, 0.22);
+  border-radius: var(--radius-md);
+  padding: 1.05rem 1rem 1rem;
+  background: rgba(255, 250, 240, 0.04);
+}
+/* The rung you are standing on — gold edge, lifted, never a different shape. */
+.rbh-rungs li.is-here {
+  border-color: rgba(220, 192, 134, 0.75);
+  background: rgba(201, 167, 94, 0.12);
+  box-shadow: var(--glow-gold);
+}
+.rbh-rung-n { display: block; font-family: var(--font-kufi); font-weight: 600; font-size: 1rem; color: #F8F1E3; }
+.rbh-rung-p { display: block; font-size: 0.78rem; font-weight: 700; color: var(--gold-soft); margin-top: 0.3rem; letter-spacing: 0.02em; }
+.rbh-rung-d { display: block; font-size: 0.82rem; line-height: 1.9; color: rgba(240, 233, 222, 0.72); margin-top: 0.5rem; }
+.rbh-here {
+  position: absolute; top: -0.72rem; inset-inline-end: 0.9rem;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #EBD9A9 0%, var(--gold) 55%, var(--gold-deep) 100%);
+  color: #2E1B41; padding: 0.18rem 0.7rem; border-radius: var(--radius-pill);
+}
+.rbh-ladder-note {
+  text-align: center; font-size: 0.84rem; line-height: 1.95;
+  color: rgba(240, 233, 222, 0.68); margin-top: 1.2rem;
+}
+
+/* --- the free-quiz door: deliberately the loudest thing in the band --- */
+.rbh-quiz {
+  text-align: center;
+  border: 1px solid rgba(227, 168, 172, 0.4);
+  border-radius: var(--radius-lg);
+  padding: 2.1rem 1.6rem 1.9rem;
+  margin-bottom: 2.6rem;
+  background: radial-gradient(130% 100% at 50% 0%, rgba(227, 168, 172, 0.16), rgba(255, 250, 240, 0.03) 62%);
+}
+.rbh-quiz-h {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: clamp(1.25rem, 3.4vw, 1.6rem); color: #F8F1E3; margin-bottom: 0.7rem;
+}
+.rbh-quiz p {
+  max-width: 44rem; margin: 0 auto 1.5rem;
+  font-size: 0.94rem; line-height: 2.1; color: rgba(240, 233, 222, 0.82);
+}
+/* Bigger than every other button on the page — this is the door for the
+   woman who does not know her pattern yet, so it must never read as an
+   afterthought next to the four gold card buttons below it. */
+.rbh-quiz-btn {
+  font-size: clamp(1rem, 2.6vw, 1.12rem);
+  padding: 1.15rem 2.9rem;
+  min-height: 56px;
+  max-width: 100%;
+  white-space: normal; line-height: 1.5;
+}
+.rbh-quiz-hint {
+  display: block; margin-top: 1rem;
+  font-size: 0.82rem; color: rgba(240, 233, 222, 0.62);
+}
+
+/* --- the four covers --- */
+.rbh-grid { grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); }
+.rbh-cover { display: flex; }                      /* .cover is an <a> here */
+.rbh-cover:hover .cover-photo { filter: brightness(1.06); }
+.rbh-cover .cover-photo { transition: filter 0.5s ease; }
+/* .product-body is a flex column with its own gap — these three ride it
+   instead of adding margins, and only the description is allowed to grow
+   so cards of unequal text length still line their prices up. */
+.rbh-name {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.14rem; color: var(--plum);
+}
+.rbh-quote {
+  flex: none;
+  font-family: var(--font-quote); font-size: 0.95rem; line-height: 1.95;
+  color: var(--gold-deep);
+}
+.rbh-meta {
+  display: block;
+  font-size: 0.78rem; color: var(--taupe); letter-spacing: 0.02em;
+}
+.rbh-assure {
+  text-align: center; margin-top: 1.8rem;
+  font-size: 0.84rem; color: rgba(240, 233, 222, 0.66);
+}
+
+@media (max-width: 430px) {
+  .rbh-quiz { padding-inline: 1.1rem; }
+  .rbh-quiz-btn { padding-inline: 1.4rem; }
+}
+
+/* ============================================================
    DEEPER STAGES — جذور / إعادة البناء
    ============================================================ */
 
