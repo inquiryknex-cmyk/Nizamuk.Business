@@ -1594,6 +1594,65 @@ html[dir="rtl"] .video-play::after { transform: translateX(-3px); }
 }
 
 /* the fork — two doors, side by side, for two different readers */
+/* ---------- Inline self-check inside an article ----------
+   Two taps, no page load, no email. It ends on the one book written for the
+   answer she gave, or, when her two answers disagree, on the honest reading
+   that she is a blend and a blend needs more than two questions. */
+.art-check {
+  margin: 2.4rem 0;
+  border: 1px solid rgba(93, 63, 140, 0.28);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(170deg, rgba(93, 63, 140, 0.07), rgba(201, 167, 94, 0.05));
+  padding: 1.6rem 1.3rem 1.4rem;
+}
+.art-check-h {
+  display: block; text-align: center;
+  font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.12rem; color: var(--plum-deep); margin-bottom: 0.5rem;
+}
+.art-check-sub {
+  text-align: center; font-size: 0.9rem; color: var(--taupe);
+  margin-bottom: 1.4rem; line-height: 1.9;
+}
+.art-check-q + .art-check-q { margin-top: 1.4rem; }
+.art-check-qt {
+  display: block; font-weight: 700; font-size: 0.95rem;
+  color: var(--plum-deep); margin-bottom: 0.7rem;
+}
+.art-check-opts { display: grid; gap: 0.5rem; }
+.art-check-opts button {
+  text-align: start; cursor: pointer;
+  padding: 0.72rem 0.95rem; min-height: 44px;
+  border: 1px solid rgba(201, 167, 94, 0.32);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.62);
+  font: inherit; font-size: 0.93rem; line-height: 1.75; color: var(--ink-soft);
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+.art-check-opts button:hover { border-color: rgba(201, 167, 94, 0.65); transform: translateY(-1px); }
+.art-check-opts button.is-on {
+  border-color: var(--gold-deep);
+  background: rgba(201, 167, 94, 0.16);
+  color: var(--plum-deep); font-weight: 700;
+}
+.art-check-out {
+  margin-top: 1.5rem; padding-top: 1.3rem;
+  border-top: 1px dashed rgba(201, 167, 94, 0.45);
+}
+.art-check-out-h {
+  display: block; font-family: var(--font-messiri); font-weight: 600;
+  font-size: 1.04rem; line-height: 1.95; color: var(--plum-deep); margin-bottom: 0.6rem;
+}
+.art-check-out p { font-size: 0.95rem; line-height: 1.95; }
+.art-check-out a { color: var(--gold-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+.art-check-btn { margin-top: 1rem; width: min(100%, 22rem); }
+.art-check-btn:link, .art-check-btn:visited { text-decoration: none; color: #FFF8EC; }
+.art-check-note { margin-top: 1rem; font-size: 0.82rem; color: var(--taupe); line-height: 1.8; }
+@media (max-width: 600px) {
+  .art-check { padding: 1.3rem 1rem 1.2rem; }
+  .art-check-btn { width: 100%; }
+}
+
 .fork {
   margin: 2.2rem 0;
   border: 1px solid rgba(201, 167, 94, 0.4);
