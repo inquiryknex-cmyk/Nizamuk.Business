@@ -29,7 +29,7 @@
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/reem-kufi-600-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260801e">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260801h">
 </head>
 <body class="quiz-body velvet" data-ambient data-lang-alt="/en/quiz/">
 
@@ -167,6 +167,11 @@
 
         <div class="mirrors" id="resultMirrors" style="display:none"></div>
 
+        <!-- Share sits here, at the recognition peak, before any price is named.
+             Enthusiasm to pass this on is highest right after «هذه أنا», not
+             after being shown three products. -->
+        <div class="result-share" id="resultShare" hidden></div>
+
         <p class="sent-note">تقريركِ الأول في طريقه إلى: <strong id="sentTo"></strong>، يصلكِ خلال دقائق.</p>
 
         <div class="result-path" id="resultPath"></div>
@@ -186,6 +191,6 @@
 <script src="/assets/js/analytics.js?v=20260801a"></script>
 <script src="/assets/js/vendor/gsap.min.js" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
-<script src="/assets/js/quiz.js?v=20260801a" defer></script>
+<script src="/assets/js/quiz.js?v=20260801b" defer></script>
 </body>
 </html>

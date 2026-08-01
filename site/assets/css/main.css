@@ -1135,6 +1135,80 @@ html[dir="rtl"] .video-play::after { transform: translateX(-3px); }
 .sent-note { font-size: 0.86rem; color: rgba(239, 231, 218, 0.6); text-align: center; margin-top: 1.7rem; }
 .sent-note a { color: var(--gold-soft); text-decoration: underline; }
 
+/* ---- Sharing the result ----
+   Deliberately quieter than the path cards below it: gold hairlines, no filled
+   buttons. This is an invitation to pass something on, and it sits before any
+   price is named, so it must not read as another thing being sold. */
+.result-share {
+  margin-top: 1.9rem;
+  border: 1px solid rgba(214, 186, 128, 0.32);
+  background: linear-gradient(160deg, rgba(201, 167, 94, 0.09), rgba(255, 250, 240, 0.02));
+  border-radius: var(--radius-lg);
+  padding: 1.4rem 1.5rem 1.3rem;
+  text-align: center;
+}
+/* Body font, not Kufi: this line carries a kasra and a shadda («عرفتِ إحداهنّ»)
+   and Reem Kufi sets its marks tight enough to collide with the glyphs. The
+   same reason .mirrors h3 and .reading h3 inherit rather than set a face. */
+.result-share .share-h {
+  display: block; font-weight: 700;
+  font-size: 1.06rem; line-height: 1.85;
+  color: var(--gold-soft); margin-bottom: 0.35rem;
+}
+.result-share .share-sub {
+  font-size: 0.88rem; line-height: 1.9;
+  color: rgba(239, 231, 218, 0.66); margin: 0 0 1.15rem;
+}
+.share-row {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem;
+}
+.share-btn {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.52rem 0.9rem;
+  border: 1px solid rgba(214, 186, 128, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 250, 240, 0.04);
+  color: rgba(239, 231, 218, 0.9);
+  font: inherit; font-size: 0.83rem; line-height: 1;
+  text-decoration: none; cursor: pointer;
+  transition: border-color .18s ease, transform .18s ease, background .18s ease;
+}
+.share-btn:hover {
+  border-color: rgba(214, 186, 128, 0.7);
+  background: rgba(255, 250, 240, 0.08);
+  transform: translateY(-1px);
+}
+.share-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.share-btn svg { width: 17px; height: 17px; flex: none; }
+/* X is its own wordmark, so the letter IS the icon. Drawing a cross beside the
+   label produced a button reading «X ✕», and a lone cross among round buttons
+   reads as «close». Label only. */
+.share-btn.share-x svg { display: none; }
+.share-btn.share-x span { font-weight: 700; font-size: 0.95rem; letter-spacing: .02em; }
+/* The native sheet is the primary route on a phone, so it leads. */
+.share-btn.share-native {
+  border-color: rgba(214, 186, 128, 0.66);
+  background: rgba(201, 167, 94, 0.16);
+  color: #FBF5E9;
+}
+.share-note {
+  display: block; margin-top: 0.85rem; font-size: 0.8rem;
+  color: var(--gold-soft); word-break: break-all;
+}
+@media (max-width: 560px) {
+  .result-share { padding: 1.2rem 0.9rem 1.1rem; }
+  .share-btn { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+  .share-btn span { display: none; }
+  /* X keeps its label: a bare X glyph among round icon buttons reads as
+     «close», not as a network. */
+  .share-btn.share-native span,
+  .share-btn.share-copy span,
+  .share-btn.share-x span { display: inline; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .share-btn, .share-btn:hover { transition: none; transform: none; }
+}
+
 .result-path { margin-top: 2.6rem; }
 .result-path > h3 { text-align: center; font-size: 1.4rem; font-weight: 700; color: #F6EEDF; margin-bottom: 0.5rem; }
 .result-path > p { text-align: center; font-size: 0.92rem; color: rgba(239, 231, 218, 0.65); margin-bottom: 1.9rem; }

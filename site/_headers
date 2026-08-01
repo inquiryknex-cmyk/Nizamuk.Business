@@ -25,6 +25,11 @@
   Cache-Control: public, max-age=604800
 /assets/covers/*
   Cache-Control: public, max-age=604800
+# Share cards are fetched by WhatsApp/X/Telegram scrapers, which cache
+# aggressively on their own side. Same regenerate-in-place risk as the covers,
+# so the same revalidatable week rather than `immutable`.
+/assets/share/*
+  Cache-Control: public, max-age=604800
 /assets/img/*
   Cache-Control: public, max-age=2592000
 /assets/css/*

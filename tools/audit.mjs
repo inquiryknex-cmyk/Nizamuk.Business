@@ -7,6 +7,7 @@ const PAGES = [
   '/maqalat/', '/maqalat/limadha-abda-wala-ukmil/', '/maqalat/idman-al-bidayat/',
   '/maqalat/al-kasal-wa-ilajuh/', '/maqalat/al-taswif-laysa-mushkilat-waqt/',
   '/maqalat/mbti-wa-mada-baad/', '/maqalat/limadha-tufakkir-alnisa-kathiran/',
+  '/natija/mubdia/', '/natija/asirat/', '/natija/mutafadia/', '/natija/kafua/',
   '/privacy/', '/terms/', '/refund/',
   '/en/', '/en/quiz/', '/en/interdash/', '/en/privacy/', '/en/terms/', '/en/refund/'
 ];
