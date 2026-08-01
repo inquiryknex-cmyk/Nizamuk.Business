@@ -16,10 +16,30 @@
  *
  *   node tools/natija-pages.mjs        # writes site/natija/<slug>/index.html
  */
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 
 const ROOT = '/home/user/Nizamuk.Business/site';
+
+/* The share card's ?v= is the hash of the card itself, never a hand-typed
+   number. `/assets/share/*` is cached for a week and WhatsApp, X and Telegram
+   cache previews far longer on their side, keyed by URL. A card regenerated in
+   place under an unchanged URL would leave a stale preview in circulation with
+   nothing on the site to show it — which is exactly what happened to the book
+   covers when their URLs were `immutable` and unchanged. Hashing removes the
+   chance to forget. */
+async function cardVersion(slug) {
+  const file = join(ROOT, 'assets/share', `natija-${slug}.jpg`);
+  let buf;
+  try {
+    buf = await readFile(file);
+  } catch {
+    throw new Error(
+      `بطاقة المشاركة غير موجودة: ${file}\nشغّلي «npm run share:cards» أولًا.`);
+  }
+  return createHash('sha256').update(buf).digest('hex').slice(0, 8);
+}
 const V = { css: '20260801h', analytics: '20260801a', main: '20260801b' };
 
 /* slug = public URL, key = internal quiz key. The mismatch is deliberate and
@@ -84,14 +104,14 @@ const page = (p) => `<!doctype html>
   <meta property="og:title" content="نمطي في اختبار نظامك: ${p.name}">
   <meta property="og:description" content="${p.truth} اكتشفي نمطكِ في ثلاث دقائق، بلا بريد وبلا دفع.">
   <meta property="og:url" content="https://nizamok.com/natija/${p.slug}/">
-  <meta property="og:image" content="https://nizamok.com/assets/share/natija-${p.slug}.jpg?v=1">
+  <meta property="og:image" content="https://nizamok.com/assets/share/natija-${p.slug}.jpg?v=${p.cardV}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="نمط ${p.name} من اختبار نظامك">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="نمطي في اختبار نظامك: ${p.name}">
   <meta name="twitter:description" content="${p.truth} اكتشفي نمطكِ في ثلاث دقائق.">
-  <meta name="twitter:image" content="https://nizamok.com/assets/share/natija-${p.slug}.jpg?v=1">
+  <meta name="twitter:image" content="https://nizamok.com/assets/share/natija-${p.slug}.jpg?v=${p.cardV}">
 
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
@@ -110,7 +130,7 @@ const page = (p) => `<!doctype html>
         "description": "${p.truth}",
         "url": "https://nizamok.com/natija/${p.slug}/",
         "inLanguage": "ar",
-        "primaryImageOfPage": { "@type": "ImageObject", "url": "https://nizamok.com/assets/share/natija-${p.slug}.jpg?v=1", "width": 1200, "height": 630 },
+        "primaryImageOfPage": { "@type": "ImageObject", "url": "https://nizamok.com/assets/share/natija-${p.slug}.jpg?v=${p.cardV}", "width": 1200, "height": 630 },
         "isPartOf": { "@type": "WebSite", "name": "نظامك", "url": "https://nizamok.com/" }
       },
       {
@@ -229,9 +249,10 @@ const page = (p) => `<!doctype html>
 `;
 
 for (const p of PATTERNS) {
+  p.cardV = await cardVersion(p.slug);
   const dir = join(ROOT, 'natija', p.slug);
   await mkdir(dir, { recursive: true });
   await writeFile(join(dir, 'index.html'), page(p));
-  console.log(`  /natija/${p.slug.padEnd(11)} ${p.name}`);
+  console.log(`  /natija/${p.slug.padEnd(11)} card ?v=${p.cardV}  ${p.name}`);
 }
 console.log(`\n${PATTERNS.length} صفحات نتيجة قابلة للمشاركة.`);
