@@ -23,10 +23,26 @@ const OUT = join(ROOT, 'assets/share');
 /* Slugs are the PUBLIC ones (asirat, mutafadia), matching config.rebuildPages,
    not the internal quiz keys (asira, mutafadiya). */
 const PATTERNS = [
-  { slug: 'mubdia',     name: 'المبدعة المشتّتة',  truth: 'لا تنقصكِ الأفكار، تنقصكِ فكرة واحدة تصل.' },
-  { slug: 'asirat',     name: 'أسيرة الكمال',      truth: 'نقص العمل لا يعني نقصًا فيكِ.' },
-  { slug: 'mutafadia',  name: 'المتفادية الذكية',  truth: 'لا تتجنبين المهمة، بل الشعور الذي خلفها.' },
-  { slug: 'kafua',      name: 'الكفؤة المنهَكة',   truth: 'أن تكوني قادرة لا يعني أن تكوني متاحة دائمًا.' }
+  {
+    slug: 'mubdia', name: 'المبدعة المشتّتة',
+    truth: 'لا تنقصكِ الأفكار، تنقصكِ فكرة واحدة تصل.',
+    para: 'البداية تعطيكِ نسخة جديدة منكِ، لكنها تسحبكِ من الشيء الذي كان على وشك الوصول.'
+  },
+  {
+    slug: 'asirat', name: 'أسيرة الكمال',
+    truth: 'نقص العمل لا يعني نقصًا فيكِ.',
+    para: 'لا تخافين العمل، بل لحظة ظهوره أمام عين أخرى. فصار التعديل بيتًا آمنًا بدل التسليم.'
+  },
+  {
+    slug: 'mutafadia', name: 'المتفادية الذكية',
+    truth: 'لا تتجنبين المهمة، بل الشعور الذي خلفها.',
+    para: 'يومكِ مليء بالإنجاز الصغير، وبابٌ واحد مهم يكبر في الخيال كل يوم تأجيل.'
+  },
+  {
+    slug: 'kafua', name: 'الكفؤة المنهَكة',
+    truth: 'أن تكوني قادرة لا يعني أن تكوني متاحة دائمًا.',
+    para: 'الجميع يظنكِ بخير لأنكِ دائمًا تتصرفين. صارت قدرتكِ تصريح دخول للجميع، إلا لكِ.'
+  }
 ];
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
@@ -71,7 +87,7 @@ const card = (p) => `
     width:1112px;height:542px;border:1px solid rgba(214,186,128,0.42);
     border-radius:14px;position:relative;
     display:flex;flex-direction:column;justify-content:center;
-    padding:0 74px;
+    padding:0 74px 86px;
   }
   .frame::before,.frame::after{
     content:'';position:absolute;width:54px;height:54px;
@@ -79,18 +95,25 @@ const card = (p) => `
   }
   .frame::before{top:-1px;right:-1px;border-left:0;border-bottom:0;border-radius:0 14px 0 0}
   .frame::after{bottom:-1px;left:-1px;border-right:0;border-top:0;border-radius:0 0 0 14px}
+  /* The mandala seal is the brand's primary mark; the wordmark alone made the
+     card read as a generic quote graphic. */
+  .seal{height:104px;width:104px;margin-bottom:14px;opacity:.97}
   .kicker{
-    font-family:'Almarai',sans-serif;font-weight:400;font-size:26px;
-    letter-spacing:.06em;color:#E6D3A3;margin-bottom:26px;
+    font-family:'Almarai',sans-serif;font-weight:400;font-size:24px;
+    letter-spacing:.06em;color:#E6D3A3;margin-bottom:16px;
   }
   .name{
     font-family:'El Messiri','Almarai',sans-serif;font-weight:700;
-    font-size:104px;line-height:1.24;color:#FAF5EC;margin-bottom:30px;
+    font-size:82px;line-height:1.22;color:#FAF5EC;margin-bottom:20px;
   }
-  .rule{width:112px;height:1px;background:rgba(214,186,128,0.65);margin-bottom:30px}
+  .rule{width:112px;height:1px;background:rgba(214,186,128,0.65);margin-bottom:20px}
   .truth{
-    font-family:'Almarai',sans-serif;font-weight:300;font-size:38px;
-    line-height:1.72;color:rgba(250,245,236,0.90);max-width:900px;
+    font-family:'Almarai',sans-serif;font-weight:400;font-size:33px;
+    line-height:1.6;color:#E6D3A3;max-width:930px;margin-bottom:14px;
+  }
+  .para{
+    font-family:'Almarai',sans-serif;font-weight:300;font-size:25px;
+    line-height:1.78;color:rgba(250,245,236,0.80);max-width:930px;
   }
   .foot{
     position:absolute;bottom:34px;left:74px;right:74px;
@@ -104,10 +127,12 @@ const card = (p) => `
   }
 </style>
 <div class="frame">
+  <img class="seal" src="/assets/img/seal.png" alt="">
   <div class="kicker">نمطي في اختبار نظامك</div>
   <div class="name">${p.name}</div>
   <div class="rule"></div>
   <div class="truth">${p.truth}</div>
+  <div class="para">${p.para}</div>
   <div class="foot">
     <div class="brand"><img src="/assets/img/wordmark.png" alt=""></div>
     <div class="cta">nizamok.com</div>
