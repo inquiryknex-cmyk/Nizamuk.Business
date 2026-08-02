@@ -6,16 +6,16 @@
  *
  *   1. motion   — each plate is a still; zoompan gives it a push or a pull.
  *                 Plates are 2x native, so every zoom stage is a DOWNscale and
- *                 nothing ever softens.
- *   2. cut      — xfade. Fades between the cover beats, a soft directional
- *                 wipe between the interior pages, because that is the way a
- *                 page moves in a book bound on the right.
+ *                 nothing ever softens. The book chapter is the exception: it
+ *                 arrives already moving, as a frame sequence from
+ *                 render-book.mjs, and no geometry filter touches it.
+ *   2. cut      — xfade between shots. Inside the book chapter there are no
+ *                 dissolves at all: the page turns ARE the transitions.
  *   3. type     — the Arabic is composited LAST, over the finished motion, so
  *                 it never inherits a zoom and is never resampled. This is the
  *                 whole reason the type is a separate layer.
  *
- * Audio is synthesised here from noise and a single low sine — room tone,
- * paper accents on the cuts, one soft landing under the end card. No music, no
+ * Audio is generated location ambience — the room the book is in. No music, no
  * track, no sample, nothing with a licence attached to it. There is also a
  * silent cut of each film for a voice-over to be laid into later.
  *
@@ -36,16 +36,27 @@ const XF = 0.4;                       // crossfade length, shared by every cut
    clip ffmpeg builds is d + XF for every shot but the last, because xfade eats
    the overlap out of the outgoing clip. */
 const SHOTS = [
-  { plate: 'cover', card: 'shot1',  d: 4.0, motion: ['in',  1.00, 1.07], trans: 'fade'        },
-  { plate: 'tilt',  card: 'shot2',  d: 3.2, motion: ['out', 1.09, 1.00], trans: 'fade'        },
-  { plate: 'named', card: 'shot3',  d: 3.8, motion: ['in',  1.00, 1.06], trans: 'smoothright' },
-  { plate: 'page1', card: 'shot4a', d: 3.2, motion: ['in',  1.00, 1.05], trans: 'smoothright' },
-  { plate: 'page2', card: 'shot4b', d: 3.2, motion: ['out', 1.06, 1.00], trans: 'smoothright' },
-  { plate: 'page3', card: 'shot4c', d: 3.2, motion: ['in',  1.00, 1.05], trans: 'smoothright' },
-  { plate: 'fan',   card: 'shot5',  d: 4.0, motion: ['in',  1.00, 1.06], trans: 'fade'        },
+  { plate: 'cover', card: 'shot1',  d: 4.0, motion: ['in',  1.00, 1.07], trans: 'fade' },
+  { plate: 'tilt',  card: 'shot2',  d: 3.2, motion: ['out', 1.09, 1.00], trans: 'fade' },
+  { plate: 'named', card: 'shot3',  d: 3.8, motion: ['in',  1.00, 1.06], trans: 'fade' },
+  /* The book chapter: ONE clip, not three. It is a rendered frame sequence
+     (render-book.mjs) in which the pages actually turn, so it cannot be a still
+     with a zoom on it and there is nothing to dissolve between — the turns are
+     the transitions. Its three cards are timed against the turns below. */
+  { book: true,     card: null,     d: 9.6, motion: null,                trans: 'fade' },
+  { plate: 'fan',   card: 'shot5',  d: 4.0, motion: ['in',  1.00, 1.06], trans: 'fade' },
   /* The end card does not move. It carries the price and the call to action,
      and a moving CTA is a CTA that is harder to read and harder to tap. */
-  { plate: null,    card: null,     d: 4.4, motion: null,                trans: null          }
+  { plate: null,    card: null,     d: 4.4, motion: null,                trans: null   }
+];
+
+/* Where the leaves turn inside that clip, and therefore where the type has to
+   be off screen. Mirrors TURNS in render-book.mjs. */
+const BOOK_START = SHOTS.slice(0, 3).reduce((s, x) => s + x.d, 0);   // 11.0
+const BOOK_CARDS = [
+  { card: 'shot4a', start: BOOK_START + 0.5, end: BOOK_START + 2.9 },   // 11.5 – 13.9
+  { card: 'shot4b', start: BOOK_START + 3.9, end: BOOK_START + 5.9 },   // 14.9 – 16.9
+  { card: 'shot4c', start: BOOK_START + 6.9, end: BOOK_START + 9.6 }    // 17.9 – 20.6
 ];
 
 const TOTAL = SHOTS.reduce((s, x) => s + x.d, 0);
@@ -73,16 +84,21 @@ mkdirSync(OUT, { recursive: true });
 mkdirSync(TMP, { recursive: true });
 
 /* ------------------------------------------------------------------ *
- * 1. The bed: real forest ambience, generated.
+ * 1. The bed: generated location ambience.
  *
  * The first pass synthesised its own sound — filtered noise, with a transient
  * on every cut. Those transients read as clicks, and no amount of shaping was
- * going to make noise sound like a place. This is location ambience instead:
- * wind through a canopy, leaves, a few distant birds, generated on Higgsfield
- * and therefore licensed with nothing attached to it.
+ * going to make noise sound like a place. The second pass used forest ambience,
+ * which was pleasant and had nothing to do with a book.
+ *
+ * This is the room the book is in: paper moving, pages turning, a warm quiet
+ * interior. Generated on Higgsfield and therefore licensed with nothing
+ * attached to it. Only the AUDIO of those generations is used — their picture
+ * is discarded and never appears in the film, which is built entirely from the
+ * shipping product assets.
  *
  * THREE different ten-second takes, not one looped three times — a repeating
- * birdsong phrase is the single most audible way a bed gives itself away.
+ * phrase is the single most audible way a bed gives itself away.
  * They butt together with half-second crossfades: 10+10+10 − 2×0.5 = 29.000s,
  * which is the whole film, so no maths is needed downstream.
  *
@@ -90,7 +106,10 @@ mkdirSync(TMP, { recursive: true });
  * want punctuation; the picture already carries the rhythm.
  * ------------------------------------------------------------------ */
 const BED = join(TMP, 'bed.wav');
-const TAKES = ['forest-a', 'forest-b', 'forest-c'].map(n => join(AD, 'ambience', `${n}.wav`));
+/* Ordered, not interchangeable: they butt together in sequence, so the two
+   paper takes go second and third to land under the book chapter (11.0–20.6s),
+   and the quieter room-tone take opens over the cover. */
+const TAKES = ['room-a', 'room-b', 'room-c'].map(n => join(AD, 'ambience', `${n}.wav`));
 
 for (const t of TAKES) if (!existsSync(t)) throw new Error(`missing ambience take: ${t}`);
 
@@ -103,10 +122,14 @@ for (const t of TAKES) if (!existsSync(t)) throw new Error(`missing ambience tak
       `highpass=f=42,afade=t=in:st=0:d=0.02,afade=t=out:st=${10 - 0.02}:d=0.02[k${i}]`),
     `[k0][k1]acrossfade=d=${XA}:c1=tri:c2=tri[ab]`,
     `[ab][k2]acrossfade=d=${XA}:c1=tri:c2=tri[joined]`,
-    /* The source sits around −41 LUFS, so this is a big lift; the highpass
-       above and the gentle top-end trim below keep the codec floor down with
-       it. −20 LUFS is a deliberate background level: nothing here speaks. */
-    `[joined]lowpass=f=15000,loudnorm=I=-20:TP=-2.0:LRA=11,` +
+    /* The takes land around −50 LUFS, so this is a thirty-decibel lift; the
+       highpass above and the top-end trim below stop the codec floor coming up
+       with it. −21 LUFS is a deliberate background level: nothing here speaks,
+       and paper pushed to a dialogue target would be absurd. */
+    `[joined]lowpass=f=15000,loudnorm=I=-21:TP=-2.0:LRA=11,` +
+    /* loudnorm's own peak control is a target, not a guarantee — it measured
+       −1.7 dBTP against a −2.0 ask. This makes it a ceiling. */
+    `alimiter=limit=0.794:level=disabled,` +
     `afade=t=in:st=0:d=1.4,afade=t=out:st=27.2:d=1.8,` +
     `atrim=0:29,asetpts=N/SR/TB[a]`
   ].join(';');
@@ -123,11 +146,26 @@ for (const [k, f] of Object.entries(FORMATS)) {
   const chains = [];
 
   SHOTS.forEach((s, i) => {
-    const src = s.plate ? join(AD, 'plates', `${s.plate}-${k}.png`) : join(AD, `endcard-${k}.png`);
-    if (!existsSync(src)) throw new Error(`missing plate: ${src}`);
-
     const clip = s.trans ? s.d + XF : s.d;           // the outgoing overlap
     const frames = Math.round(clip * FPS);
+
+    if (s.book) {
+      /* Already a moving picture: the frames come off render-book.mjs at the
+         film's own rate, so they are read straight in with no geometry filter
+         at all. The push and the turns are baked into them. */
+      const dir = join(AD, 'book', k);
+      const first = join(dir, 'f0000.png');
+      if (!existsSync(first)) throw new Error(`missing book frames: ${dir} (run render-book.mjs)`);
+      inputs.push('-framerate', String(FPS), '-i', join(dir, 'f%04d.png'));
+      /* fps LAST. Putting setpts after it wipes the frame-rate metadata, and
+         xfade then refuses the link: "second input link xfade frame rate 1/0". */
+      chains.push(`[${i}:v]trim=end_frame=${frames},setpts=N/${FPS}/TB,` +
+        `scale=${f.w}:${f.h},format=yuv420p,setsar=1,fps=${FPS}[v${i}]`);
+      return;
+    }
+
+    const src = s.plate ? join(AD, 'plates', `${s.plate}-${k}.png`) : join(AD, `endcard-${k}.png`);
+    if (!existsSync(src)) throw new Error(`missing plate: ${src}`);
 
     if (!s.motion) {
       /* Still: held by the demuxer, so the frame is never touched by a
@@ -162,6 +200,12 @@ for (const [k, f] of Object.entries(FORMATS)) {
      its last, overlay passes the picture through untouched. */
   const TEXT = [];
   SHOTS.forEach((s, i) => {
+    if (s.book) {
+      /* Three cards inside one clip, timed so each is gone before its leaf
+         lifts. Type riding over a turning page reads as a mistake. */
+      BOOK_CARDS.forEach(c => TEXT.push({ card: `${c.card}-${k}`, start: c.start, dur: c.end - c.start }));
+      return;
+    }
     if (!s.card) return;
     const start = SHOTS.slice(0, i).reduce((a, x) => a + x.d, 0) + 0.5;
     const dur = s.d - 0.5;                            // clears the incoming cut
