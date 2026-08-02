@@ -47,6 +47,13 @@ const COPY = {
   briefKicker: 'نظام إعادة البناء',
   briefTitle: 'أكملي ما بدأتِه',
   briefLines: ['اختاري مشروعًا واحدًا متوقفًا.', '٤٧ صفحة · خمس مراحل', 'خطة ٣٠ يومًا · قوس ٩٠ يومًا'],
+  /* Where it sits, in ONE line — not a ladder. A ladder in a cold ad lists four
+     cheaper things at the moment of decision, and /rebuild/mubdia/ already
+     decided against that: its own markup puts the ladder BELOW the buy button
+     and after the FAQ, «فالنظام الكامل يبقى العرض الأول». This line does the
+     one useful half of the idea — it says everything led here — without
+     inviting her to shop down. */
+  briefPath: 'المرحلة الأخيرة من مسار نظامك',
 
   /* One beat per interior page, in the order the leaves turn. The arc is a
      completion story, not a diagnosis: it is not laziness → name what stops you
@@ -61,7 +68,7 @@ const COPY = {
   shot5: ['وقوس ٩٠ يومًا', 'حتى يكتمل'],           // p36 قوس ٩٠ يومًا
 
   endTitle: 'أكملي مشروعًا متوقفًا',
-  endPrice: '١٠٩ ر.س — دفعة واحدة',
+  endPrice: '١٠٩ ر.س',
   endCta: 'خذي جولة داخل الكتاب',
   /* The quiz stays, demoted: an alternative door for someone not ready to buy,
      no longer the main path. */
@@ -193,6 +200,12 @@ const briefCard = (f) => {
     text-shadow:0 2px 14px rgba(0,0,0,.5);
   }
   .l.gold{font-weight:400;color:${C.goldSoft};letter-spacing:.03em}
+  .path{
+    position:relative;margin-top:${side ? 30 : 26}px;padding-top:${side ? 24 : 20}px;
+    border-top:1px solid rgba(214,186,128,.30);
+    font-family:'Almarai',sans-serif;font-weight:400;font-size:${side ? 34 : 32}px;
+    color:rgba(230,211,163,.82);letter-spacing:.03em;
+  }
 </style>
 <div class="wrap">
   <div class="scrim"></div>
@@ -202,6 +215,7 @@ const briefCard = (f) => {
   <div class="l">${COPY.briefLines[0]}</div>
   <div class="l gold">${COPY.briefLines[1]}</div>
   <div class="l">${COPY.briefLines[2]}</div>
+  <div class="path">${COPY.briefPath}</div>
 </div>`;
 };
 

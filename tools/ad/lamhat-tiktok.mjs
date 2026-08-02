@@ -49,8 +49,13 @@ const COPY = {
     { at: 7.5,  to: 10.6, lines: ['أين تتعطّلين', 'بالضبط؟'], accent: true },
     { at: 11.1, to: 14.2, lines: ['وما السلوك الذي يخدعكِ', 'وأنتِ تحسبينه إنجازًا'] }
   ],
+  /* The opposite move from the 109 film. There, naming the path would list
+     cheaper doors at the moment of decision; here the path IS the argument —
+     19 riyals reads as a thin thing on its own and as a first step in a
+     sequence it reads as a beginning. Wording follows /almasar/. */
+  offerKicker: 'أولى مراحل مسار نظامك',
   offerTitle: 'لمحة المبدعة المشتّتة',
-  offerPrice: '١٩ ر.س — دفعة واحدة',
+  offerPrice: '١٩ ر.س',
   offerUrl: 'nizamok.com'
 };
 
@@ -159,6 +164,8 @@ const offerCard = () => `
   .scrim{position:absolute;inset:-170px -180px;
     background:radial-gradient(58% 62% at 50% 50%,rgba(6,20,17,.86),rgba(6,20,17,.44) 60%,transparent 78%);
     filter:blur(36px)}
+  .kicker{position:relative;font-family:'Almarai',sans-serif;font-weight:400;
+    font-size:36px;letter-spacing:.08em;color:${C.goldSoft};margin-bottom:16px}
   h1{position:relative;font-family:'El Messiri','Almarai',sans-serif;font-weight:700;
     font-size:76px;line-height:1.26;color:${C.ivory};margin-bottom:20px;
     text-shadow:0 2px 20px rgba(0,0,0,.6)}
@@ -174,6 +181,7 @@ const offerCard = () => `
 </style>
 <div class="wrap">
   <div class="scrim"></div>
+  <div class="kicker">${COPY.offerKicker}</div>
   <h1>${COPY.offerTitle}</h1>
   <div class="price">${COPY.offerPrice}</div>
   <div class="cta">ابدئي من هنا</div>
@@ -189,7 +197,10 @@ const server = await serveSite(PORT, url => {
   return m && ROUTES[m[1]] ? ROUTES[m[1]] : null;
 });
 
-await rm(WORK, { recursive: true, force: true });
+/* Keep the frames if a full set is already on disk: they take five minutes and
+   nothing about them depends on the type, which is the layer that changes. */
+const FRAME_COUNT = Math.round(DUR * FPS);
+const haveFrames = existsSync(join(WORK, 'frames', `f${String(FRAME_COUNT - 1).padStart(4, '0')}.png`));
 await mkdir(join(WORK, 'frames'), { recursive: true });
 mkdirSync(OUT, { recursive: true });
 
@@ -211,7 +222,9 @@ for (const name of Object.keys(ROUTES)) {
 console.log(`  ${Object.keys(ROUTES).length - 1} cards`);
 
 /* The moving plate. */
-{
+if (haveFrames) {
+  console.log(`  plate  ${FRAME_COUNT} frames already rendered, kept`);
+} else {
   const p = await ctx.newPage();
   const missing = [];
   p.on('response', r => { if (r.status() >= 400) missing.push(r.url()); });
