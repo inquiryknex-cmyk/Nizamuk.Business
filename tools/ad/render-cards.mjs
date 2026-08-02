@@ -34,6 +34,11 @@ const OUT = '/home/user/Nizamuk.Business/build/ad';
  *
  * The price line and the CTA are the two strings that change when the 14-day
  * entry product exists; nothing else in the film depends on them.
+ *
+ * «حتى يكتمل» and not «يعود إلى الحياة», in both places it appears. Coming back
+ * to life is a restart, and restarting is the one thing she is already good at —
+ * the whole premise is that she starts and starts. The finish line is what she
+ * is buying, so the copy has to name the finish line.
  */
 const COPY = {
   shot1: ['تبدئين بحماس…', 'ثم تتوقفين؟'],
@@ -41,16 +46,19 @@ const COPY = {
   /* The brief beside the cover: what she GETS, before a page is shown. */
   briefKicker: 'نظام إعادة البناء',
   briefTitle: 'أكملي ما بدأتِه',
-  briefLines: ['اختاري مشروعًا واحدًا متوقفًا.', '٤٧ صفحة · خمس مراحل', 'حتى يعود إلى الحركة.'],
+  briefLines: ['اختاري مشروعًا واحدًا متوقفًا.', '٤٧ صفحة · خمس مراحل', 'خطة ٣٠ يومًا · قوس ٩٠ يومًا'],
 
   /* One beat per interior page, in the order the leaves turn. The arc is a
      completion story, not a diagnosis: it is not laziness → name what stops you
      → cross it → a plan you can keep → one thing finished. */
   shot2: ['ليس كسلًا', 'ولا ضعف إرادة'],          // p07 خريطة المنعطفات الأربعة
-  shot3: ['افهمي ما يُعطّلكِ', 'بالاسم'],           // p23 تجربة الوصول
+  shot3: ['ما لا نسمّيه', 'يصعب علينا تغييره'],     // p23 تجربة الوصول
   shot4a: ['واعبري المنعطف', 'الذي يوقفكِ'],       // p08 خريطة العبور
-  shot4b: ['خطة واقعية', 'لا قائمة أمنيات'],       // p33 خطة ٣٠ يومًا
-  shot5: ['مشروع واحد', 'حتى يكتمل'],             // p36 قوس ٩٠ يومًا
+  /* Named, not described. Both of these are the heading printed on the page
+     that is on screen underneath them, so the claim and the proof arrive in the
+     same frame. */
+  shot4b: ['خطة ٣٠ يومًا', 'لا قائمة أمنيات'],      // p33 خطة ٣٠ يومًا
+  shot5: ['وقوس ٩٠ يومًا', 'حتى يكتمل'],           // p36 قوس ٩٠ يومًا
 
   endTitle: 'أكملي مشروعًا متوقفًا',
   endPrice: '١٠٩ ر.س — دفعة واحدة',
@@ -85,7 +93,10 @@ const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=u
  * ------------------------------------------------------------------ */
 const shotCard = (lines, f, opts = {}) => {
   const side = f.layout === 'side';
-  const size = opts.size || (side ? 72 : 68);
+  /* Large. The type was set at magazine-caption size against a full-height
+     book, so it read as a footnote to the picture rather than as the thing being
+     said. On a phone-sized Shorts frame it was barely legible at all. */
+  const size = opts.size || (side ? 90 : 80);
   /* side   — a column at x>=1080, vertically centred on the staged book.
      bottom — anchored by its TOP, directly under the book, ending above
               y=1350. Two reasons it is a top anchor and not a bottom one:
@@ -94,8 +105,8 @@ const shotCard = (lines, f, opts = {}) => {
               as part of the picture; and it made one-line cards sit lower than
               two-line ones, so the type jumped between shots. */
   const place = side
-    ? `top:50%;transform:translateY(-50%);right:100px;width:740px;`
-    : `top:1090px;right:${f.safe}px;left:${f.safe}px;`;
+    ? `top:50%;transform:translateY(-50%);right:80px;width:840px;`
+    : `top:1060px;right:${f.safe}px;left:${f.safe}px;`;
   /* A scrim, not a box. Under a column it has to be radial or it reads as a
      panel edge against the velvet; under a bottom third a rise is right. */
   /* Radial in BOTH layouts. The bottom third used to be a linear gradient,
@@ -123,7 +134,7 @@ const shotCard = (lines, f, opts = {}) => {
   }
   .line + .line{margin-top:6px}
   .accent{color:${C.goldSoft}}
-  .rule{position:relative;width:${side?120:96}px;height:2px;background:${C.gold};
+  .rule{position:relative;width:${side?150:120}px;height:3px;background:${C.gold};
     margin:0 ${side ? '0' : 'auto'} 26px ${side ? 'auto' : 'auto'}}
 </style>
 <div class="wrap">
@@ -148,8 +159,8 @@ const shotCard = (lines, f, opts = {}) => {
 const briefCard = (f) => {
   const side = f.layout === 'side';
   const place = side
-    ? `top:50%;transform:translateY(-50%);right:100px;width:760px;`
-    : `top:1010px;right:${f.safe}px;left:${f.safe}px;`;
+    ? `top:50%;transform:translateY(-50%);right:80px;width:840px;`
+    : `top:980px;right:${f.safe}px;left:${f.safe}px;`;
   return `
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
@@ -163,22 +174,22 @@ const briefCard = (f) => {
   }
   .kicker{
     position:relative;font-family:'Almarai',sans-serif;font-weight:400;
-    font-size:${side ? 34 : 32}px;letter-spacing:.10em;color:${C.goldSoft};
+    font-size:${side ? 38 : 36}px;letter-spacing:.10em;color:${C.goldSoft};
     margin-bottom:${side ? 14 : 12}px;
   }
   .title{
     position:relative;font-family:'El Messiri','Almarai',sans-serif;font-weight:700;
-    font-size:${side ? 88 : 76}px;line-height:1.24;color:${C.ivory};
+    font-size:${side ? 100 : 88}px;line-height:1.22;color:${C.ivory};
     text-shadow:0 2px 20px rgba(0,0,0,.55);margin-bottom:${side ? 26 : 22}px;
   }
   /* A rule with a diamond on it — the house ornament, not a plain divider. */
   .orn{position:relative;display:flex;align-items:center;gap:12px;
     justify-content:${side ? 'flex-start' : 'center'};margin-bottom:${side ? 30 : 26}px}
-  .orn i{display:block;height:1px;width:${side ? 118 : 92}px;background:${C.gold};opacity:.85}
+  .orn i{display:block;height:2px;width:${side ? 140 : 112}px;background:${C.gold};opacity:.85}
   .orn b{display:block;width:7px;height:7px;background:${C.gold};transform:rotate(45deg)}
   .l{
     position:relative;font-family:'Almarai',sans-serif;font-weight:300;
-    font-size:${side ? 38 : 34}px;line-height:1.9;color:rgba(250,245,236,.90);
+    font-size:${side ? 46 : 42}px;line-height:1.86;color:rgba(250,245,236,.90);
     text-shadow:0 2px 14px rgba(0,0,0,.5);
   }
   .l.gold{font-weight:400;color:${C.goldSoft};letter-spacing:.03em}
