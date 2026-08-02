@@ -56,13 +56,13 @@ const SHOTS = [
    Turns land at 9.4 / 13.3 / 17.2 / 21.1 — mirrors TURNS in render-book.mjs
    offset by the 6.0s the cover shot occupies. */
 const CARDS = [
-  { card: 'shot1',  start:  0.5, end:  3.0 },
-  { card: 'brief',  start:  3.4, end:  6.0 },
-  { card: 'shot2',  start:  6.5, end:  9.2 },   // p07 خريطة المنعطفات الأربعة
-  { card: 'shot3',  start: 10.4, end: 13.1 },   // p23 تجربة الوصول
-  { card: 'shot4a', start: 14.3, end: 17.0 },   // p08 خريطة العبور
-  { card: 'shot4b', start: 18.2, end: 20.9 },   // p33 خطة ٣٠ يومًا
-  { card: 'shot5',  start: 22.1, end: 24.6 }    // p36 قوس ٩٠ يومًا
+  { card: 'b1', start:  0.5, end:  3.0 },   // cover
+  { card: 'b2', start:  3.4, end:  6.0 },   // cover
+  { card: 'b3', start:  6.5, end:  9.2 },   // p07 خريطة المنعطفات الأربعة
+  { card: 'b4', start: 10.4, end: 13.1 },   // p23 تجربة الوصول
+  { card: 'b5', start: 14.3, end: 17.0 },   // p08 خريطة العبور
+  { card: 'b6', start: 18.2, end: 20.9 },   // p33 خطة ٣٠ يومًا
+  { card: 'b7', start: 22.1, end: 24.6 }    // p36 قوس ٩٠ يومًا
 ];
 
 /* When the pages start moving — and therefore the first moment paper belongs on

@@ -41,38 +41,32 @@ const OUT = '/home/user/Nizamuk.Business/build/ad';
  * is buying, so the copy has to name the finish line.
  */
 const COPY = {
-  shot1: ['تبدئين بحماس…', 'ثم تتوقفين؟'],
+  /* Owner's script, her timings. Line breaks are hers wherever they fit the
+     column; longer ones wrap onto a third row rather than shrink to
+     illegibility, and each beat carries its own size for the same reason. No
+     word is altered.
 
-  /* The brief beside the cover: what she GETS, before a page is shown. */
-  briefKicker: 'نظام إعادة البناء',
-  briefTitle: 'أكملي ما بدأتِه',
-  briefLines: ['اختاري مشروعًا واحدًا متوقفًا.', '٤٧ صفحة · خمس مراحل', 'خطة ٣٠ يومًا · قوس ٩٠ يومًا'],
-  /* Where it sits, in ONE line — not a ladder. A ladder in a cold ad lists four
-     cheaper things at the moment of decision, and /rebuild/mubdia/ already
-     decided against that: its own markup puts the ladder BELOW the buy button
-     and after the FAQ, «فالنظام الكامل يبقى العرض الأول». This line does the
-     one useful half of the idea — it says everything led here — without
-     inviting her to shop down. */
-  briefPath: 'المرحلة الأخيرة من مسار نظامك',
+     The arc is a completion story told forward: how many did you start → you
+     are not lazy, you stall at the same point → without knowing why, you go
+     back to zero → locate the stall and pick ONE project → restart from the
+     stall, not from zero → a 30-day plan → a 90-day follow-through.
 
-  /* One beat per interior page, in the order the leaves turn. The arc is a
-     completion story, not a diagnosis: it is not laziness → name what stops you
-     → cross it → a plan you can keep → one thing finished. */
-  shot2: ['ليس كسلًا', 'ولا ضعف إرادة'],          // p07 خريطة المنعطفات الأربعة
-  shot3: ['ما لا نسمّيه', 'يصعب علينا تغييره'],     // p23 تجربة الوصول
-  shot4a: ['واعبري المنعطف', 'الذي يوقفكِ'],       // p08 خريطة العبور
-  /* Named, not described. Both of these are the heading printed on the page
-     that is on screen underneath them, so the claim and the proof arrive in the
-     same frame. */
-  shot4b: ['خطة ٣٠ يومًا', 'لا قائمة أمنيات'],      // p33 خطة ٣٠ يومًا
-  shot5: ['وقوس ٩٠ يومًا', 'حتى يكتمل'],           // p36 قوس ٩٠ يومًا
+     The «brief» block that used to sit beside the cover is gone: beat two now
+     occupies that slot, and what the brief carried — 47 pages, five stages, the
+     price — moved to the end card where a price belongs. */
+  beats: [
+    { card: 'b1', size: 64, lines: ['كم مشروعًا بدأتِه بحماس…', 'ولم يكتمل؟'] },
+    { card: 'b2', size: 64, lines: ['لستِ كسولة.', 'لكنكِ تتعثرين عند النقطة', 'نفسها، كل مرة.'] },
+    { card: 'b3', size: 60, lines: ['وما لم تفهمي سبب هذا التعثر…', 'ستعودين إلى نقطة الصفر.'] },
+    { card: 'b4', size: 64, lines: ['حدّدي أين يتعطّل مشروعكِ،', 'واختاري مشروعًا واحدًا', 'لإكماله.'] },
+    { card: 'b5', size: 76, lines: ['وابدئي من موضع التعثّر…', 'لا من الصفر.'] },
+    { card: 'b6', size: 72, lines: ['خطة ٣٠ يومًا', 'تنقلكِ من النيّة', 'إلى التنفيذ.'] },
+    { card: 'b7', size: 66, lines: ['ومسار متابعة يمتد ٩٠ يومًا', 'يحمي تقدّمكِ', 'من الانقطاع.'] }
+  ],
 
-  endTitle: 'أكملي مشروعًا متوقفًا',
-  endPrice: '١٠٩ ر.س',
+  endTitle: 'نظام إعادة البناء',
+  endPrice: '٤٧ صفحة · خمس مراحل · ١٠٩ ر.س',
   endCta: 'خذي جولة داخل الكتاب',
-  /* The quiz stays, demoted: an alternative door for someone not ready to buy,
-     no longer the main path. */
-  endSecondary: ['لستِ متأكدة من أين تبدئين؟', 'الاختبار مجاني'],
   endUrl: 'nizamok.com',
   thumb: ['تبدئين…', 'ولا تُكملين؟']
 };
@@ -289,7 +283,6 @@ const endCard = (f) => {
   <h1>${COPY.endTitle}</h1>
   <div class="price">${COPY.endPrice}</div>
   <div class="cta">${COPY.endCta}</div>
-  <div class="sec">${COPY.endSecondary[0]}<br>${COPY.endSecondary[1]}</div>
   <div class="url">${COPY.endUrl}</div>
 </div>
 <div class="cover"><img src="/assets/product/mubdia/cover-og.jpg" alt=""></div>`;
@@ -338,13 +331,9 @@ const thumbnail = () => `
 /* ------------------------------------------------------------------ */
 const ROUTES = {};
 for (const [k, f] of Object.entries(FORMATS)) {
-  ROUTES[`shot1-${k}`]  = [shotCard(COPY.shot1, f, { accentLast: true }), f];
-  ROUTES[`brief-${k}`]  = [briefCard(f), f];
-  ROUTES[`shot2-${k}`]  = [shotCard(COPY.shot2, f), f];
-  ROUTES[`shot3-${k}`]  = [shotCard(COPY.shot3, f, { accentLast: true }), f];
-  ROUTES[`shot4a-${k}`] = [shotCard(COPY.shot4a, f, { accentLast: true }), f];
-  ROUTES[`shot4b-${k}`] = [shotCard(COPY.shot4b, f, { accentLast: true }), f];
-  ROUTES[`shot5-${k}`]  = [shotCard(COPY.shot5, f, { accentLast: true }), f];
+  for (const b of COPY.beats) {
+    ROUTES[`${b.card}-${k}`] = [shotCard(b.lines, f, { size: b.size, accentLast: true }), f];
+  }
   ROUTES[`endcard-${k}`] = [endCard(f), f];
 }
 ROUTES['thumbnail'] = [thumbnail(), { w: 1280, h: 720 }];
@@ -376,7 +365,7 @@ for (const [name, [, f]] of Object.entries(ROUTES)) {
   await page.goto(`http://127.0.0.1:${PORT}/__card/${name}`, { waitUntil: 'load' });
   await page.evaluate(() => document.fonts.ready);
   /* Overlays keep their alpha; end card and thumbnail are opaque by design. */
-  const transparent = /^(shot|brief)/.test(name);
+  const transparent = /^b\d/.test(name);
   const buf = await page.screenshot({
     type: 'png',
     omitBackground: transparent
