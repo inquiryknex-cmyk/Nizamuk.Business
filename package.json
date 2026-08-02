@@ -11,7 +11,9 @@
     "indexnow": "node tools/indexnow.mjs",
     "sitemap:images": "node tools/sitemap-images.mjs",
     "check:versions": "node tools/check-versions.mjs",
-    "audit": "node tools/audit.mjs"
+    "audit": "node tools/audit.mjs",
+    "natija": "node tools/share-cards.mjs && node tools/natija-pages.mjs",
+    "share:cards": "node tools/share-cards.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.110.0"

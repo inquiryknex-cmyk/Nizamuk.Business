@@ -706,6 +706,8 @@
         '<a class="btn btn-ghost" href="' + (T.interdashUrl || (CONFIG.urls || {}).interdash || '/interdash/') + '">' + T.waitlistCta + '</a>' +
       '</div>';
 
+    renderShare(dom);
+
     showPanel('resultPanel');
 
     const fills = bars.querySelectorAll('.bar-fill');
@@ -714,6 +716,223 @@
     } else {
       fills.forEach(f => (f.style.width = f.dataset.w + '%'));
     }
+  }
+
+  /* ---------- Sharing the result ----------
+     Two rules shaped this.
+
+     1. The link must be `/natija/<slug>/`, never `/ikhtibar/?result=`. The
+        latter reads the SHARER's localStorage, so the friend who taps it lands
+        on an empty quiz. The natija pages also carry static Open Graph tags,
+        which matters because WhatsApp, X and Telegram scrape HTML and do not
+        run JavaScript, so a JS-injected tag would never be seen.
+
+     2. On a phone, `navigator.share` is the whole answer: the OS sheet lists
+        every installed app, which is how the result reaches Snapchat, Instagram
+        and TikTok — none of which offer a web share URL worth using. The
+        explicit buttons are the desktop path, and the fallback when the API is
+        missing or the user dismisses the sheet. */
+  const SHARE = I18N ? {
+    heading: 'Recognise someone in this?',
+    sub: 'Send her the pattern. She can find her own in three minutes, no email.',
+    text: (n) => 'My pattern in the NizamOk quiz: ' + n + '. Twelve real moments, three minutes, no email required. Find yours:',
+    subject: (n) => 'My pattern in the NizamOk quiz: ' + n,
+    native: 'Share', copy: 'Copy link', copied: 'Link copied', email: 'Email',
+    story: 'Story image', saved: 'Image saved. Post it and add the link.'
+  } : {
+    heading: 'عرفتِ إحداهنّ في هذه القراءة؟',
+    sub: 'أرسلي لها النمط. تكتشف نمطها هي في ثلاث دقائق، بلا بريد وبلا دفع.',
+    text: (n) => 'نمطي في اختبار نظامك: ' + n + '. اثنا عشر مشهدًا في ثلاث دقائق، بلا بريد وبلا دفع. اكتشفي نمطكِ:',
+    subject: (n) => 'نمطي في اختبار نظامك: ' + n,
+    native: 'مشاركة', copy: 'نسخ الرابط', copied: 'نُسخ الرابط', email: 'بريد',
+    story: 'صورة للستوري', saved: 'حُفظت الصورة. انشريها وأضيفي الرابط.'
+  };
+
+  /* Inline SVG, because an icon font or a sprite would be a second request on
+     the one screen we most want instant. */
+  const ICON = {
+    native: '<path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"/><path d="M12 3v13"/><path d="M8 7l4-4 4 4"/>',
+    whatsapp: '<path d="M3 21l1.7-5A8.2 8.2 0 1121 12.3 8.3 8.3 0 018.5 19.3z"/><path d="M8.6 9.3c.4 2.4 2.6 4.6 5 5l1-1.4 1.9.8-.4 1.6c-2.9.5-6.9-3.4-6.4-6.4l1.6-.4z"/>',
+    x: '<path d="M4 4l16 16M20 4L4 20"/>',
+    telegram: '<path d="M21 4L3 11l5 2 2 5 3-4 5 4z"/><path d="M8 13l9-7"/>',
+    facebook: '<path d="M14 8h2V5h-2a3 3 0 00-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.6c0-.4.3-.6.6-.6z"/>',
+    email: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a2 2 0 00-2 2v9"/>',
+    story: '<rect x="6" y="3" width="12" height="18" rx="2.5"/><circle cx="12" cy="10" r="2.6"/><path d="M6 17l3.2-3 2.4 2 2.6-2.6L18 17"/>'
+  };
+  const svg = (k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICON[k] + '</svg>';
+
+  function shareUrl(dom) {
+    /* English has no natija page, so it shares the English quiz itself. */
+    const path = I18N ? location.pathname : ((CONFIG.natijaPages || {})[dom] || '/ikhtibar/');
+    return location.origin + path + '?utm_source=share&utm_medium=social&utm_campaign=quiz_result';
+  }
+
+  /* Public slug, derived from the one map that reconciles it: '/natija/asirat/'
+     for the internal key 'asira'. */
+  function publicSlug(dom) {
+    const path = (CONFIG.natijaPages || {})[dom] || '';
+    return path.split('/').filter(Boolean).pop() || dom;
+  }
+
+  /* Instagram, TikTok and Snapchat accept no shared link at all: none of them
+     publishes a web share intent, so there is no URL to put behind a button.
+     What they do accept is an image. So the story card, 1080x1920, is offered
+     as a FILE: on a phone that supports Web Share Level 2 it goes straight into
+     the OS sheet, where those three appear alongside everything else. Where it
+     does not, the image downloads and she posts it herself.
+
+     Note the URL is unversioned, unlike the og:image in the natija pages. This
+     one is fetched by the browser at share time rather than cached by a
+     scraper, so a regenerated card is stale for at most the week in _headers,
+     and it self-heals. */
+  function storyCardUrl(dom) {
+    return location.origin + '/assets/share/natija-' + publicSlug(dom) + '-story.jpg';
+  }
+
+  function renderShare(dom) {
+    const box = $('resultShare');
+    if (!box) return;
+
+    const name = (patterns[dom] || {}).name || '';
+    const url = shareUrl(dom);
+    const text = SHARE.text(name);
+    const eText = encodeURIComponent(text);
+    const eUrl = encodeURIComponent(url);
+    const canNative = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+
+    const btn = (k, href, label) =>
+      '<a class="share-btn share-' + k + '" href="' + href + '" target="_blank" rel="noopener"' +
+      ' data-share="' + k + '" aria-label="' + label + '">' + svg(k) +
+      (label ? '<span>' + label + '</span>' : '') + '</a>';
+
+    box.innerHTML =
+      '<span class="share-h">' + SHARE.heading + '</span>' +
+      '<p class="share-sub">' + SHARE.sub + '</p>' +
+      '<div class="share-row">' +
+        (canNative ? '<button type="button" class="share-btn share-native" data-share="native">' +
+          svg('native') + '<span>' + SHARE.native + '</span></button>' : '') +
+        btn('whatsapp', 'https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), 'WhatsApp') +
+        btn('x', 'https://twitter.com/intent/tweet?text=' + eText + '&url=' + eUrl, 'X') +
+        btn('telegram', 'https://t.me/share/url?url=' + eUrl + '&text=' + eText, 'Telegram') +
+        btn('facebook', 'https://www.facebook.com/sharer/sharer.php?u=' + eUrl, 'Facebook') +
+        '<a class="share-btn share-email" href="mailto:?subject=' + encodeURIComponent(SHARE.subject(name)) +
+          '&body=' + encodeURIComponent(text + '\n\n' + url) + '" data-share="email" aria-label="' +
+          SHARE.email + '">' + svg('email') + '<span>' + SHARE.email + '</span></a>' +
+        '<button type="button" class="share-btn share-copy" data-share="copy">' +
+          svg('copy') + '<span>' + SHARE.copy + '</span></button>' +
+        (I18N ? '' : '<button type="button" class="share-btn share-story" data-share="story">' +
+          svg('story') + '<span>' + SHARE.story + '</span></button>') +
+      '</div>' +
+      '<span class="share-note" hidden aria-live="polite"></span>';
+
+    box.hidden = false;
+
+    const note = box.querySelector('.share-note');
+    const flash = (msg) => {
+      note.textContent = msg;
+      note.hidden = false;
+      clearTimeout(flash._t);
+      flash._t = setTimeout(() => { note.hidden = true; }, 2600);
+    };
+    const copyLink = () => {
+      const payload = text + ' ' + url;
+      const done = () => flash(SHARE.copied);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).then(done, () => fallbackCopy(payload, done));
+      } else fallbackCopy(payload, done);
+    };
+
+    const fire = (channel) => {
+      if (window.trackEvent) window.trackEvent('result_shared', {
+        share_channel: channel, pattern_slug: dom, page_path: location.pathname
+      });
+    };
+
+    box.addEventListener('click', (e) => {
+      const el = e.target.closest('[data-share]');
+      if (!el) return;
+      const channel = el.getAttribute('data-share');
+
+      if (channel === 'native') {
+        e.preventDefault();
+        navigator.share({ title: SHARE.subject(name), text: text, url: url })
+          .then(() => fire('native'))
+          /* Dismissing the sheet rejects; that is a cancel, not a failure. */
+          .catch(() => {});
+        return;
+      }
+
+      if (channel === 'copy') { e.preventDefault(); copyLink(); }
+
+      if (channel === 'story') {
+        e.preventDefault();
+        el.disabled = true;
+        shareStory(dom, name, text, flash).then(function (how) {
+          el.disabled = false;
+          fire('story_' + how);
+        });
+        return;                      /* fire() is called with the real outcome */
+      }
+
+      /* mailto is silently dead on a desktop with no mail client, so the link
+         is left to try first and the copy path is offered right after. */
+      if (channel === 'email') setTimeout(() => flash(SHARE.copy + ': ' + url), 1200);
+
+      fire(channel);
+    });
+  }
+
+  /* Resolves to how it went: 'native' if the OS sheet took the image,
+     'cancel' if she dismissed it, 'download' if the file had to be saved.
+     Never rejects — a failure here must not break the result screen. */
+  function shareStory(dom, name, text, flash) {
+    const url = storyCardUrl(dom);
+    const filename = 'nizamok-' + publicSlug(dom) + '.jpg';
+
+    const save = function () {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      flash(SHARE.saved);
+      return 'download';
+    };
+
+    if (!(window.File && navigator.canShare && navigator.share && window.fetch)) {
+      return Promise.resolve(save());
+    }
+
+    return fetch(url)
+      .then(function (r) { return r.ok ? r.blob() : Promise.reject(new Error('http ' + r.status)); })
+      .then(function (blob) {
+        const file = new File([blob], filename, { type: 'image/jpeg' });
+        if (!navigator.canShare({ files: [file] })) return save();
+        /* Once the sheet is open the outcome is hers. A rejection here is a
+           dismissal, not a failure, so we must NOT then force a download. */
+        return navigator.share({ files: [file], text: text })
+          .then(function () { return 'native'; })
+          .catch(function () { return 'cancel'; });
+      })
+      .catch(function () { return save(); });
+  }
+
+  function fallbackCopy(str, done) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = str;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      done();
+    } catch (e) { /* nothing left to try; the buttons still work */ }
   }
 
   /* sameTab: for links to our own pages. Off-site checkout links keep opening
