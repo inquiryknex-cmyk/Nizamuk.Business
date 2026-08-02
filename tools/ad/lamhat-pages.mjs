@@ -1,7 +1,8 @@
 /* NizamOk — «لمحة المبدعة المشتّتة»: the pages turning inside the book.
  *
  * Same treatment as render-book.mjs gives the 109 system, for the 19-riyal one.
- * Vertical only, because this film is for TikTok.
+ * Both formats: 9:16 for TikTok, 16:9 for anywhere the film has to sit in a
+ * landscape slot.
  *
  * The pages are REAL. They come out of the book's own PDF export: the bundle
  * renders as a React app whose scripts load from unpkg, which Chromium cannot
@@ -31,11 +32,10 @@ import { serveSite } from './stage.mjs';
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 
-const PORT = 8989;
+const PORT = 8995;
 const SRC = '/home/user/Nizamuk.Business/build/ad/lamhat-src';
 const OUT = '/home/user/Nizamuk.Business/build/ad/lamhat-book';
 const FPS = 30;
-const W = 1080, H = 1920;
 
 /* 16.400s on the timeline: four holds, three turns, plus the 0.4 the crossfade
    out consumes. */
@@ -47,14 +47,21 @@ const BACKS = PAGES.map((_, i) => PAGES[(i + 2) % PAGES.length]);
 
 /* Full page WIDTH, windowed on its top. Cropping horizontally would cut lines
    of Arabic in half; cropping vertically just stops partway down a page, which
-   is what looking at a page does. 880 from a 1588 source is a downscale, so the
-   headings stay crisp. */
-const LEAF = { w: 880, h: 880, spineX: 970, cy: 620 };
+   is what looking at a page does. The window width is always a DOWNscale from
+   the 1588px source, so the headings stay crisp.
+   16:9 puts the book left with the type column at x>=1000, exactly as the 109
+   film does; 9:16 centres it with the type underneath. */
+const FORMATS = {
+  h: { w: 1920, h: 1080, leaf: { w: 900, h: 720, spineX: 980, cy: 512 } },
+  v: { w: 1080, h: 1920, leaf: { w: 880, h: 880, spineX: 970, cy: 620 } }
+};
 
 const stack = (prefix) => `<div class="clip">${PAGES.map(
   (src, i) => `<img id="${prefix}${i}" src="/__p/${src}" alt="">`).join('')}</div>`;
 
-const page = () => `
+const page = (F) => {
+  const W = F.w, H = F.h, LEAF = F.leaf;
+  return `
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{width:${W}px;height:${H}px;overflow:hidden}
@@ -147,35 +154,36 @@ const page = () => `
   };
   window.setT(0);
 </script>`;
+};
 
-/* The page PNGs live in build/, not site/, so they need their own route. */
-const server = await serveSite(PORT, url => (url === '/__book' ? page() : null));
-const extra = createServer(async (req, res) => {
-  const m = req.url.match(/^\/__p\/(p\d+\.png)$/);
-  if (!m) { res.writeHead(404).end(); return; }
-  try {
-    res.writeHead(200, { 'Content-Type': 'image/png' });
-    res.end(await readFile(join(SRC, m[1])));
-  } catch { res.writeHead(404).end(); }
+/* The page PNGs live in build/, not site/, so they are served by an intercept
+   rather than by the site root. */
+const ROUTES = {};
+for (const [k, F] of Object.entries(FORMATS)) ROUTES[k] = page(F);
+const server = await serveSite(PORT, url => {
+  const m = url.match(/^\/__book\/(h|v)$/);
+  return m ? ROUTES[m[1]] : null;
 });
-/* serveSite already owns PORT; page images are proxied through it instead. */
-extra.close();
 
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
 const frames = Math.round(DUR * FPS);
-const ctx = await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
-await ctx.route('**/__p/*', async route => {
-  const name = route.request().url().split('/').pop();
-  if (!existsSync(join(SRC, name))) return route.fulfill({ status: 404, body: '' });
-  route.fulfill({ status: 200, contentType: 'image/png', body: await readFile(join(SRC, name)) });
-});
-const p = await ctx.newPage();
-const missing = [];
-p.on('response', r => { if (r.status() >= 400) missing.push(r.url()); });
-await p.goto(`http://127.0.0.1:${PORT}/__book`, { waitUntil: 'networkidle' });
-if (missing.length) throw new Error(`missing ${missing.join(', ')}`);
 
-const frame = (t) => p.evaluate(x => {
+const open = async (F, k) => {
+  const ctx = await b.newContext({ viewport: { width: F.w, height: F.h }, deviceScaleFactor: 1 });
+  await ctx.route('**/__p/*', async route => {
+    const name = route.request().url().split('/').pop();
+    if (!existsSync(join(SRC, name))) return route.fulfill({ status: 404, body: '' });
+    route.fulfill({ status: 200, contentType: 'image/png', body: await readFile(join(SRC, name)) });
+  });
+  const p = await ctx.newPage();
+  const missing = [];
+  p.on('response', r => { if (r.status() >= 400) missing.push(r.url()); });
+  await p.goto(`http://127.0.0.1:${PORT}/__book/${k}`, { waitUntil: 'networkidle' });
+  if (missing.length) throw new Error(`${k}: missing ${missing.join(', ')}`);
+  return [ctx, p];
+};
+
+const frame = (p, t) => p.evaluate(x => {
   window.setT(x);
   return new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 }, t);
@@ -184,21 +192,28 @@ if (process.argv[2] === 'probe') {
   const dir = join(OUT, 'probe');
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
-  for (const t of [3.6, 3.85, 3.95, 4.05, 4.15, 4.25, 4.4, 4.8]) {
-    await frame(t);
+  const [, p] = await open(FORMATS.h, 'h');
+  for (const t of [2.2, 2.4, 2.5, 2.6, 2.7, 2.9]) {
+    await frame(p, t);
     await writeFile(join(dir, `t${t.toFixed(2)}.png`), await p.screenshot({ type: 'png' }));
   }
   console.log(`  probe in ${dir}`);
   await b.close(); server.close(); process.exit(0);
 }
 
-await rm(OUT, { recursive: true, force: true });
-await mkdir(OUT, { recursive: true });
-const t0 = Date.now();
-for (let i = 0; i < frames; i++) {
-  await frame(i / FPS);
-  await writeFile(join(OUT, `f${String(i).padStart(4, '0')}.png`), await p.screenshot({ type: 'png' }));
+for (const [k, F] of Object.entries(FORMATS)) {
+  const dir = join(OUT, k);
+  await rm(dir, { recursive: true, force: true });
+  await mkdir(dir, { recursive: true });
+  const [ctx, p] = await open(F, k);
+  const t0 = Date.now();
+  for (let i = 0; i < frames; i++) {
+    await frame(p, i / FPS);
+    await writeFile(join(dir, `f${String(i).padStart(4, '0')}.png`), await p.screenshot({ type: 'png' }));
+  }
+  console.log(`  pages ${k}  ${F.w}x${F.h}  ${frames} frames  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+  await ctx.close();
 }
-console.log(`  pages  ${W}x${H}  ${frames} frames  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+
 await b.close();
 server.close();

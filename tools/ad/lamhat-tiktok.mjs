@@ -1,4 +1,4 @@
-/* NizamOk — «لمحة المبدعة المشتّتة» TikTok promo. 1080x1920, 24 seconds.
+/* NizamOk — «لمحة المبدعة المشتّتة» promo. 24 seconds, both native formats.
  *
  * The cheap door: 19 SAR, in the same shape as the 109 film — cover, then real
  * pages turning, then the offer.
@@ -20,7 +20,7 @@
  * Ground is emerald rather than plum, because that is what this cover is
  * printed on. The house velvet under a green book would read as a mismatch.
  *
- *   node tools/ad/lamhat-tiktok.mjs
+ *   node tools/ad/lamhat-pages.mjs && node tools/ad/lamhat-tiktok.mjs
  */
 import { chromium } from '/home/user/Nizamuk.Business/node_modules/playwright/index.mjs';
 import { execFileSync } from 'node:child_process';
@@ -29,13 +29,12 @@ import { mkdirSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { serveSite } from './stage.mjs';
 
-const PORT = 8983;
+const PORT = 8997;
 const FF = '/home/user/Nizamuk.Business/.bin/ffmpeg';
 const AD = '/home/user/Nizamuk.Business/build/ad';
 const WORK = join(AD, 'lamhat');
 const OUT = join(AD, 'out');
 const FPS = 30;
-const W = 1080, H = 1920;
 const DUR = 24.0;
 const XF = 0.4;
 /* Three segments. The cover is a short establishing shot now, not the whole
@@ -70,15 +69,25 @@ const COPY = {
   offerUrl: 'nizamok.com'
 };
 
-/* TikTok owns the edges: the action rail down the right from about y=950, the
-   caption and handle across the bottom from about y=1500. Everything here lives
-   inside x 120–960 and above y=1430. */
-const SAFE = { x: 120, typeTop: 1080, typeBottom: 1470 };
+/* 9:16 — TikTok owns the edges: the action rail down the right from about
+   y=950, the caption and handle across the bottom from about y=1500, so the
+   type lives inside x 120–960 and above y=1470, centred under the book.
+   16:9 — no platform chrome to dodge; the book sits left and the type takes the
+   empty right column, the same arrangement as the 109 film. */
+const FORMATS = {
+  h: { w: 1920, h: 1080, name: '16x9', side: true,
+       cover: { cx: 600, cy: 512, w: 624, h: 860 } },
+  v: { w: 1080, h: 1920, name: '9x16', side: false,
+       cover: { cx: 520, cy: 600, w: 711, h: 980 },
+       safe: { x: 120, typeTop: 1080 } }
+};
 
 /* ------------------------------------------------------------------ *
  * The plate: emerald ground, the cover as an object.
  * ------------------------------------------------------------------ */
-const plate = () => `
+const plate = (F) => {
+  const W = F.w, H = F.h, CV = F.cover;
+  return `
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{width:${W}px;height:${H}px;overflow:hidden}
@@ -94,10 +103,10 @@ const plate = () => `
     width:900px;height:900px;opacity:.05}
   .ghost img{width:100%;height:100%;display:block}
 
-  .stage{position:absolute;top:600px;left:520px;width:0;height:0;perspective:2200px;z-index:2}
-  /* 711px wide from a 700px source: 1:1, so the artwork is never resampled up. */
+  .stage{position:absolute;top:${CV.cy}px;left:${CV.cx}px;width:0;height:0;perspective:2200px;z-index:2}
+  /* Never larger than the 700px source, so the artwork is never resampled up. */
   .cover{
-    position:absolute;top:-490px;left:-356px;width:711px;height:980px;
+    position:absolute;top:${-CV.h / 2}px;left:${-CV.w / 2}px;width:${CV.w}px;height:${CV.h}px;
     transform-origin:50% 50%;will-change:transform;
   }
   .cover img{display:block;width:100%;height:100%;border-radius:5px;
@@ -110,8 +119,8 @@ const plate = () => `
   .sheen{position:absolute;inset:0;pointer-events:none;border-radius:5px;
     background:linear-gradient(250deg, rgba(255,246,222,.38) 0%, rgba(255,246,222,.08) 32%, transparent 60%);
     opacity:0}
-  .mark{position:absolute;bottom:${H - SAFE.typeBottom - 90}px;left:50%;transform:translateX(-50%);
-    height:44px;width:auto;opacity:.85;z-index:3}
+  .mark{position:absolute;bottom:70px;${F.side ? 'left:80px' : 'left:50%;transform:translateX(-50%)'};
+    height:40px;width:auto;opacity:.8;z-index:3}
 </style>
 <div class="ghost"><img src="${SEAL}" alt=""></div>
 <div class="stage">
@@ -137,23 +146,27 @@ const plate = () => `
   };
   window.setT(0);
 </script>`;
+};
 
 /* ------------------------------------------------------------------ *
- * Type: transparent cards, centred under the object.
+ * Type: transparent cards.
  * ------------------------------------------------------------------ */
 const C = { ivory: '#FAF5EC', gold: '#C9A75E', goldSoft: '#E6D3A3' };
 
-const beatCard = (lines, accent, size = 78) => `
+const beatCard = (F, lines, accent, size = 78) => `
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:${W}px;height:${H}px;overflow:hidden;background:transparent}
-  .wrap{position:absolute;top:${SAFE.typeTop}px;right:${SAFE.x}px;left:${SAFE.x}px;
-    direction:rtl;text-align:center}
+  html,body{width:${F.w}px;height:${F.h}px;overflow:hidden;background:transparent}
+  .wrap{position:absolute;${F.side
+    ? 'top:50%;transform:translateY(-50%);right:80px;width:840px;'
+    : `top:${F.safe.typeTop}px;right:${F.safe.x}px;left:${F.safe.x}px;`}
+    direction:rtl;text-align:${F.side ? 'right' : 'center'}}
   .scrim{position:absolute;inset:-150px -170px;
     background:radial-gradient(56% 60% at 50% 50%,rgba(6,20,17,.80),rgba(6,20,17,.38) 60%,transparent 78%);
     filter:blur(34px)}
-  .rule{position:relative;width:120px;height:3px;background:${C.gold};margin:0 auto 26px}
+  .rule{position:relative;width:${F.side ? 150 : 120}px;height:3px;background:${C.gold};
+    margin:0 ${F.side ? '0' : 'auto'} 26px auto}
   .line{position:relative;font-family:'El Messiri','Almarai',sans-serif;font-weight:700;
     font-size:${size}px;line-height:1.52;color:${C.ivory};text-shadow:0 2px 20px rgba(0,0,0,.65)}
   .line + .line{margin-top:6px}
@@ -167,21 +180,25 @@ const beatCard = (lines, accent, size = 78) => `
 
 /* Opaque, and it carries the cover: the last thing on screen should be the
    object she is buying, not words floating on a ground. */
-const offerCard = () => `
+const offerCard = (F) => `
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:${W}px;height:${H}px;overflow:hidden}
+  html,body{width:${F.w}px;height:${F.h}px;overflow:hidden}
   body{background:
       radial-gradient(66% 44% at 70% 10%, rgba(201,167,94,.20), transparent 62%),
       linear-gradient(158deg,#12312A 0%,#0D241F 56%,#071613 100%)}
-  .cov{position:absolute;top:250px;left:50%;transform:translateX(-50%);width:540px;height:744px}
+  .cov{position:absolute;${F.side
+    ? 'top:50%;left:600px;transform:translate(-50%,-50%);width:480px;height:661px'
+    : 'top:250px;left:50%;transform:translateX(-50%);width:540px;height:744px'}}
   .cov img{display:block;width:100%;height:100%;border-radius:5px;
     box-shadow:0 40px 84px rgba(0,0,0,.66), 0 0 0 1px rgba(214,186,128,.30)}
   .cov::before{content:'';position:absolute;top:7px;bottom:7px;left:-11px;width:11px;
     background:linear-gradient(90deg,#1c2b26,#efe9dc 55%,#c2b9a6);border-radius:3px 0 0 3px}
-  .wrap{position:absolute;top:${SAFE.typeTop + 20}px;right:${SAFE.x}px;left:${SAFE.x}px;
-    direction:rtl;text-align:center}
+  .wrap{position:absolute;${F.side
+    ? 'top:50%;transform:translateY(-50%);right:80px;width:840px;'
+    : `top:${F.safe.typeTop + 20}px;right:${F.safe.x}px;left:${F.safe.x}px;`}
+    direction:rtl;text-align:${F.side ? 'right' : 'center'}}
   .scrim{position:absolute;inset:-170px -180px;
     background:radial-gradient(58% 62% at 50% 50%,rgba(6,20,17,.86),rgba(6,20,17,.44) 60%,transparent 78%);
     filter:blur(36px)}
@@ -211,59 +228,69 @@ const offerCard = () => `
 </div>`;
 
 /* ------------------------------------------------------------------ */
-const ROUTES = { plate: plate(), offer: offerCard() };
-COPY.beats.forEach((b, i) => { ROUTES['beat' + i] = beatCard(b.lines, b.accent, b.size); });
+const ROUTES = {};
+for (const [k, F] of Object.entries(FORMATS)) {
+  ROUTES[`plate-${k}`] = plate(F);
+  ROUTES[`offer-${k}`] = offerCard(F);
+  COPY.beats.forEach((b, i) => { ROUTES[`beat${i}-${k}`] = beatCard(F, b.lines, b.accent, b.size); });
+}
 
 const server = await serveSite(PORT, url => {
   const m = url.match(/^\/__l\/(.+)$/);
   return m && ROUTES[m[1]] ? ROUTES[m[1]] : null;
 });
 
-/* Keep the frames if a full set is already on disk: they take five minutes and
-   nothing about them depends on the type, which is the layer that changes. */
-const FRAME_COUNT = Math.round((COVER_D + XF) * FPS);
-const haveFrames = existsSync(join(WORK, 'frames', `f${String(FRAME_COUNT - 1).padStart(4, '0')}.png`));
-await mkdir(join(WORK, 'frames'), { recursive: true });
+await mkdir(WORK, { recursive: true });
 mkdirSync(OUT, { recursive: true });
 
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
-const ctx = await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
 
-/* Type first — cheap, and a missing font shows up before the long render. */
-for (const name of Object.keys(ROUTES)) {
-  if (name === 'plate') continue;
-  const p = await ctx.newPage();
-  const missing = [];
-  p.on('response', r => { if (r.status() >= 400) missing.push(r.url()); });
-  await p.goto(`http://127.0.0.1:${PORT}/__l/${name}`, { waitUntil: 'networkidle' });
-  if (missing.length) throw new Error(`${name}: missing ${missing.join(', ')}`);
-  await p.evaluate(() => document.fonts.ready);
-  await writeFile(join(WORK, `${name}.png`), await p.screenshot({ type: 'png', omitBackground: name !== 'offer' }));
-  await p.close();
-}
-console.log(`  ${Object.keys(ROUTES).length - 1} cards`);
+/* Set the time, then WAIT for the compositor to present it. */
+const frame = (p, t) => p.evaluate(x => {
+  window.setT(x);
+  return new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+}, t);
 
-/* The moving plate. */
-if (haveFrames) {
-  console.log(`  plate  ${FRAME_COUNT} frames already rendered, kept`);
-} else {
-  const p = await ctx.newPage();
-  const missing = [];
-  p.on('response', r => { if (r.status() >= 400) missing.push(r.url()); });
-  await p.goto(`http://127.0.0.1:${PORT}/__l/plate`, { waitUntil: 'networkidle' });
-  if (missing.length) throw new Error(`plate: missing ${missing.join(', ')}`);
-  const frames = FRAME_COUNT;
-  const t0 = Date.now();
-  for (let i = 0; i < frames; i++) {
-    /* Wait for the compositor to present, not just for the style to be set. */
-    await p.evaluate(t => {
-      window.setT(t);
-      return new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-    }, i / FPS);
-    await writeFile(join(WORK, 'frames', `f${String(i).padStart(4, '0')}.png`),
-      await p.screenshot({ type: 'png' }));
+const FRAME_COUNT = Math.round((COVER_D + XF) * FPS);
+
+for (const [k, F] of Object.entries(FORMATS)) {
+  const ctx = await b.newContext({ viewport: { width: F.w, height: F.h }, deviceScaleFactor: 1 });
+
+  /* Type first — cheap, and a missing font shows up before the long render. */
+  for (const name of Object.keys(ROUTES).filter(n => n.endsWith(`-${k}`) && !n.startsWith('plate'))) {
+    const p = await ctx.newPage();
+    const missing = [];
+    p.on('response', r => { if (r.status() >= 400) missing.push(r.url()); });
+    await p.goto(`http://127.0.0.1:${PORT}/__l/${name}`, { waitUntil: 'networkidle' });
+    if (missing.length) throw new Error(`${name}: missing ${missing.join(', ')}`);
+    await p.evaluate(() => document.fonts.ready);
+    await writeFile(join(WORK, `${name}.png`),
+      await p.screenshot({ type: 'png', omitBackground: !name.startsWith('offer') }));
+    await p.close();
   }
-  console.log(`  plate  ${W}x${H}  ${frames} frames  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+
+  /* The moving cover. Kept if a full set is already on disk: it takes minutes
+     and nothing about it depends on the type, which is the layer that changes. */
+  const fdir = join(WORK, `frames-${k}`);
+  if (existsSync(join(fdir, `f${String(FRAME_COUNT - 1).padStart(4, '0')}.png`))) {
+    console.log(`  cover ${k}  ${FRAME_COUNT} frames already rendered, kept`);
+  } else {
+    await rm(fdir, { recursive: true, force: true });
+    await mkdir(fdir, { recursive: true });
+    const p = await ctx.newPage();
+    const missing = [];
+    p.on('response', r => { if (r.status() >= 400) missing.push(r.url()); });
+    await p.goto(`http://127.0.0.1:${PORT}/__l/plate-${k}`, { waitUntil: 'networkidle' });
+    if (missing.length) throw new Error(`plate-${k}: missing ${missing.join(', ')}`);
+    const t0 = Date.now();
+    for (let i = 0; i < FRAME_COUNT; i++) {
+      await frame(p, i / FPS);
+      await writeFile(join(fdir, `f${String(i).padStart(4, '0')}.png`), await p.screenshot({ type: 'png' }));
+    }
+    console.log(`  cover ${k}  ${F.w}x${F.h}  ${FRAME_COUNT} frames  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+    await p.close();
+  }
+  await ctx.close();
 }
 await b.close();
 server.close();
@@ -278,8 +305,8 @@ const ff = (args, label) => {
 };
 
 /* Air only — the low end of the room takes, with every transient filtered out.
-   There are no pages in this film, so paper would be describing something that
-   is not happening, which is the mistake the main ad already made once. */
+   There are no pages moving in the cover shot, so full-band paper would be
+   describing something that is not happening. */
 const BED = join(WORK, 'bed.wav');
 {
   const takes = ['room-a', 'room-b'].map(n => join(AD, 'ambience', `${n}.wav`));
@@ -289,76 +316,73 @@ const BED = join(WORK, 'bed.wav');
      `[1:a]atrim=0:10,asetpts=N/SR/TB,aformat=sample_rates=48000:channel_layouts=stereo[k1]`,
      `[k0][k1]acrossfade=d=0.5:c1=tri:c2=tri[j]`,
      `[j]highpass=f=42,lowpass=f=380,volume=3.0,` +
-     `aloop=loop=1:size=${19.5 * 48000}:start=0,` +
+     `aloop=loop=2:size=${19.5 * 48000}:start=0,` +
      `loudnorm=I=-23:TP=-2.0:LRA=9,alimiter=limit=0.794:level=disabled,` +
      `afade=t=in:st=0:d=1.2,afade=t=out:st=${DUR - 1.6}:d=1.6,` +
      `atrim=0:${DUR},asetpts=N/SR/TB[a]`].join(';'),
     '-map', '[a]', '-ac', '2', '-ar', '48000', BED], 'bed');
 }
 
-/* Three segments, crossfaded: cover → pages → offer. The page turns inside the
-   middle segment are its own transitions, exactly as in the 109 film. */
-const PAGEDIR = join(AD, 'lamhat-book');
-if (!existsSync(join(PAGEDIR, 'f0000.png'))) {
-  throw new Error(`missing page frames: ${PAGEDIR} (run lamhat-pages.mjs)`);
-}
-const inputs = [
-  '-framerate', String(FPS), '-i', join(WORK, 'frames', 'f%04d.png'),
-  '-framerate', String(FPS), '-i', join(PAGEDIR, 'f%04d.png'),
-  '-loop', '1', '-t', String(OFFER_D), '-i', join(WORK, 'offer.png')
-];
-const chains = [
-  /* fps LAST in each chain: setpts after it wipes the frame-rate metadata and
-     xfade then refuses the link. */
-  `[0:v]trim=end_frame=${Math.round((COVER_D + XF) * FPS)},setpts=N/${FPS}/TB,format=yuv420p,setsar=1,fps=${FPS}[v0]`,
-  `[1:v]trim=end_frame=${Math.round((PAGES_D + XF) * FPS)},setpts=N/${FPS}/TB,format=yuv420p,setsar=1,fps=${FPS}[v1]`,
-  `[2:v]format=yuv420p,setsar=1,fps=${FPS}[v2]`,
-  `[v0][v1]xfade=transition=fade:duration=${XF}:offset=${COVER_D}[x0]`,
-  `[x0][v2]xfade=transition=fade:duration=${XF}:offset=${COVER_D + PAGES_D}[base]`
-];
-
-/* Type last, over the finished motion — never baked into a moving plate. */
-const CARDS = COPY.beats.map((x, i) => ({ file: `beat${i}.png`, at: x.at, to: x.to }));
-
-let stream = '[base]';
-CARDS.forEach((c, i) => {
-  const idx = 3 + i;
-  const dur = c.to - c.at;
-  inputs.push('-loop', '1', '-t', String(dur.toFixed(3)), '-i', join(WORK, c.file));
-  const fd = 0.32;
-  chains.push(
-    `[${idx}:v]format=rgba,fps=${FPS},` +
-    `fade=t=in:st=0:d=${fd}:alpha=1,fade=t=out:st=${(dur - fd).toFixed(3)}:d=${fd}:alpha=1,` +
-    `setpts=PTS+${c.at.toFixed(3)}/TB[c${i}]`);
-  const out = i === CARDS.length - 1 ? '[vout]' : `[s${i}]`;
-  chains.push(`${stream}[c${i}]overlay=0:0:eof_action=pass:repeatlast=0:format=auto${out}`);
-  stream = out;
-});
-
 const enc = ['-c:v', 'libx264', '-profile:v', 'high', '-preset', 'slow', '-crf', '17',
   '-pix_fmt', 'yuv420p', '-r', String(FPS), '-movflags', '+faststart',
   '-t', String(DUR), '-fps_mode', 'cfr'];
 
-const withSound = join(OUT, 'nizamok-lamhat-tiktok-9x16-24s.mp4');
-const silent = join(OUT, 'nizamok-lamhat-tiktok-9x16-24s-silent.mp4');
+const results = [];
+for (const [k, F] of Object.entries(FORMATS)) {
+  const PAGEDIR = join(AD, 'lamhat-book', k);
+  if (!existsSync(join(PAGEDIR, 'f0000.png'))) {
+    throw new Error(`missing page frames: ${PAGEDIR} (run lamhat-pages.mjs)`);
+  }
+  const inputs = [
+    '-framerate', String(FPS), '-i', join(WORK, `frames-${k}`, 'f%04d.png'),
+    '-framerate', String(FPS), '-i', join(PAGEDIR, 'f%04d.png'),
+    '-loop', '1', '-t', String(OFFER_D), '-i', join(WORK, `offer-${k}.png`)
+  ];
+  const chains = [
+    /* fps LAST in each chain: setpts after it wipes the frame-rate metadata and
+       xfade then refuses the link. */
+    `[0:v]trim=end_frame=${Math.round((COVER_D + XF) * FPS)},setpts=N/${FPS}/TB,format=yuv420p,setsar=1,fps=${FPS}[v0]`,
+    `[1:v]trim=end_frame=${Math.round((PAGES_D + XF) * FPS)},setpts=N/${FPS}/TB,format=yuv420p,setsar=1,fps=${FPS}[v1]`,
+    `[2:v]format=yuv420p,setsar=1,fps=${FPS}[v2]`,
+    `[v0][v1]xfade=transition=fade:duration=${XF}:offset=${COVER_D}[x0]`,
+    `[x0][v2]xfade=transition=fade:duration=${XF}:offset=${COVER_D + PAGES_D}[base]`
+  ];
 
-ff([...inputs, '-i', BED, '-filter_complex', chains.join(';'),
-  '-map', '[vout]', '-map', `${CARDS.length + 3}:a`,
-  ...enc, '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-ac', '2', '-shortest', withSound], 'sound');
-ff([...inputs, '-filter_complex', chains.join(';'), '-map', '[vout]', '-an', ...enc, silent], 'silent');
+  let stream = '[base]';
+  COPY.beats.forEach((c, i) => {
+    const idx = 3 + i;
+    const dur = c.to - c.at;
+    inputs.push('-loop', '1', '-t', String(dur.toFixed(3)), '-i', join(WORK, `beat${i}-${k}.png`));
+    const fd = 0.32;
+    chains.push(
+      `[${idx}:v]format=rgba,fps=${FPS},` +
+      `fade=t=in:st=0:d=${fd}:alpha=1,fade=t=out:st=${(dur - fd).toFixed(3)}:d=${fd}:alpha=1,` +
+      `setpts=PTS+${c.at.toFixed(3)}/TB[c${i}]`);
+    const out = i === COPY.beats.length - 1 ? '[vout]' : `[s${i}]`;
+    chains.push(`${stream}[c${i}]overlay=0:0:eof_action=pass:repeatlast=0:format=auto${out}`);
+    stream = out;
+  });
 
-/* A vertical cover frame doubles as the TikTok thumbnail. */
-const poster = join(OUT, 'nizamok-lamhat-tiktok-poster-1080x1920.jpg');
-ff(['-i', join(WORK, 'frames', 'f0100.png'), '-i', join(WORK, 'beat0.png'),
+  const withSound = join(OUT, `nizamok-lamhat-${F.name}-24s.mp4`);
+  const silent = join(OUT, `nizamok-lamhat-${F.name}-24s-silent.mp4`);
+  ff([...inputs, '-i', BED, '-filter_complex', chains.join(';'),
+    '-map', '[vout]', '-map', `${COPY.beats.length + 3}:a`,
+    ...enc, '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-ac', '2', '-shortest', withSound], `${F.name} sound`);
+  ff([...inputs, '-filter_complex', chains.join(';'), '-map', '[vout]', '-an', ...enc, silent], `${F.name} silent`);
+  results.push(withSound, silent);
+}
+
+const poster = join(OUT, 'nizamok-lamhat-poster-1080x1920.jpg');
+ff(['-i', join(WORK, 'frames-v', 'f0100.png'), '-i', join(WORK, 'beat0-v.png'),
   '-filter_complex', '[0:v][1:v]overlay', '-frames:v', '1', '-q:v', '2', poster], 'poster');
 
 console.log('\n  check');
-for (const file of [withSound, silent]) {
+for (const file of results) {
   const out = execFileSync('sh', ['-c', `${FF} -hide_banner -i '${file}' -f null - 2>&1`]).toString();
   const d = out.match(/Duration: (\d+):(\d+):([\d.]+)/);
   const secs = d ? (+d[1] * 3600 + +d[2] * 60 + parseFloat(d[3])) : NaN;
   const fm = [...out.matchAll(/frame=\s*(\d+)/g)].pop();
-  console.log(`    ${file.split('/').pop().padEnd(44)} ${secs.toFixed(2)}s  ${fm ? fm[1] : '?'}f  ` +
+  console.log(`    ${file.split('/').pop().padEnd(40)} ${secs.toFixed(2)}s  ${fm ? fm[1] : '?'}f  ` +
     `${(statSync(file).size / 1048576).toFixed(1)} MB`);
   if (Math.abs(secs - DUR) > 0.05) throw new Error(`${file}: ${secs}s, expected ${DUR}`);
 }
