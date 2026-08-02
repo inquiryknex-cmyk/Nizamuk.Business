@@ -72,9 +72,16 @@
     page_path: location.pathname
   };
   if (pending && pending.pattern) {
+    /* The rung, not a hard-coded 'rebuild-'. The ladder sells three products
+       per pattern, and `value` above already carries the right price — filing a
+       19 SAR «لمحات» sale under the 109 item would disagree with its own value
+       and corrupt revenue-by-item. This matches the item_id begin_checkout
+       sends from rebuild.js, so intent and purchase join on one key. */
+    var level = pending.level || 'rebuild';
     params.pattern_slug = pending.pattern;
+    params.level = level;
     params.items = [{
-      item_id: 'rebuild-' + pending.pattern,
+      item_id: level + '-' + pending.pattern,
       item_name: pending.name || pending.pattern,
       price: value,
       quantity: 1
