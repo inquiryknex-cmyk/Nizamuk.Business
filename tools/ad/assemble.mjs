@@ -36,28 +36,38 @@ const XF = 0.4;                       // crossfade length, shared by every cut
    clip ffmpeg builds is d + XF for every shot but the last, because xfade eats
    the overlap out of the outgoing clip. */
 const SHOTS = [
-  { plate: 'cover', card: 'shot1',  d: 4.0, motion: ['in',  1.00, 1.07], trans: 'fade' },
-  { plate: 'tilt',  card: 'shot2',  d: 3.2, motion: ['out', 1.09, 1.00], trans: 'fade' },
-  { plate: 'named', card: 'shot3',  d: 3.8, motion: ['in',  1.00, 1.06], trans: 'fade' },
-  /* The book chapter: ONE clip, not three. It is a rendered frame sequence
-     (render-book.mjs) in which the pages actually turn, so it cannot be a still
-     with a zoom on it and there is nothing to dissolve between — the turns are
-     the transitions. Its three cards are timed against the turns below. */
-  { book: true,     card: null,     d: 9.6, motion: null,                trans: 'fade' },
-  { plate: 'fan',   card: 'shot5',  d: 4.0, motion: ['in',  1.00, 1.06], trans: 'fade' },
+  /* The opening. One shot, not three: the first cut held the cover for eleven
+     seconds across three near-identical plates and read as a still with a zoom,
+     because that is what it was. This is a rendered sequence (render-cover.mjs)
+     in which the book turns and settles, and it carries TWO type beats — the
+     hook, then the brief that says what the book actually is. */
+  { seq: 'cover', d: 6.0,  trans: 'fade' },
+  /* The pages. All five, four real turns (render-book.mjs). The rest of the
+     script is spoken over them, one line per page. */
+  { seq: 'book',  d: 18.6, trans: 'fade' },
   /* The end card does not move. It carries the price and the call to action,
      and a moving CTA is a CTA that is harder to read and harder to tap. */
-  { plate: null,    card: null,     d: 4.4, motion: null,                trans: null   }
+  { plate: null,  d: 4.4,  trans: null  }
 ];
 
-/* Where the leaves turn inside that clip, and therefore where the type has to
-   be off screen. Mirrors TURNS in render-book.mjs. */
-const BOOK_START = SHOTS.slice(0, 3).reduce((s, x) => s + x.d, 0);   // 11.0
-const BOOK_CARDS = [
-  { card: 'shot4a', start: BOOK_START + 0.5, end: BOOK_START + 2.9 },   // 11.5 – 13.9
-  { card: 'shot4b', start: BOOK_START + 3.9, end: BOOK_START + 5.9 },   // 14.9 – 16.9
-  { card: 'shot4c', start: BOOK_START + 6.9, end: BOOK_START + 9.6 }    // 17.9 – 20.6
+/* Type, on the finished timeline. The cover shot gets two beats so six seconds
+   of one object never sits still; each page beat is timed to be gone before its
+   leaf lifts, because words riding a turning page read as a mistake.
+   Turns land at 9.4 / 13.3 / 17.2 / 21.1 — mirrors TURNS in render-book.mjs
+   offset by the 6.0s the cover shot occupies. */
+const CARDS = [
+  { card: 'shot1',  start:  0.5, end:  3.0 },
+  { card: 'brief',  start:  3.4, end:  6.0 },
+  { card: 'shot2',  start:  6.5, end:  9.2 },   // p07 خريطة المنعطفات الأربعة
+  { card: 'shot3',  start: 10.4, end: 13.1 },   // p23 تجربة الوصول
+  { card: 'shot4a', start: 14.3, end: 17.0 },   // p08 خريطة العبور
+  { card: 'shot4b', start: 18.2, end: 20.9 },   // p33 خطة ٣٠ يومًا
+  { card: 'shot5',  start: 22.1, end: 24.6 }    // p36 قوس ٩٠ يومًا
 ];
+
+/* When the pages start moving — and therefore the first moment paper belongs on
+   the soundtrack. */
+const BOOK_START = SHOTS[0].d;
 
 const TOTAL = SHOTS.reduce((s, x) => s + x.d, 0);
 if (Math.abs(TOTAL - 29) > 1e-9) throw new Error(`shots sum to ${TOTAL}s, not 29`);
@@ -84,37 +94,41 @@ mkdirSync(OUT, { recursive: true });
 mkdirSync(TMP, { recursive: true });
 
 /* ------------------------------------------------------------------ *
- * 1. The bed: generated location ambience.
+ * 1. The bed: generated location ambience, in two layers.
  *
- * The first pass synthesised its own sound — filtered noise, with a transient
- * on every cut. Those transients read as clicks, and no amount of shaping was
- * going to make noise sound like a place. The second pass used forest ambience,
- * which was pleasant and had nothing to do with a book.
+ * The first pass synthesised its own sound — filtered noise with a transient on
+ * every cut. Those read as clicks. The second used forest ambience: pleasant,
+ * and nothing to do with a book. The third used the book's own room, which was
+ * right, but played paper over the cover — six seconds of leaves swiping while
+ * nothing on screen was moving. Sound that describes something the picture is
+ * not doing is worse than silence.
  *
- * This is the room the book is in: paper moving, pages turning, a warm quiet
- * interior. Generated on Higgsfield and therefore licensed with nothing
- * attached to it. Only the AUDIO of those generations is used — their picture
- * is discarded and never appears in the film, which is built entirely from the
- * shipping product assets.
+ * So the same material is split in two and each half is used for what it is:
  *
- * THREE different ten-second takes, not one looped three times — a repeating
- * phrase is the single most audible way a bed gives itself away.
- * They butt together with half-second crossfades: 10+10+10 − 2×0.5 = 29.000s,
- * which is the whole film, so no maths is needed downstream.
+ *   air    — the takes with everything above 380 Hz taken off. What is left is
+ *            the room: warm, continuous, no transient detail at all. It runs
+ *            the whole 29 seconds and is what plays over the cover.
+ *   paper  — the same takes full-band, held back until the pages start moving
+ *            and faded in over a second. Now every rustle has a leaf under it.
  *
- * There are no accents on the cuts any more. Ambience this continuous does not
- * want punctuation; the picture already carries the rhythm.
+ * Generated on Higgsfield and therefore licensed with nothing attached. Only
+ * the AUDIO of those generations is used — their picture is discarded and never
+ * appears in the film, which is built entirely from the shipping product assets.
+ *
+ * THREE different ten-second takes, not one looped three times: a repeating
+ * phrase is the single most audible way a bed gives itself away. They butt
+ * together with half-second crossfades — 10+10+10 − 2×0.5 = 29.000s, the whole
+ * film, so no maths is needed downstream.
  * ------------------------------------------------------------------ */
 const BED = join(TMP, 'bed.wav');
-/* Ordered, not interchangeable: they butt together in sequence, so the two
-   paper takes go second and third to land under the book chapter (11.0–20.6s),
-   and the quieter room-tone take opens over the cover. */
 const TAKES = ['room-a', 'room-b', 'room-c'].map(n => join(AD, 'ambience', `${n}.wav`));
 
 for (const t of TAKES) if (!existsSync(t)) throw new Error(`missing ambience take: ${t}`);
 
 {
   const XA = 0.5;
+  const IN = BOOK_START - 0.4;          // paper starts just under the cut
+  const OUT_AT = 24.6;                  // and is gone before the end card
   const filter = [
     /* Each take trimmed to exactly 10s and rid of the DC and rumble a
        generated track carries under the audible band. */
@@ -122,12 +136,22 @@ for (const t of TAKES) if (!existsSync(t)) throw new Error(`missing ambience tak
       `highpass=f=42,afade=t=in:st=0:d=0.02,afade=t=out:st=${10 - 0.02}:d=0.02[k${i}]`),
     `[k0][k1]acrossfade=d=${XA}:c1=tri:c2=tri[ab]`,
     `[ab][k2]acrossfade=d=${XA}:c1=tri:c2=tri[joined]`,
+    `[joined]asplit=2[air0][pap0]`,
+    /* Air: no transients survive a 380 Hz ceiling, so this can sit under the
+       cover without describing a page that is not turning. */
+    `[air0]lowpass=f=380,volume=2.6[air]`,
+    /* Paper: full band, shifted so it begins as the first leaf does. adelay
+       pushes the whole layer late; the trim at the end of the chain cuts the
+       tail back to 29s. */
+    `[pap0]highpass=f=190,lowpass=f=15000,volume=1.15,` +
+    `adelay=${Math.round(IN * 1000)}|${Math.round(IN * 1000)},` +
+    `afade=t=in:st=${IN.toFixed(2)}:d=1.1,afade=t=out:st=${(OUT_AT - 1.2).toFixed(2)}:d=1.2[paper]`,
+    `[air][paper]amix=inputs=2:normalize=0:duration=first[mix]`,
     /* The takes land around −50 LUFS, so this is a thirty-decibel lift; the
-       highpass above and the top-end trim below stop the codec floor coming up
-       with it. −21 LUFS is a deliberate background level: nothing here speaks,
-       and paper pushed to a dialogue target would be absurd. */
-    `[joined]lowpass=f=15000,loudnorm=I=-21:TP=-2.0:LRA=11,` +
-    /* loudnorm's own peak control is a target, not a guarantee — it measured
+       highpass above and the top-end trim stop the codec floor coming up with
+       it. −21 LUFS is a deliberate background level: nothing here speaks. */
+    `[mix]loudnorm=I=-21:TP=-2.0:LRA=11,` +
+    /* loudnorm's peak control is a target, not a guarantee — it measured
        −1.7 dBTP against a −2.0 ask. This makes it a ceiling. */
     `alimiter=limit=0.794:level=disabled,` +
     `afade=t=in:st=0:d=1.4,afade=t=out:st=27.2:d=1.8,` +
@@ -149,13 +173,14 @@ for (const [k, f] of Object.entries(FORMATS)) {
     const clip = s.trans ? s.d + XF : s.d;           // the outgoing overlap
     const frames = Math.round(clip * FPS);
 
-    if (s.book) {
-      /* Already a moving picture: the frames come off render-book.mjs at the
-         film's own rate, so they are read straight in with no geometry filter
-         at all. The push and the turns are baked into them. */
-      const dir = join(AD, 'book', k);
-      const first = join(dir, 'f0000.png');
-      if (!existsSync(first)) throw new Error(`missing book frames: ${dir} (run render-book.mjs)`);
+    if (s.seq) {
+      /* Already a moving picture: the frames come off render-cover.mjs /
+         render-book.mjs at the film's own rate, so they are read straight in
+         with no geometry filter at all. Every move is baked into them. */
+      const dir = join(AD, s.seq, k);
+      if (!existsSync(join(dir, 'f0000.png'))) {
+        throw new Error(`missing ${s.seq} frames: ${dir} (run render-${s.seq}.mjs)`);
+      }
       inputs.push('-framerate', String(FPS), '-i', join(dir, 'f%04d.png'));
       /* fps LAST. Putting setpts after it wipes the frame-rate metadata, and
          xfade then refuses the link: "second input link xfade frame rate 1/0". */
@@ -164,26 +189,12 @@ for (const [k, f] of Object.entries(FORMATS)) {
       return;
     }
 
-    const src = s.plate ? join(AD, 'plates', `${s.plate}-${k}.png`) : join(AD, `endcard-${k}.png`);
-    if (!existsSync(src)) throw new Error(`missing plate: ${src}`);
-
-    if (!s.motion) {
-      /* Still: held by the demuxer, so the frame is never touched by a
-         geometry filter and the CTA stays as crisp as it was rendered. */
-      inputs.push('-loop', '1', '-t', String(clip), '-i', src);
-      chains.push(`[${i}:v]fps=${FPS},format=yuv420p,setsar=1[v${i}]`);
-      return;
-    }
-    inputs.push('-i', src);
-    const [dir, z0, z1] = s.motion;
-    const step = (Math.abs(z1 - z0) / (frames - 1)).toFixed(7);
-    const z = dir === 'in'
-      ? `min(zoom+${step},${z1})`
-      : `if(eq(on,0),${z0},max(zoom-${step},${z1}))`;
-    chains.push(
-      `[${i}:v]zoompan=z='${z}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':` +
-      `d=${frames}:s=${f.w}x${f.h}:fps=${FPS},format=yuv420p,setsar=1[v${i}]`
-    );
+    /* The end card: held by the demuxer, so the frame is never touched by a
+       geometry filter and the CTA stays as crisp as it was rendered. */
+    const src = join(AD, `endcard-${k}.png`);
+    if (!existsSync(src)) throw new Error(`missing end card: ${src}`);
+    inputs.push('-loop', '1', '-t', String(clip), '-i', src);
+    chains.push(`[${i}:v]fps=${FPS},format=yuv420p,setsar=1[v${i}]`);
   });
 
   /* xfade chain. `offset` is measured in the running output, and equals the
@@ -198,19 +209,7 @@ for (const [k, f] of Object.entries(FORMATS)) {
   /* Type last. Each card is looped for exactly its window, PTS-shifted onto
      the timeline, alpha-faded at both ends. Before its first frame and after
      its last, overlay passes the picture through untouched. */
-  const TEXT = [];
-  SHOTS.forEach((s, i) => {
-    if (s.book) {
-      /* Three cards inside one clip, timed so each is gone before its leaf
-         lifts. Type riding over a turning page reads as a mistake. */
-      BOOK_CARDS.forEach(c => TEXT.push({ card: `${c.card}-${k}`, start: c.start, dur: c.end - c.start }));
-      return;
-    }
-    if (!s.card) return;
-    const start = SHOTS.slice(0, i).reduce((a, x) => a + x.d, 0) + 0.5;
-    const dur = s.d - 0.5;                            // clears the incoming cut
-    TEXT.push({ card: `${s.card}-${k}`, start, dur });
-  });
+  const TEXT = CARDS.map(c => ({ card: `${c.card}-${k}`, start: c.start, dur: c.end - c.start }));
 
   let stream = '[vx]';
   TEXT.forEach((t, j) => {

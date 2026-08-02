@@ -32,16 +32,25 @@ const PORT = 8971;
 const OUT = '/home/user/Nizamuk.Business/build/ad/book';
 const FPS = 30;
 
-/* 10.000s: three holds and two turns. assemble.mjs eats the last 0.4s in the
-   crossfade out, which is why the final hold is the long one. */
-export const DUR = 10.0;
-const TURNS = [{ at: 3.05, d: 0.55 }, { at: 6.05, d: 0.55 }];
+/* 19.000s: five holds and four turns. assemble.mjs eats the last 0.4s in the
+   crossfade out. All FIVE interior pages are used — the book has five in its
+   gallery and showing three said the sample was thinner than it is. */
+export const DUR = 19.0;
+const TURNS = [{ at: 3.40, d: 0.55 }, { at: 7.30, d: 0.55 },
+               { at: 11.20, d: 0.55 }, { at: 15.10, d: 0.55 }];
 
-/* What you read, in order. BACKS are what shows on the underside of a leaf as
-   it goes over — glimpsed for a third of a second, then in shadow. */
-const PAGES = [A.p07, A.p23, A.p33];   // المنعطفات الأربعة / تجربة الوصول / خطة ٣٠ يومًا
-const BACKS = [A.p08, A.p36];          // خريطة العبور / قوس ٩٠ يومًا
-const ALL = [...new Set([...PAGES, ...BACKS])];
+/* What you read, in order:
+     p07  خريطة المنعطفات الأربعة
+     p23  تجربة الوصول
+     p08  خريطة العبور
+     p33  خطة ٣٠ يومًا
+     p36  قوس ٩٠ يومًا
+   A leaf's underside is glimpsed for a fifth of a second on its way over and is
+   in shadow by the time it lands, so it borrows the page two ahead rather than
+   asking for a sixth asset that does not exist. */
+const PAGES = [A.p07, A.p23, A.p08, A.p33, A.p36];
+const BACKS = PAGES.map((_, i) => PAGES[(i + 2) % PAGES.length]);
+const ALL = [...new Set(PAGES)];
 
 const FORMATS = {
   h: { w: 1920, h: 1080, leafW: 880, leafH: 690, spineX: 960, cy: 512 },

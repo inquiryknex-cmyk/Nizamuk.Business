@@ -24,19 +24,40 @@ const PORT = 8931;
 const SITE = '/home/user/Nizamuk.Business/site';
 const OUT = '/home/user/Nizamuk.Business/build/ad';
 
-/* ---- Approved copy. Single source. Do not retype anywhere else. ---- */
+/* ---- Approved copy. Single source. Do not retype anywhere else. ----
+ *
+ * Outcome-first, not pattern-first. The earlier cut asked the viewer to accept
+ * a framework — «قد يكون نمط المبدعة المشتّتة» — before she could want the
+ * thing. That is a second sale made before the first one. She already knows the
+ * problem: تبدئين بحماس ثم تتوقفين. So the promise is now the result, and the
+ * pattern does its work privately, after she is inside.
+ *
+ * The price line and the CTA are the two strings that change when the 14-day
+ * entry product exists; nothing else in the film depends on them.
+ */
 const COPY = {
   shot1: ['تبدئين بحماس…', 'ثم تتوقفين؟'],
-  shot2: ['ليس كسلًا', 'ولا ضعف إرادة'],
-  shot3: ['قد يكون نمط', 'المبدعة المشتّتة'],
-  shot4a: ['٤٧ صفحة تطبيقية'],
-  shot4b: ['خمس مراحل عملية'],
-  shot4c: ['فكرة واحدة حتى تكتمل'],
-  shot5: ['احمي فكرة واحدة', 'حتى تكتمل'],
-  endTitle: 'نظام المبدعة المشتّتة',
+
+  /* The brief beside the cover: what she GETS, before a page is shown. */
+  briefKicker: 'نظام إعادة البناء',
+  briefTitle: 'أكملي ما بدأتِه',
+  briefLines: ['اختاري مشروعًا واحدًا متوقفًا.', '٤٧ صفحة · خمس مراحل', 'حتى يعود إلى الحركة.'],
+
+  /* One beat per interior page, in the order the leaves turn. The arc is a
+     completion story, not a diagnosis: it is not laziness → name what stops you
+     → cross it → a plan you can keep → one thing finished. */
+  shot2: ['ليس كسلًا', 'ولا ضعف إرادة'],          // p07 خريطة المنعطفات الأربعة
+  shot3: ['افهمي ما يُعطّلكِ', 'بالاسم'],           // p23 تجربة الوصول
+  shot4a: ['واعبري المنعطف', 'الذي يوقفكِ'],       // p08 خريطة العبور
+  shot4b: ['خطة واقعية', 'لا قائمة أمنيات'],       // p33 خطة ٣٠ يومًا
+  shot5: ['مشروع واحد', 'حتى يكتمل'],             // p36 قوس ٩٠ يومًا
+
+  endTitle: 'أكملي مشروعًا متوقفًا',
   endPrice: '١٠٩ ر.س — دفعة واحدة',
   endCta: 'خذي جولة داخل الكتاب',
-  endSecondary: ['لستِ متأكدة من نمطكِ؟', 'الاختبار مجاني'],
+  /* The quiz stays, demoted: an alternative door for someone not ready to buy,
+     no longer the main path. */
+  endSecondary: ['لستِ متأكدة من أين تبدئين؟', 'الاختبار مجاني'],
   endUrl: 'nizamok.com',
   thumb: ['تبدئين…', 'ولا تُكملين؟']
 };
@@ -109,6 +130,67 @@ const shotCard = (lines, f, opts = {}) => {
   <div class="scrim"></div>
   <div class="rule"></div>
   ${lines.map((l, i) => `<div class="line${i === lines.length - 1 && opts.accentLast ? ' accent' : ''}">${l}</div>`).join('\n  ')}
+</div>`;
+};
+
+/* ------------------------------------------------------------------ *
+ * The brief: what the book IS, set beside the cover before a page is shown.
+ *
+ * This is the beat the first cut was missing. It held the cover for eleven
+ * seconds and said only "you start and stop" — the viewer looked at an object
+ * for a third of the ad without being told what it was. One shot, two beats:
+ * the hook, then this.
+ *
+ * Set as a title page rather than a caption: kicker, title, rule, three short
+ * lines. Naming what is inside the book is allowed; explaining how it is built
+ * is not.
+ * ------------------------------------------------------------------ */
+const briefCard = (f) => {
+  const side = f.layout === 'side';
+  const place = side
+    ? `top:50%;transform:translateY(-50%);right:100px;width:760px;`
+    : `top:1010px;right:${f.safe}px;left:${f.safe}px;`;
+  return `
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:${f.w}px;height:${f.h}px;overflow:hidden;background:transparent}
+  .wrap{position:absolute;${place}direction:rtl;text-align:${side ? 'right' : 'center'}}
+  .scrim{
+    position:absolute;inset:${side ? '-100px -120px' : '-140px -170px'};
+    background:radial-gradient(60% 56% at 50% 50%,rgba(18,14,27,.82),rgba(18,14,27,.44) 62%,transparent 78%);
+    filter:blur(30px);
+  }
+  .kicker{
+    position:relative;font-family:'Almarai',sans-serif;font-weight:400;
+    font-size:${side ? 34 : 32}px;letter-spacing:.10em;color:${C.goldSoft};
+    margin-bottom:${side ? 14 : 12}px;
+  }
+  .title{
+    position:relative;font-family:'El Messiri','Almarai',sans-serif;font-weight:700;
+    font-size:${side ? 88 : 76}px;line-height:1.24;color:${C.ivory};
+    text-shadow:0 2px 20px rgba(0,0,0,.55);margin-bottom:${side ? 26 : 22}px;
+  }
+  /* A rule with a diamond on it — the house ornament, not a plain divider. */
+  .orn{position:relative;display:flex;align-items:center;gap:12px;
+    justify-content:${side ? 'flex-start' : 'center'};margin-bottom:${side ? 30 : 26}px}
+  .orn i{display:block;height:1px;width:${side ? 118 : 92}px;background:${C.gold};opacity:.85}
+  .orn b{display:block;width:7px;height:7px;background:${C.gold};transform:rotate(45deg)}
+  .l{
+    position:relative;font-family:'Almarai',sans-serif;font-weight:300;
+    font-size:${side ? 38 : 34}px;line-height:1.9;color:rgba(250,245,236,.90);
+    text-shadow:0 2px 14px rgba(0,0,0,.5);
+  }
+  .l.gold{font-weight:400;color:${C.goldSoft};letter-spacing:.03em}
+</style>
+<div class="wrap">
+  <div class="scrim"></div>
+  <div class="kicker">${COPY.briefKicker}</div>
+  <div class="title">${COPY.briefTitle}</div>
+  <div class="orn"><i></i><b></b><i></i></div>
+  <div class="l">${COPY.briefLines[0]}</div>
+  <div class="l gold">${COPY.briefLines[1]}</div>
+  <div class="l">${COPY.briefLines[2]}</div>
 </div>`;
 };
 
@@ -232,11 +314,11 @@ const thumbnail = () => `
 const ROUTES = {};
 for (const [k, f] of Object.entries(FORMATS)) {
   ROUTES[`shot1-${k}`]  = [shotCard(COPY.shot1, f, { accentLast: true }), f];
+  ROUTES[`brief-${k}`]  = [briefCard(f), f];
   ROUTES[`shot2-${k}`]  = [shotCard(COPY.shot2, f), f];
   ROUTES[`shot3-${k}`]  = [shotCard(COPY.shot3, f, { accentLast: true }), f];
-  ROUTES[`shot4a-${k}`] = [shotCard(COPY.shot4a, f, { size: f.w > 1400 ? 84 : 72 }), f];
-  ROUTES[`shot4b-${k}`] = [shotCard(COPY.shot4b, f, { size: f.w > 1400 ? 84 : 72 }), f];
-  ROUTES[`shot4c-${k}`] = [shotCard(COPY.shot4c, f, { size: f.w > 1400 ? 84 : 72 }), f];
+  ROUTES[`shot4a-${k}`] = [shotCard(COPY.shot4a, f, { accentLast: true }), f];
+  ROUTES[`shot4b-${k}`] = [shotCard(COPY.shot4b, f, { accentLast: true }), f];
   ROUTES[`shot5-${k}`]  = [shotCard(COPY.shot5, f, { accentLast: true }), f];
   ROUTES[`endcard-${k}`] = [endCard(f), f];
 }
@@ -269,7 +351,7 @@ for (const [name, [, f]] of Object.entries(ROUTES)) {
   await page.goto(`http://127.0.0.1:${PORT}/__card/${name}`, { waitUntil: 'load' });
   await page.evaluate(() => document.fonts.ready);
   /* Overlays keep their alpha; end card and thumbnail are opaque by design. */
-  const transparent = /^shot/.test(name);
+  const transparent = /^(shot|brief)/.test(name);
   const buf = await page.screenshot({
     type: 'png',
     omitBackground: transparent
