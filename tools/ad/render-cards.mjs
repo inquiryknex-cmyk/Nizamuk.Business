@@ -47,9 +47,13 @@ const C = {
   ink: '#2A2333', charcoal: '#1A1626', rose: '#E3A8AC', plum: '#43265A'
 };
 
+/* `layout` follows the picture. The ad is a product film: the book is staged
+   left of centre in 16:9 (see render-plates.mjs), so the type takes the empty
+   right column rather than a bottom third that would sit under nothing. In
+   9:16 the book is stacked above the type, so the bottom anchor still holds. */
 const FORMATS = {
-  h: { w: 1920, h: 1080, safe: 96 },     // in-stream
-  v: { w: 1080, h: 1920, safe: 120 }     // shorts: >=120px from side edges
+  h: { w: 1920, h: 1080, safe: 96,  layout: 'side'   },  // in-stream
+  v: { w: 1080, h: 1920, safe: 120, layout: 'bottom' }   // shorts: >=120px from side edges
 };
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
@@ -59,27 +63,31 @@ const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=u
  * Shot lower-third: transparent PNG, burned over the generated scene.
  * ------------------------------------------------------------------ */
 const shotCard = (lines, f, opts = {}) => {
-  const big = f.w > 1400;
-  const size = opts.size || (big ? 76 : 68);
-  /* Vertical keeps text clear of the Shorts chrome: caption and controls own
-     roughly the lowest 320px, the top bar the highest 180. */
-  const anchor = f.w > 1400 ? 'bottom:150px' : 'bottom:430px';
+  const side = f.layout === 'side';
+  const size = opts.size || (side ? 72 : 68);
+  /* side   — a column at x>=1080, vertically centred on the staged book.
+     bottom — clear of the Shorts chrome: caption and controls own roughly the
+              lowest 320px, the top bar the highest 180. */
+  const place = side
+    ? `top:50%;transform:translateY(-50%);right:100px;width:740px;`
+    : `bottom:430px;right:${f.safe}px;left:${f.safe}px;`;
+  /* A scrim, not a box. Under a column it has to be radial or it reads as a
+     panel edge against the velvet; under a bottom third a rise is right. */
+  /* Radial in BOTH layouts. The bottom third used to be a linear gradient,
+     which is opaque at its own left, right and bottom edges — over generated
+     footage that reads as a caption bar, but over the staged velvet ground it
+     drew a visible rectangle around the words. A radial reaches transparent
+     before the box does, so there is no edge to see. */
+  const scrim = side
+    ? `inset:-90px -110px;background:radial-gradient(58% 52% at 52% 50%,rgba(18,14,27,.80),rgba(18,14,27,.42) 62%,transparent 78%);filter:blur(26px);`
+    : `inset:-150px -170px;background:radial-gradient(56% 58% at 50% 50%,rgba(18,14,27,.72),rgba(18,14,27,.34) 60%,transparent 76%);filter:blur(34px);`;
   return `
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{width:${f.w}px;height:${f.h}px;overflow:hidden;background:transparent}
-  .wrap{
-    position:absolute;${anchor};right:${f.safe}px;left:${f.safe}px;
-    direction:rtl;text-align:right;
-  }
-  /* A soft scrim, not a box: keeps contrast over any footage without
-     turning the frame into a caption bar. */
-  .scrim{
-    position:absolute;inset:-46px -40px -40px -40px;
-    background:linear-gradient(to top,rgba(20,16,30,.80),rgba(20,16,30,.52) 55%,transparent);
-    filter:blur(2px);border-radius:8px;
-  }
+  .wrap{position:absolute;${place}direction:rtl;text-align:right;}
+  .scrim{position:absolute;${scrim}}
   .line{
     position:relative;font-family:'El Messiri','Almarai',sans-serif;font-weight:700;
     font-size:${size}px;line-height:1.62;color:${C.ivory};
@@ -87,7 +95,7 @@ const shotCard = (lines, f, opts = {}) => {
   }
   .line + .line{margin-top:6px}
   .accent{color:${C.goldSoft}}
-  .rule{position:relative;width:${big?120:96}px;height:2px;background:${C.gold};margin-bottom:26px;margin-right:0}
+  .rule{position:relative;width:${side?120:96}px;height:2px;background:${C.gold};margin-bottom:26px;margin-right:0}
 </style>
 <div class="wrap">
   <div class="scrim"></div>
@@ -113,15 +121,25 @@ const endCard = (f) => {
       linear-gradient(150deg,#221B33 0%,#191325 58%,#140F1E 100%);
     color:${C.ivory};direction:rtl;
     display:flex;align-items:center;justify-content:center;
-    ${vertical ? 'flex-direction:column;' : ''}
+    /* DOM order is [text, cover]; the flow puts the cover where the film has
+       been keeping the book for 25 seconds — left of the type in 16:9, above
+       it in 9:16 — so the last cut does not slide the object across frame. */
+    flex-direction:${vertical ? 'column-reverse' : 'row'};
     gap:${vertical ? '52px' : '96px'};
     padding:${vertical ? '260px 110px 380px' : '90px 150px'};
   }
-  .cover{
-    flex:none;border-radius:6px;overflow:hidden;
+  /* Same physical page-edge the plates give it. Without it the end card shows
+     a flat rectangle where the film showed an object. */
+  .cover{flex:none;position:relative}
+  .cover img{
+    display:block;height:${vertical ? 620 : 720}px;width:auto;border-radius:6px;
     box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(214,186,128,.30);
   }
-  .cover img{display:block;height:${vertical ? 620 : 720}px;width:auto}
+  .cover::before{
+    content:'';position:absolute;top:7px;bottom:7px;left:-13px;width:13px;
+    background:linear-gradient(90deg,#2b2438 0%,#d8d0c0 26%,#f2ece0 46%,#c9c0ae 74%,#8f8676 100%);
+    border-radius:3px 0 0 3px;box-shadow:-7px 20px 36px rgba(0,0,0,.5);
+  }
   .col{display:flex;flex-direction:column;align-items:${vertical ? 'center' : 'flex-start'};
        text-align:${vertical ? 'center' : 'right'};max-width:${vertical ? '860px' : '820px'}}
   .brand{display:flex;align-items:center;gap:${vertical ? 22 : 20}px;margin-bottom:${vertical ? 26 : 22}px}
@@ -146,7 +164,6 @@ const endCard = (f) => {
   .url{margin-top:${vertical ? 26 : 24}px;font-family:'Almarai',sans-serif;font-weight:400;
      font-size:${vertical ? 34 : 32}px;color:rgba(230,211,163,.86);letter-spacing:.04em;direction:ltr}
 </style>
-<div class="cover"><img src="/assets/product/mubdia/cover-og.jpg" alt=""></div>
 <div class="col">
   <div class="brand">
     <img class="seal" src="/assets/img/seal.png" alt="">
@@ -157,7 +174,8 @@ const endCard = (f) => {
   <div class="cta">${COPY.endCta}</div>
   <div class="sec">${COPY.endSecondary[0]}<br>${COPY.endSecondary[1]}</div>
   <div class="url">${COPY.endUrl}</div>
-</div>`;
+</div>
+<div class="cover"><img src="/assets/product/mubdia/cover-og.jpg" alt=""></div>`;
 };
 
 /* ------------------------------------------------------------------ *
@@ -175,9 +193,14 @@ const thumbnail = () => `
     color:${C.ivory};direction:rtl;
     display:flex;align-items:center;gap:74px;padding:0 86px;
   }
-  .cover{flex:none;border-radius:5px;overflow:hidden;
+  .cover{flex:none;position:relative}
+  .cover img{display:block;height:560px;width:auto;border-radius:5px;
     box-shadow:0 30px 70px rgba(0,0,0,.6), 0 0 0 1px rgba(214,186,128,.32)}
-  .cover img{display:block;height:560px;width:auto}
+  .cover::before{
+    content:'';position:absolute;top:6px;bottom:6px;left:-11px;width:11px;
+    background:linear-gradient(90deg,#2b2438 0%,#d8d0c0 26%,#f2ece0 46%,#c9c0ae 74%,#8f8676 100%);
+    border-radius:3px 0 0 3px;box-shadow:-6px 16px 30px rgba(0,0,0,.5);
+  }
   .txt{text-align:right}
   /* Sized for a phone-width YouTube grid cell, where 1280x720 is ~160px wide. */
   .l1{font-family:'El Messiri','Almarai',sans-serif;font-weight:700;font-size:118px;
@@ -187,13 +210,13 @@ const thumbnail = () => `
   .rule{width:132px;height:3px;background:${C.gold};margin:26px 0 0 auto}
   .tseal{height:74px;width:74px;margin:28px 0 0 auto;display:block;opacity:.95}
 </style>
-<div class="cover"><img src="/assets/product/mubdia/cover-og.jpg" alt=""></div>
 <div class="txt">
   <div class="l1">${COPY.thumb[0]}</div>
   <div class="l2">${COPY.thumb[1]}</div>
   <div class="rule"></div>
   <img class="tseal" src="/assets/img/seal.png" alt="">
-</div>`;
+</div>
+<div class="cover"><img src="/assets/product/mubdia/cover-og.jpg" alt=""></div>`;
 
 /* ------------------------------------------------------------------ */
 const ROUTES = {};
