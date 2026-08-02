@@ -215,7 +215,11 @@ export function extractPurchase(event) {
     currency,
     clientId: metadata.ga_cid || null,
     sessionId: metadata.ga_sid || null,
-    pattern: metadata.pattern || null
+    pattern: metadata.pattern || null,
+    /* Which rung of the ladder: lamhat 19, juthur 49, rebuild 109. Defaulted
+       rather than left null, because every checkout link that predates the
+       ladder is a full-system link. */
+    level: metadata.level || 'rebuild'
   };
 }
 
@@ -250,10 +254,17 @@ export function buildPurchasePayload(purchase, { timestampSeconds } = {}) {
   if (purchase.sessionId) params.session_id = purchase.sessionId;
 
   if (purchase.pattern) {
+    const level = purchase.level || 'rebuild';
     params.pattern_slug = purchase.pattern;
+    params.level = level;
+    /* `${level}-${pattern}`, not a hard-coded `rebuild-`: the ladder sells
+       three products per pattern, and labelling a 19 SAR «لمحات» sale as the
+       109 system would corrupt revenue-by-product for every report. This
+       mirrors the item_id that begin_checkout sends from rebuild.js, so intent
+       and purchase join on the same key. */
     params.items = [{
-      item_id: `rebuild-${purchase.pattern}`,
-      item_name: `rebuild-${purchase.pattern}`,
+      item_id: `${level}-${purchase.pattern}`,
+      item_name: `${level}-${purchase.pattern}`,
       price: purchase.value,
       quantity: 1
     }];

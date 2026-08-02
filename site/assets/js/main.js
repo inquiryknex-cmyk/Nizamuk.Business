@@ -11,6 +11,107 @@
   const I18N_UI = (document.documentElement.lang === 'en'
     && window.NIZAMOK_I18N_EN && window.NIZAMOK_I18N_EN.mainUi) || null;
 
+  /* ---------- Draggable floating controls ----------
+     The ambient-sound bloom and the language pill are position:fixed, so on
+     some pages they sit on top of something the visitor wants to read. Rather
+     than guess a safe corner for every page, let her move them and remember
+     where she put them.
+
+     A drag must not swallow the click: movement under DRAG_MIN px is treated
+     as a tap and the button/link behaves normally. */
+  function makeDraggable(el, key) {
+    if (!el || el.dataset.draggableReady) return;
+    el.dataset.draggableReady = '1';
+
+    var DRAG_MIN = 5;
+    var MARGIN = 8;
+    var STORE = 'nizamok_pos_' + key;
+    var startX, startY, baseLeft, baseTop, moved, dragging;
+
+    function clamp(left, top) {
+      var r = el.getBoundingClientRect();
+      var maxL = window.innerWidth - r.width - MARGIN;
+      var maxT = window.innerHeight - r.height - MARGIN;
+      return {
+        left: Math.min(Math.max(left, MARGIN), Math.max(MARGIN, maxL)),
+        top: Math.min(Math.max(top, MARGIN), Math.max(MARGIN, maxT))
+      };
+    }
+
+    function place(left, top) {
+      var p = clamp(left, top);
+      el.style.left = p.left + 'px';
+      el.style.top = p.top + 'px';
+      el.style.right = 'auto';
+      el.style.bottom = 'auto';
+      /* the idle float animation fights an explicit top — drop it once moved */
+      el.style.animation = 'none';
+      return p;
+    }
+
+    /* restore */
+    try {
+      var saved = JSON.parse(localStorage.getItem(STORE) || 'null');
+      if (saved && typeof saved.left === 'number') place(saved.left, saved.top);
+    } catch (e) { /* private mode — the control just keeps its default corner */ }
+
+    el.style.touchAction = 'none';
+    el.classList.add('is-draggable');
+
+    el.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0 && e.pointerType === 'mouse') return;
+      var r = el.getBoundingClientRect();
+      startX = e.clientX; startY = e.clientY;
+      baseLeft = r.left; baseTop = r.top;
+      moved = false; dragging = true;
+      el.setPointerCapture(e.pointerId);
+    });
+
+    el.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - startX, dy = e.clientY - startY;
+      if (!moved && Math.abs(dx) + Math.abs(dy) < DRAG_MIN) return;
+      moved = true;
+      el.classList.add('is-dragging');
+      place(baseLeft + dx, baseTop + dy);
+    });
+
+    function end(e) {
+      if (!dragging) return;
+      dragging = false;
+      el.classList.remove('is-dragging');
+      try { el.releasePointerCapture(e.pointerId); } catch (err) { /* already released */ }
+      if (moved) {
+        var r = el.getBoundingClientRect();
+        try { localStorage.setItem(STORE, JSON.stringify({ left: r.left, top: r.top })); } catch (err) {}
+      }
+    }
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+
+    /* a drag that ends over the control would otherwise fire its click */
+    el.addEventListener('click', function (e) {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+    }, true);
+
+    /* keyboard: nudge with the arrows while focused, 12px a step */
+    el.addEventListener('keydown', function (e) {
+      var d = { ArrowLeft: [-12, 0], ArrowRight: [12, 0], ArrowUp: [0, -12], ArrowDown: [0, 12] }[e.key];
+      if (!d) return;
+      e.preventDefault();
+      var r = el.getBoundingClientRect();
+      var p = place(r.left + d[0], r.top + d[1]);
+      try { localStorage.setItem(STORE, JSON.stringify(p)); } catch (err) {}
+    });
+
+    /* a rotated phone must not strand the control off-screen */
+    window.addEventListener('resize', function () {
+      if (!el.style.left) return;
+      place(parseFloat(el.style.left), parseFloat(el.style.top));
+    });
+  }
+  window.nizamokMakeDraggable = makeDraggable;
+
   /* ---------- Mobile nav ---------- */
   const toggle = document.querySelector('.nav-toggle');
   const links = document.querySelector('.nav-links');
@@ -96,12 +197,23 @@
     const v = (CONFIG.interdash && CONFIG.interdash.video) || {};
     if (v.aspect === '4:5') shell.classList.add('portrait');
     if (v.src && v.type === 'mp4') {
+      /* Facade: the poster is all that loads. The <video> element, and with it
+         several megabytes, is created only when she actually asks to watch.
+         Before this, `preload="metadata"` alone pulled the whole file on the
+         home page and dominated its weight. */
       shell.innerHTML =
-        '<video controls playsinline preload="metadata"' +
-        (v.poster ? ' poster="' + v.poster + '"' : '') +
-        ' src="' + v.src + '"></video>';
-      const vid = shell.querySelector('video');
-      if (vid) {
+        '<button type="button" class="video-facade" aria-label="شغّلي العرض">' +
+        (v.poster ? '<img src="' + v.poster + '" alt="" loading="lazy" decoding="async">' : '') +
+        '<span class="video-play" aria-hidden="true"></span>' +
+        '</button>';
+
+      shell.querySelector('.video-facade').addEventListener('click', function () {
+        shell.innerHTML =
+          '<video controls playsinline autoplay preload="auto"' +
+          (v.poster ? ' poster="' + v.poster + '"' : '') +
+          ' src="' + v.src + '"></video>';
+        const vid = shell.querySelector('video');
+        if (!vid) return;
         let played = false;
         vid.addEventListener('play', function () {
           if (played) return; played = true; // once per page session
@@ -111,7 +223,7 @@
             source_section: shell.closest('#interdash') ? 'home_interdash' : 'interdash_page'
           });
         });
-      }
+      });
     } else if (v.src && v.type === 'youtube') {
       shell.innerHTML =
         '<iframe src="https://www.youtube-nocookie.com/embed/' + v.src +
@@ -164,9 +276,9 @@
        with a small caption so its purpose is clear. It stays a recognisable
        flower at all times: a soft upward bud when off, a full bloom + gold glow
        + sound-wave ripples when playing. Caption + aria-label update with state:
-         initial → «ابدئي الرحلة الصوتية»  (start)
-         playing → «إيقاف الصوت»            (stop)
-         paused  → «استئناف الصوت»          (resume) */
+         initial -> «ابدئي الرحلة الصوتية»  (start)
+         playing -> «إيقاف الصوت»            (stop)
+         paused  -> «استئناف الصوت»          (resume) */
     var LABELS = (I18N_UI && I18N_UI.ambient) ||
       { initial: 'ابدئي الرحلة الصوتية', playing: 'إيقاف الصوت', paused: 'استئناف الصوت' };
     // Two petal rings (8 outer + 5 inner, offset) — layered like the site's
@@ -267,7 +379,7 @@
     function stopSavingPosition() { if (posTimer) { clearInterval(posTimer); posTimer = null; } }
 
     function handleFailure() {
-      // Missing asset or playback error → reset cleanly, no error loop, no broken UI.
+      // Missing asset or playback error -> reset cleanly, no error loop, no broken UI.
       assetUnavailable = true;
       ambientSoundEnabled = false;
       pendingResume = false;
@@ -308,7 +420,7 @@
           reflectUI(); fadeTo(TARGET_VOL, FADE_MS); startSavingPosition();
         }).catch(function () {
           if (userInitiated) handleFailure();
-          else {                                   // autoplay blocked → wait for a gesture
+          else {                                   // autoplay blocked -> wait for a gesture
             ambientSoundEnabled = false; writeState({ enabled: false });
             pendingResume = true; reflectUI(); armResume();
           }
@@ -353,13 +465,13 @@
       if (ambientSoundEnabled) {
         ambientSoundEnabled = false;
         writeState({ enabled: false });
-        reflectUI();          // → «استئناف الصوت»
+        reflectUI();          // -> «استئناف الصوت»
         stopAmbient();
       } else {
         ambientSoundEnabled = true;
         writeState({ enabled: true });
-        reflectUI();          // → «إيقاف الصوت» (optimistic; reset on failure)
-        startAmbient(true);   // click is a user gesture → playback is allowed
+        reflectUI();          // -> «إيقاف الصوت» (optimistic; reset on failure)
+        startAmbient(true);   // click is a user gesture -> playback is allowed
       }
     }
     ambientSoundControl.addEventListener('click', toggle);
@@ -398,6 +510,7 @@
     window.addEventListener('pagehide', savePosition);
 
     document.body.appendChild(ambientSoundControl);
+    makeDraggable(ambientSoundControl, 'ambient');
 
     // Reflect the persisted choice. Never autoplay: if it was on last visit, show
     // the «استئناف الصوت» (paused) state and resume on the next interaction.
@@ -413,7 +526,8 @@
      Arabic is the primary experience; a single small side button is the only
      switcher. Each page declares its counterpart via <body data-lang-alt>. */
   function initLangSwitch() {
-    if (document.querySelector('.lang-switch')) return;  // static button already in markup
+    var existing = document.querySelector('.lang-switch');
+    if (existing) { makeDraggable(existing, 'lang'); return; }  // static button already in markup
     var alt = document.body && document.body.getAttribute('data-lang-alt');
     if (!alt) return;
     var en = document.documentElement.lang === 'en';
@@ -426,6 +540,7 @@
     a.setAttribute('aria-label', en ? 'النسخة العربية' : 'English version');
     a.title = en ? 'العربية' : 'English';
     document.body.appendChild(a);
+    makeDraggable(a, 'lang');
   }
 
   /* ---------- Waiting list form ---------- */
@@ -452,7 +567,7 @@
 
     const payload = {
       email: email.trim(),
-      // MailerLite's default "name" field = first name → usable as {$name} in emails.
+      // MailerLite's default "name" field = first name -> usable as {$name} in emails.
       fields: { name: name.trim(), pattern: pattern, source: 'interdash_waitlist' }
     };
 
@@ -490,13 +605,58 @@
   document.querySelectorAll('form[data-waitlist]').forEach(f =>
     f.addEventListener('submit', submitWaitlist));
 
+  /* ---------- Support links that survive a missing mail client ----------
+     Every contact route on the site is a `mailto:`. On a desktop browser with
+     no default mail handler, clicking one does nothing at all: no window, no
+     error, no address. On /shukran/ that is the worst possible failure, a
+     woman who paid and received nothing pressing a button that is silently
+     dead.
+
+     We do not preventDefault, so a phone still opens its mail app as before.
+     Alongside it we copy the address and say so, which is the whole rescue on
+     a machine where the link itself leads nowhere. */
+  function initMailtoFallback() {
+    var links = document.querySelectorAll('a[href^="mailto:"]');
+    if (!links.length) return;
+
+    var toast = null, hideTimer = null;
+    function say(msg) {
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'mail-toast';
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.classList.add('is-on');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () { toast.classList.remove('is-on'); }, 6000);
+    }
+
+    links.forEach(function (a) {
+      var address = a.getAttribute('href').replace(/^mailto:/i, '').split('?')[0];
+      if (!address) return;
+      a.addEventListener('click', function () {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(address).then(
+            function () { say('نُسخ العنوان: ' + address); },
+            function () { say('العنوان: ' + address); }
+          );
+        } else {
+          say('العنوان: ' + address);
+        }
+      });
+    });
+  }
+
   /* ---------- Footer year ---------- */
   document.querySelectorAll('[data-year]').forEach(el =>
     (el.textContent = String(new Date().getFullYear())));
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); initAmbientSound(); initLangSwitch(); });
+    document.addEventListener('DOMContentLoaded', () => { initMotion(); initVideo(); initAmbientSound(); initLangSwitch(); initMailtoFallback(); });
   } else {
-    initMotion(); initVideo(); initAmbientSound(); initLangSwitch();
+    initMotion(); initVideo(); initAmbientSound(); initLangSwitch(); initMailtoFallback();
   }
 })();

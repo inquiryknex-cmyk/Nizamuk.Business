@@ -18,3 +18,16 @@
 /google/not-finishing/    /ikhtibar/   301
 /google/procrastination   /ikhtibar/   301
 /google/procrastination/  /ikhtibar/   301
+
+# The quiz's internal pattern keys are not the public slugs (asira -> asirat,
+# mutafadiya -> mutafadia). config.js reconciles them, and nothing on the site
+# emits the internal form — but the mismatch is a standing trap, so the two
+# wrong doors lead somewhere rather than to a 404.
+/natija/asira       /natija/asirat/     301
+/natija/asira/      /natija/asirat/     301
+/natija/mutafadiya  /natija/mutafadia/  301
+/natija/mutafadiya/ /natija/mutafadia/  301
+
+# Bare /natija/ has no index of its own; the quiz is where a pattern is found.
+/natija   /ikhtibar/  302
+/natija/  /ikhtibar/  302

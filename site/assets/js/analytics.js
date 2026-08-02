@@ -2,9 +2,17 @@
   NizamOk — privacy-conscious funnel analytics.
 
   Provider order (first available wins), then silent no-op:
-    1. Cloudflare Zaraz   → window.zaraz.track(name, params)
-    2. GA4 (only if real) → window.gtag('event', name, params)   [needs window.NIZAMOK_GA_READY === true]
-    3. none configured    → fail silently (never throws, never logs)
+    1. GA4 (only if real) -> window.gtag('event', name, params)   [needs window.NIZAMOK_GA_READY === true]
+    2. GTM (only if real) -> window.dataLayer.push(...)           [needs window.NIZAMOK_GTM_READY === true]
+    3. Cloudflare Zaraz   -> window.zaraz.track(name, params)
+    4. none configured    -> fail silently (never throws, never logs)
+
+  GA4 comes FIRST on purpose. Zaraz is auto-injected on the zone, so with the
+  old Zaraz-first order every custom event — purchase and begin_checkout
+  included — was handed to Zaraz and never reached GA4, while gtag's automatic
+  page_view/scroll arrived fine (they do not pass through track()). Found
+  2026-07-30 when a verified test payment produced no purchase in DebugView.
+  Zaraz is now the fallback for when no Google tag is configured at all.
 
   PRIVACY: never pass email, name, full quiz answers, free-text, report content,
   or payment data. Only the whitelisted params below are ever sent.
@@ -50,8 +58,8 @@
 
       /* GA4 DebugView only shows devices in debug mode. Add ?debug_mode=1 to
          any page to switch it on, and it sticks for the rest of the tab —
-         which matters because the purchase test crosses pages: landing →
-         Dodo → /shukran/. Add ?debug_mode=0 to turn it back off. */
+         which matters because the purchase test crosses pages: landing ->
+         Dodo -> /shukran/. Add ?debug_mode=0 to turn it back off. */
       var debugOn = false;
       try {
         var qd = new URLSearchParams(location.search).get('debug_mode');
@@ -74,10 +82,6 @@
     try {
       if (!name) return;
       var p = params || {};
-      if (window.zaraz && typeof window.zaraz.track === 'function') {
-        window.zaraz.track(name, p);
-        return;
-      }
       if (typeof window.gtag === 'function' && window.NIZAMOK_GA_READY === true) {
         window.gtag('event', name, p);
         return;
@@ -86,7 +90,11 @@
         window.dataLayer.push(Object.assign({ event: name }, p));
         return;
       }
-      /* no provider yet → silent */
+      if (window.zaraz && typeof window.zaraz.track === 'function') {
+        window.zaraz.track(name, p);
+        return;
+      }
+      /* no provider yet -> silent */
     } catch (e) { /* never break the user experience */ }
   }
 
@@ -103,6 +111,9 @@
     if (d.pattern) params.pattern_slug = d.pattern;
     if (d.level)   params.product_level = d.level;
     if (d.section) params.source_section = d.section;
+    /* Carried by the quiz's recommended-book card (recommended_book_click). */
+    if (d.recommendedPattern) params.recommended_pattern = d.recommendedPattern;
+    if (d.quizSource)         params.quiz_source = d.quizSource;
     track(d.ev, params);
   }, true);
 })();

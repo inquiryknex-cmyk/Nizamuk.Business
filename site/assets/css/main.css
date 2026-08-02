@@ -161,7 +161,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .kufi { font-family: var(--font-kufi); }
 .script { font-family: var(--font-script); }
 
-/* Mandala ornament divider — ✦ between drawn lines with dots */
+/* Mandala ornament divider — * between drawn lines with dots */
 .ornament {
   display: flex; align-items: center; justify-content: center; gap: 0.8rem;
   margin: 1.6rem auto; color: var(--gold);
@@ -368,6 +368,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 
 .section { padding: clamp(4.5rem, 9vw, 7.5rem) 0; position: relative; }
 .section-head { text-align: center; max-width: 760px; margin-inline: auto; margin-bottom: clamp(2.6rem, 6vw, 4.2rem); }
+.section-head h1,
 .section-head h2 { font-size: clamp(1.7rem, 3.8vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; }
 .section-head p { color: var(--ink-soft); font-size: 1.02rem; }
 .velvet .section-head p { color: rgba(239, 231, 218, 0.75); }
@@ -593,6 +594,32 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   display: flex; align-items: center; justify-content: center;
 }
 .video-shell iframe, .video-shell video { width: 100%; height: 100%; border: 0; object-fit: cover; }
+/* The click target that stands in for the video until she asks for it. */
+.video-facade {
+  position: relative; display: block; width: 100%; height: 100%;
+  padding: 0; border: 0; cursor: pointer; background: transparent;
+}
+.video-facade img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.video-play {
+  position: absolute; inset: 0; margin: auto;
+  width: 68px; height: 68px; border-radius: 50%;
+  background: rgba(20, 12, 38, 0.62);
+  border: 1px solid rgba(220, 192, 134, 0.6);
+  box-shadow: 0 14px 34px -12px rgba(0, 0, 0, 0.8);
+  transition: transform 0.4s ease, background 0.4s ease;
+}
+.video-play::after {
+  content: ''; position: absolute; inset: 0; margin: auto;
+  width: 0; height: 0;
+  border-block: 11px solid transparent;
+  border-inline-end: 18px solid var(--gold-soft);
+  border-inline-start: 0;
+  transform: translateX(3px);
+}
+html[dir="rtl"] .video-play::after { transform: translateX(-3px); }
+.video-facade:hover .video-play { transform: scale(1.08); background: rgba(20, 12, 38, 0.78); }
+.video-facade:focus-visible { outline: 2px solid var(--gold-soft); outline-offset: 3px; }
+
 .video-poster { text-align: center; color: #EFE6D6; padding: 1.5rem; }
 .video-poster .kufi { font-size: 1.4rem; color: var(--gold-soft); margin-bottom: 0.5rem; }
 .video-poster p { font-size: 0.9rem; opacity: 0.8; }
@@ -650,6 +677,145 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   font-size: 1.3rem; margin-top: 1.6rem;
 }
 .team-note { font-size: 0.88rem; color: var(--taupe); margin-top: 1.5rem; }
+
+/* ============================================================
+   REBUILD BAND (#rebuild) — the advanced tier, on velvet
+   Ivory product cards float on the plum band, the same way the lamhat
+   cards sit on ivory. Everything is prefixed .rbh- so it never leaks
+   into the lamhat grid it borrows .product-card / .cover from.
+   ============================================================ */
+
+/* --- three pillars: what the system actually is --- */
+.rbh-pillars {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.4rem; margin-bottom: 2.6rem;
+}
+.rbh-pillar {
+  background: rgba(255, 250, 240, 0.05);
+  border: 1px solid rgba(220, 192, 134, 0.26);
+  border-radius: var(--radius-md);
+  padding: 1.6rem 1.4rem 1.5rem;
+  text-align: center;
+}
+.rbh-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid rgba(220, 192, 134, 0.5);
+  font-family: var(--font-quote); font-size: 1rem; color: var(--gold-soft);
+  margin-bottom: 0.85rem;
+}
+.rbh-pt {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.08rem; color: #F8F1E3; margin-bottom: 0.5rem;
+}
+.rbh-pillar p { font-size: 0.88rem; line-height: 2; color: rgba(240, 233, 222, 0.78); }
+
+/* --- the ladder: where this tier sits in the path --- */
+.rbh-ladder {
+  border: 1px solid rgba(220, 192, 134, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 1.9rem 1.6rem 1.6rem;
+  margin-bottom: 2.6rem;
+  background: rgba(15, 7, 28, 0.28);
+}
+.rbh-ladder-h {
+  display: block; text-align: center;
+  font-family: var(--font-quote); font-size: 1.15rem;
+  color: var(--gold-soft); margin-bottom: 1.4rem;
+}
+.rbh-rungs {
+  list-style: none; display: grid; gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+.rbh-rungs li {
+  position: relative;
+  border: 1px solid rgba(220, 192, 134, 0.22);
+  border-radius: var(--radius-md);
+  padding: 1.05rem 1rem 1rem;
+  background: rgba(255, 250, 240, 0.04);
+}
+/* The rung you are standing on — gold edge, lifted, never a different shape. */
+.rbh-rungs li.is-here {
+  border-color: rgba(220, 192, 134, 0.75);
+  background: rgba(201, 167, 94, 0.12);
+  box-shadow: var(--glow-gold);
+}
+.rbh-rung-n { display: block; font-family: var(--font-kufi); font-weight: 600; font-size: 1rem; color: #F8F1E3; }
+.rbh-rung-p { display: block; font-size: 0.78rem; font-weight: 700; color: var(--gold-soft); margin-top: 0.3rem; letter-spacing: 0.02em; }
+.rbh-rung-d { display: block; font-size: 0.82rem; line-height: 1.9; color: rgba(240, 233, 222, 0.72); margin-top: 0.5rem; }
+.rbh-here {
+  position: absolute; top: -0.72rem; inset-inline-end: 0.9rem;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #EBD9A9 0%, var(--gold) 55%, var(--gold-deep) 100%);
+  color: #2E1B41; padding: 0.18rem 0.7rem; border-radius: var(--radius-pill);
+}
+.rbh-ladder-note {
+  text-align: center; font-size: 0.84rem; line-height: 1.95;
+  color: rgba(240, 233, 222, 0.68); margin-top: 1.2rem;
+}
+
+/* --- the free-quiz door: deliberately the loudest thing in the band --- */
+.rbh-quiz {
+  text-align: center;
+  border: 1px solid rgba(227, 168, 172, 0.4);
+  border-radius: var(--radius-lg);
+  padding: 2.1rem 1.6rem 1.9rem;
+  margin-bottom: 2.6rem;
+  background: radial-gradient(130% 100% at 50% 0%, rgba(227, 168, 172, 0.16), rgba(255, 250, 240, 0.03) 62%);
+}
+.rbh-quiz-h {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: clamp(1.25rem, 3.4vw, 1.6rem); color: #F8F1E3; margin-bottom: 0.7rem;
+}
+.rbh-quiz p {
+  max-width: 44rem; margin: 0 auto 1.5rem;
+  font-size: 0.94rem; line-height: 2.1; color: rgba(240, 233, 222, 0.82);
+}
+/* Bigger than every other button on the page — this is the door for the
+   woman who does not know her pattern yet, so it must never read as an
+   afterthought next to the four gold card buttons below it. */
+.rbh-quiz-btn {
+  font-size: clamp(1rem, 2.6vw, 1.12rem);
+  padding: 1.15rem 2.9rem;
+  min-height: 56px;
+  max-width: 100%;
+  white-space: normal; line-height: 1.5;
+}
+.rbh-quiz-hint {
+  display: block; margin-top: 1rem;
+  font-size: 0.82rem; color: rgba(240, 233, 222, 0.62);
+}
+
+/* --- the four covers --- */
+.rbh-grid { grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); }
+.rbh-cover { display: flex; }                      /* .cover is an <a> here */
+.rbh-cover:hover .cover-photo { filter: brightness(1.06); }
+.rbh-cover .cover-photo { transition: filter 0.5s ease; }
+/* .product-body is a flex column with its own gap — these three ride it
+   instead of adding margins, and only the description is allowed to grow
+   so cards of unequal text length still line their prices up. */
+.rbh-name {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.14rem; color: var(--plum);
+}
+.rbh-quote {
+  flex: none;
+  font-family: var(--font-quote); font-size: 0.95rem; line-height: 1.95;
+  color: var(--gold-deep);
+}
+.rbh-meta {
+  display: block;
+  font-size: 0.78rem; color: var(--taupe); letter-spacing: 0.02em;
+}
+.rbh-assure {
+  text-align: center; margin-top: 1.8rem;
+  font-size: 0.84rem; color: rgba(240, 233, 222, 0.66);
+}
+
+@media (max-width: 430px) {
+  .rbh-quiz { padding-inline: 1.1rem; }
+  .rbh-quiz-btn { padding-inline: 1.4rem; }
+}
 
 /* ============================================================
    DEEPER STAGES — جذور / إعادة البناء
@@ -955,7 +1121,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
   font-size: 1.08rem; font-weight: 700; color: var(--lavender-soft);
   margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.6rem;
 }
-.mirrors h3::before { content: '✦'; color: var(--lavender); font-size: 0.85rem; }
+.mirrors h3::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex: none; background: var(--lavender); }
 .mirrors p {
   color: rgba(239, 231, 218, 0.88); font-size: 0.95rem; line-height: 2;
   margin-bottom: 0.9rem;
@@ -964,10 +1130,94 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 
 .reading { border-top: 1px dashed rgba(214, 186, 128, 0.3); padding-top: 1.9rem; margin-top: 1.6rem; }
 .reading h3 { font-size: 1.12rem; font-weight: 700; color: var(--gold-soft); margin: 1.5rem 0 0.5rem; display: flex; align-items: center; gap: 0.6rem; }
-.reading h3::before { content: '✦'; color: var(--gold); font-size: 0.8rem; }
+.reading h3::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex: none; background: var(--gold); }
 .reading p { color: rgba(239, 231, 218, 0.85); font-size: 0.98rem; }
 .sent-note { font-size: 0.86rem; color: rgba(239, 231, 218, 0.6); text-align: center; margin-top: 1.7rem; }
 .sent-note a { color: var(--gold-soft); text-decoration: underline; }
+
+/* ---- Sharing the result ----
+   Deliberately quieter than the path cards below it: gold hairlines, no filled
+   buttons. This is an invitation to pass something on, and it sits before any
+   price is named, so it must not read as another thing being sold. */
+.result-share {
+  margin-top: 1.9rem;
+  border: 1px solid rgba(214, 186, 128, 0.32);
+  background: linear-gradient(160deg, rgba(201, 167, 94, 0.09), rgba(255, 250, 240, 0.02));
+  border-radius: var(--radius-lg);
+  padding: 1.4rem 1.5rem 1.3rem;
+  text-align: center;
+}
+/* Body font, not Kufi: this line carries a kasra and a shadda («عرفتِ إحداهنّ»)
+   and Reem Kufi sets its marks tight enough to collide with the glyphs. The
+   same reason .mirrors h3 and .reading h3 inherit rather than set a face. */
+.result-share .share-h {
+  display: block; font-weight: 700;
+  font-size: 1.06rem; line-height: 1.85;
+  color: var(--gold-soft); margin-bottom: 0.35rem;
+}
+.result-share .share-sub {
+  font-size: 0.88rem; line-height: 1.9;
+  color: rgba(239, 231, 218, 0.66); margin: 0 0 1.15rem;
+}
+.share-row {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem;
+}
+.share-btn {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.52rem 0.9rem;
+  border: 1px solid rgba(214, 186, 128, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 250, 240, 0.04);
+  color: rgba(239, 231, 218, 0.9);
+  font: inherit; font-size: 0.83rem; line-height: 1;
+  text-decoration: none; cursor: pointer;
+  transition: border-color .18s ease, transform .18s ease, background .18s ease;
+}
+.share-btn:hover {
+  border-color: rgba(214, 186, 128, 0.7);
+  background: rgba(255, 250, 240, 0.08);
+  transform: translateY(-1px);
+}
+.share-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.share-btn svg { width: 17px; height: 17px; flex: none; }
+/* X is its own wordmark, so the letter IS the icon. Drawing a cross beside the
+   label produced a button reading «X ✕», and a lone cross among round buttons
+   reads as «close». Label only. */
+.share-btn.share-x svg { display: none; }
+.share-btn.share-x span { font-weight: 700; font-size: 0.95rem; letter-spacing: .02em; }
+/* The native sheet is the primary route on a phone, so it leads. */
+.share-btn.share-native {
+  border-color: rgba(214, 186, 128, 0.66);
+  background: rgba(201, 167, 94, 0.16);
+  color: #FBF5E9;
+}
+/* The route to Instagram, TikTok and Snapchat, which take an image rather than
+   a link. Tinted rose so it reads as a different kind of action from the
+   link-sharing buttons beside it. */
+.share-btn.share-story {
+  border-color: rgba(227, 168, 172, 0.48);
+  background: rgba(227, 168, 172, 0.10);
+}
+.share-btn.share-story:hover { border-color: rgba(227, 168, 172, 0.85); }
+.share-btn[disabled] { opacity: 0.55; cursor: progress; transform: none; }
+.share-note {
+  display: block; margin-top: 0.85rem; font-size: 0.8rem;
+  color: var(--gold-soft); word-break: break-all;
+}
+@media (max-width: 560px) {
+  .result-share { padding: 1.2rem 0.9rem 1.1rem; }
+  .share-btn { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+  .share-btn span { display: none; }
+  /* X keeps its label: a bare X glyph among round icon buttons reads as
+     «close», not as a network. */
+  .share-btn.share-native span,
+  .share-btn.share-copy span,
+  .share-btn.share-story span,
+  .share-btn.share-x span { display: inline; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .share-btn, .share-btn:hover { transition: none; transform: none; }
+}
 
 .result-path { margin-top: 2.6rem; }
 .result-path > h3 { text-align: center; font-size: 1.4rem; font-weight: 700; color: #F6EEDF; margin-bottom: 0.5rem; }
@@ -1035,6 +1285,580 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height
 .legal-card ul { padding-inline-start: 1.3rem; margin: 0.4rem 0; }
 .legal-card li { margin-bottom: 0.4rem; }
 .legal-card a { color: var(--gold-deep); text-decoration: underline; }
+
+
+
+
+/* ============================================================
+   THE PATH (/almasar/) — a showcase, not a checkout.
+   No purchase buttons anywhere: this page exists for the visitor
+   who wants to see what there is before she decides. Cards float
+   on a single dark canvas, connected by a lit spine.
+   ============================================================ */
+
+.page-masar { background: var(--velvet-0); }
+
+/* slow-drifting aurora behind the dark sections */
+.mx-aurora {
+  position: absolute; inset: -20% -10% auto -10%; height: 140%;
+  background:
+    radial-gradient(46% 38% at 22% 18%, rgba(142, 118, 196, 0.30), transparent 70%),
+    radial-gradient(40% 34% at 78% 34%, rgba(201, 167, 94, 0.16), transparent 72%),
+    radial-gradient(50% 42% at 50% 92%, rgba(198, 127, 142, 0.14), transparent 74%);
+  filter: blur(28px);
+  pointer-events: none;
+  animation: mxDrift 26s ease-in-out infinite alternate;
+}
+.mx-aurora-2 { animation-duration: 34s; animation-direction: alternate-reverse; }
+@keyframes mxDrift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-3%, 2%, 0) scale(1.08); }
+}
+.reduced-motion .mx-aurora { animation: none; }
+
+/* ---------- opening ---------- */
+.mx-open {
+  position: relative; overflow: hidden;
+  padding: clamp(2.6rem, 7vw, 5.5rem) 0 clamp(3rem, 8vw, 6rem);
+  background: linear-gradient(180deg, var(--velvet-1) 0%, var(--velvet-0) 100%);
+  color: #F3EBDD;
+}
+.mx-open .container { position: relative; z-index: 1; }
+.mx-eyebrow {
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.2em;
+  color: var(--gold-soft); text-align: center; margin-bottom: 1.1rem;
+}
+.mx-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6.4vw, 3.9rem);
+  line-height: 1.45; text-align: center; color: #F8F1E3;
+  margin-bottom: 2.2rem;
+}
+.mx-gold {
+  background: linear-gradient(100deg, #E9D6AA 0%, var(--gold) 45%, #F0E2BC 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.mx-voices {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem;
+  max-width: 52rem; margin: 0 auto 2rem;
+}
+.mx-voice {
+  font-family: var(--font-quote); font-size: clamp(0.9rem, 2.3vw, 1.05rem);
+  color: #EFE3CC;
+  padding: 0.6rem 1.15rem;
+  border: 1px solid rgba(220, 192, 134, 0.34);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 250, 240, 0.05);
+  backdrop-filter: blur(6px);
+}
+.mx-lead, .mx-sub {
+  max-width: 46rem; margin-inline: auto; text-align: center; line-height: 2.1;
+}
+.mx-lead { font-size: clamp(0.98rem, 2.5vw, 1.08rem); color: rgba(243, 235, 221, 0.9); margin-bottom: 0.9rem; }
+.mx-sub  { font-size: 0.88rem; color: rgba(240, 233, 222, 0.6); }
+
+/* ---------- the four moves ---------- */
+.mx-moves-band {
+  background: var(--velvet-0);
+  padding: 0 0 clamp(2.4rem, 6vw, 4rem);
+}
+.mx-moves { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.mx-move {
+  position: relative;
+  border: 1px solid rgba(220, 192, 134, 0.2);
+  border-radius: var(--radius-md);
+  background: rgba(255, 250, 240, 0.035);
+  padding: 1.5rem 1.2rem 1.3rem;
+}
+.mx-move b {
+  position: absolute; top: -0.9rem; inset-inline-start: 1.2rem;
+  width: 30px; height: 30px; display: grid; place-items: center;
+  border-radius: 50%; background: var(--velvet-2);
+  border: 1px solid rgba(220, 192, 134, 0.5);
+  font-family: var(--font-quote); font-size: 0.9rem; color: var(--gold-soft);
+}
+.mx-move span {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.05rem; color: #F8F1E3; margin-bottom: 0.45rem;
+}
+.mx-move p { font-size: 0.86rem; line-height: 1.95; color: rgba(240, 233, 222, 0.72); }
+
+/* ---------- the floating cards ---------- */
+.mx-cards-band {
+  position: relative;
+  background: var(--velvet-0);
+  padding-bottom: clamp(3rem, 8vw, 6rem);
+}
+.mx-cards-band .container { position: relative; }
+/* the lit spine every card hangs from */
+.mx-spine {
+  position: absolute; top: 0; bottom: 0; inset-inline-start: 50%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(220, 192, 134, 0.45) 12%, rgba(220, 192, 134, 0.45) 88%, transparent);
+}
+
+.mx-card {
+  position: relative;
+  display: grid; grid-template-columns: 300px 1fr; gap: clamp(1.4rem, 3vw, 2.6rem);
+  align-items: center;
+  margin-bottom: clamp(1.6rem, 4vw, 2.6rem);
+  padding: clamp(1.5rem, 3.4vw, 2.4rem);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(220, 192, 134, 0.28);
+  background: linear-gradient(155deg, rgba(63, 47, 102, 0.55) 0%, rgba(36, 26, 62, 0.72) 55%, rgba(23, 16, 42, 0.85) 100%);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 34px 70px -30px rgba(5, 2, 12, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  color: #F1E8D8;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s ease, border-color 0.6s ease;
+}
+.mx-card:nth-child(even) { direction: ltr; }
+.mx-card:nth-child(even) > * { direction: rtl; }
+.mx-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(220, 192, 134, 0.55);
+  box-shadow: 0 44px 84px -30px rgba(5, 2, 12, 0.9), 0 0 40px rgba(201, 167, 94, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+.mx-card-hero {
+  border-color: rgba(220, 192, 134, 0.6);
+  box-shadow: 0 34px 70px -30px rgba(5, 2, 12, 0.85), 0 0 46px rgba(201, 167, 94, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.mx-card-art { position: relative; }
+/* covers lift out of the card, one behind the other */
+.mx-fan { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem; }
+.mx-fan img {
+  width: 100%; height: auto; display: block; border-radius: 7px;
+  box-shadow: 0 18px 34px -14px rgba(0, 0, 0, 0.8);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mx-fan img:nth-child(1) { transform: rotate(-2.4deg); }
+.mx-fan img:nth-child(2) { transform: rotate(1.8deg)  translateY(9px); }
+.mx-fan img:nth-child(3) { transform: rotate(1.4deg)  translateY(-5px); }
+.mx-fan img:nth-child(4) { transform: rotate(-1.6deg) translateY(5px); }
+.mx-card:hover .mx-fan img { transform: rotate(0) translateY(0); }
+.reduced-motion .mx-fan img { transform: none !important; }
+
+.mx-orb {
+  display: grid; place-items: center;
+  width: 100%; aspect-ratio: 1; max-width: 220px; margin-inline: auto;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, rgba(201, 167, 94, 0.22), rgba(36, 26, 62, 0) 68%);
+  border: 1px solid rgba(220, 192, 134, 0.3);
+}
+.mx-orb img { width: 58%; height: auto; opacity: 0.96; }
+
+/* The quiz card shows the real thing: a handset holding an actual result screen. */
+.mx-phone {
+  position: relative; margin: 0 auto; max-width: 236px;
+  padding: 0.55rem 0.55rem 0.5rem;
+  border-radius: 26px;
+  border: 1px solid rgba(220, 192, 134, 0.42);
+  background: linear-gradient(160deg, rgba(58, 43, 96, 0.9), rgba(24, 16, 44, 0.96));
+  box-shadow: 0 34px 62px -26px rgba(4, 2, 10, 0.92), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mx-card:hover .mx-phone { transform: translateY(-4px) rotate(-1deg); }
+.reduced-motion .mx-phone { transform: none !important; }
+.mx-phone-glow {
+  position: absolute; inset: -26% -18% auto; height: 70%; z-index: -1;
+  background: radial-gradient(ellipse at 50% 40%, rgba(201, 167, 94, 0.3), rgba(36, 26, 62, 0) 70%);
+  filter: blur(6px);
+}
+.mx-phone-notch {
+  position: absolute; top: 0.55rem; left: 50%; transform: translateX(-50%);
+  width: 52px; height: 4px; border-radius: 3px;
+  background: rgba(220, 192, 134, 0.3);
+}
+.mx-phone img {
+  display: block; width: 100%; height: auto;
+  border-radius: 20px;
+  /* the shot is a tall card; show its head, where the pattern and the bars are */
+  aspect-ratio: 0.78; object-fit: cover; object-position: top center;
+}
+.mx-phone figcaption {
+  margin-top: 0.6rem; text-align: center;
+  font-size: 0.72rem; line-height: 1.7;
+  color: rgba(240, 233, 222, 0.6);
+}
+
+.mx-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.9rem; }
+.mx-tag {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
+  padding: 0.24rem 0.75rem; border-radius: var(--radius-pill);
+  border: 1px solid rgba(220, 192, 134, 0.32);
+  color: rgba(240, 233, 222, 0.78);
+}
+.mx-tag-price {
+  background: linear-gradient(135deg, #EBD9A9 0%, var(--gold) 55%, var(--gold-deep) 100%);
+  color: #2E1B41; border-color: transparent;
+}
+.mx-tag-free { background: var(--tier-lamhat); color: #EAF3EF; border-color: transparent; }
+
+.mx-card-body h2 {
+  font-size: clamp(1.35rem, 3.6vw, 1.95rem);
+  color: #F8F1E3 !important; margin-bottom: 0.6rem;
+}
+.mx-hook {
+  font-family: var(--font-quote);
+  font-size: clamp(1rem, 2.7vw, 1.18rem); line-height: 1.9;
+  color: var(--gold-soft); margin-bottom: 0.8rem;
+}
+.mx-card-body > p { font-size: 0.95rem; line-height: 2.1; color: rgba(240, 233, 222, 0.82); }
+.mx-link {
+  display: inline-block; margin-top: 1.1rem;
+  font-size: 0.92rem; font-weight: 700; color: var(--gold-soft);
+  border-bottom: 1px solid rgba(220, 192, 134, 0.4);
+  padding-bottom: 2px; transition: color 0.3s ease, border-color 0.3s ease;
+}
+.mx-link:hover { color: #F4E6C3; border-color: var(--gold); }
+
+/* the four patterns, each with its own price link — a book is never one SKU */
+.mx-picks {
+  margin-top: 1.2rem; padding-top: 1.1rem;
+  border-top: 1px solid rgba(220, 192, 134, 0.22);
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;
+}
+.mx-picks-h {
+  grid-column: 1 / -1;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+  color: rgba(240, 233, 222, 0.62); margin-bottom: 0.15rem;
+}
+.mx-pick {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+  min-height: 46px; padding: 0.55rem 0.9rem;
+  border: 1px solid rgba(220, 192, 134, 0.3);
+  border-radius: var(--radius-md);
+  background: rgba(255, 250, 240, 0.05);
+  transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s ease;
+}
+.mx-pick span { font-size: 0.86rem; color: #F1E8D8; line-height: 1.4; }
+.mx-pick b {
+  flex: none; font-size: 0.8rem; font-weight: 700;
+  color: var(--gold-soft); white-space: nowrap;
+}
+.mx-pick:hover {
+  border-color: rgba(220, 192, 134, 0.7);
+  background: rgba(201, 167, 94, 0.12);
+  transform: translateY(-2px);
+}
+@media (max-width: 560px) { .mx-picks { grid-template-columns: 1fr; } }
+
+/* ---------- interdash ---------- */
+.mx-dash {
+  position: relative; overflow: hidden;
+  background: linear-gradient(180deg, var(--velvet-0) 0%, var(--velvet-1) 100%);
+  padding: clamp(3rem, 8vw, 5.5rem) 0;
+}
+.mx-dash .container { position: relative; z-index: 1; }
+.mx-dash .section-head h1,
+.mx-dash .section-head h2 { color: #F8F1E3; }
+.mx-dash .section-head p { color: rgba(240, 233, 222, 0.78); }
+.mx-screens {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1.4rem; margin-bottom: 2.4rem;
+}
+.mx-screen { margin: 0; }
+.mx-screen img {
+  width: 100%; height: auto; display: block;
+  border-radius: 20px;
+  border: 1px solid rgba(220, 192, 134, 0.28);
+  box-shadow: 0 26px 52px -22px rgba(5, 2, 12, 0.9);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mx-screen:nth-child(odd) img { transform: translateY(-10px); }
+.mx-screen:hover img { transform: translateY(-16px); }
+.reduced-motion .mx-screen img { transform: none !important; }
+.mx-screen figcaption {
+  margin-top: 0.9rem; font-size: 0.85rem; line-height: 1.95;
+  color: rgba(240, 233, 222, 0.72);
+}
+.mx-screen figcaption b {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 0.97rem; color: #F8F1E3; margin-bottom: 0.3rem;
+}
+.mx-dash-cta { text-align: center; }
+.mx-dash-cta .btn { min-height: 54px; white-space: normal; line-height: 1.45; }
+.mx-dash-cta span {
+  display: block; margin-top: 0.85rem;
+  font-size: 0.83rem; color: rgba(240, 233, 222, 0.6);
+}
+
+@media (max-width: 860px) {
+  .mx-spine { display: none; }
+  .mx-card { grid-template-columns: 1fr; }
+  .mx-card:nth-child(even) { direction: rtl; }
+  .mx-card-art { max-width: 300px; margin-inline: auto; }
+}
+@media (max-width: 430px) {
+  .mx-voice { font-size: 0.85rem; padding-inline: 0.9rem; }
+  .mx-fan { gap: 0.4rem; }
+}
+
+/* ============================================================
+   ARTICLES (/maqalat/…) — bridge content
+   Rides .legal-card so an article inherits the whole ivory sheet;
+   these only add what an article has and a legal page does not.
+   ============================================================ */
+
+/* breadcrumb — matches the BreadcrumbList schema on the same page */
+.crumbs {
+  max-width: 760px; margin: 0 auto 1rem;
+  font-size: 0.82rem; color: var(--taupe);
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+}
+.crumbs a { color: var(--gold-deep); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs span[aria-hidden] { opacity: 0.5; }
+
+/* table of contents — jump links for a long article */
+.toc {
+  border: 1px solid rgba(201, 167, 94, 0.35);
+  border-radius: var(--radius-md);
+  background: rgba(201, 167, 94, 0.05);
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.8rem;
+}
+.toc-h {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 0.94rem; color: var(--plum-deep); margin-bottom: 0.6rem;
+}
+.toc ol { padding-inline-start: 1.2rem; margin: 0; }
+.toc li { margin-bottom: 0.35rem; font-size: 0.9rem; }
+.toc a { color: var(--ink-soft); text-decoration: none; }
+.toc a:hover { color: var(--gold-deep); text-decoration: underline; }
+/* sticky header would otherwise swallow the heading a jump link lands on */
+.legal-card h2[id], .legal-card h3[id] { scroll-margin-top: 90px; }
+
+/* the four rumination types, each carrying its cover and its book */
+.art-types { display: grid; gap: 1.2rem; margin: 1.6rem 0 1.8rem; }
+.art-type {
+  display: flex; gap: 1.1rem; align-items: flex-start;
+  border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: var(--radius-md);
+  background: rgba(255, 253, 248, 0.7);
+  padding: 1.1rem;
+}
+.art-type img {
+  width: 86px; height: auto; flex: none;
+  border-radius: 6px; box-shadow: var(--shadow-ivory);
+}
+.art-type-h {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.02rem; color: var(--plum-deep); margin-bottom: 0.4rem;
+}
+.art-type p { font-size: 0.9rem !important; line-height: 1.95; margin-bottom: 0.5rem; }
+.art-type-fix { color: var(--ink-soft); }
+.art-type a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+/* article index */
+.art-list { display: grid; gap: 1.4rem; }
+.art-item {
+  display: flex; gap: 1.3rem; align-items: flex-start;
+  background: var(--card);
+  border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-ivory);
+  padding: 1.4rem;
+}
+.art-item-img img { width: 110px; height: auto; border-radius: 8px; display: block; }
+.art-item-kicker {
+  display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+  color: var(--gold-deep); margin-bottom: 0.35rem;
+}
+.art-item h3 { font-size: 1.15rem; color: var(--plum-deep); margin-bottom: 0.25rem; }
+.art-item h3 a { color: inherit; text-decoration: none; }
+.art-item h3 a:hover { color: var(--gold-deep); }
+.art-item-meta { font-size: 0.8rem; color: var(--taupe); margin-bottom: 0.6rem; }
+.art-item p { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.95; }
+.art-item-more {
+  display: inline-block; margin-top: 0.7rem;
+  font-size: 0.88rem; font-weight: 700; color: var(--gold-deep);
+}
+@media (max-width: 560px) {
+  .art-type, .art-item { flex-direction: column; align-items: center; text-align: center; }
+  .art-type img, .art-item-img img { width: 120px; }
+}
+
+/* the fork — two doors, side by side, for two different readers */
+/* ---------- Inline self-check inside an article ----------
+   Two taps, no page load, no email. It ends on the one book written for the
+   answer she gave, or, when her two answers disagree, on the honest reading
+   that she is a blend and a blend needs more than two questions. */
+.art-check {
+  margin: 2.4rem 0;
+  border: 1px solid rgba(93, 63, 140, 0.28);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(170deg, rgba(93, 63, 140, 0.07), rgba(201, 167, 94, 0.05));
+  padding: 1.6rem 1.3rem 1.4rem;
+}
+.art-check-h {
+  display: block; text-align: center;
+  font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.12rem; color: var(--plum-deep); margin-bottom: 0.5rem;
+}
+.art-check-sub {
+  text-align: center; font-size: 0.9rem; color: var(--taupe);
+  margin-bottom: 1.4rem; line-height: 1.9;
+}
+.art-check-q + .art-check-q { margin-top: 1.4rem; }
+.art-check-qt {
+  display: block; font-weight: 700; font-size: 0.95rem;
+  color: var(--plum-deep); margin-bottom: 0.7rem;
+}
+.art-check-opts { display: grid; gap: 0.5rem; }
+.art-check-opts button {
+  text-align: start; cursor: pointer;
+  padding: 0.72rem 0.95rem; min-height: 44px;
+  border: 1px solid rgba(201, 167, 94, 0.32);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.62);
+  font: inherit; font-size: 0.93rem; line-height: 1.75; color: var(--ink-soft);
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+.art-check-opts button:hover { border-color: rgba(201, 167, 94, 0.65); transform: translateY(-1px); }
+.art-check-opts button.is-on {
+  border-color: var(--gold-deep);
+  background: rgba(201, 167, 94, 0.16);
+  color: var(--plum-deep); font-weight: 700;
+}
+.art-check-out {
+  margin-top: 1.5rem; padding-top: 1.3rem;
+  border-top: 1px dashed rgba(201, 167, 94, 0.45);
+}
+.art-check-out-h {
+  display: block; font-family: var(--font-messiri); font-weight: 600;
+  font-size: 1.04rem; line-height: 1.95; color: var(--plum-deep); margin-bottom: 0.6rem;
+}
+.art-check-out p { font-size: 0.95rem; line-height: 1.95; }
+.art-check-out a { color: var(--gold-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+.art-check-btn { margin-top: 1rem; width: min(100%, 22rem); }
+.art-check-btn:link, .art-check-btn:visited { text-decoration: none; color: #FFF8EC; }
+.art-check-note { margin-top: 1rem; font-size: 0.82rem; color: var(--taupe); line-height: 1.8; }
+@media (max-width: 600px) {
+  .art-check { padding: 1.3rem 1rem 1.2rem; }
+  .art-check-btn { width: 100%; }
+}
+
+.fork {
+  margin: 2.2rem 0;
+  border: 1px solid rgba(201, 167, 94, 0.4);
+  border-radius: var(--radius-lg);
+  background: rgba(201, 167, 94, 0.05);
+  padding: 1.5rem 1.3rem 1.4rem;
+}
+.fork-h {
+  display: block; text-align: center;
+  font-family: var(--font-kufi); font-weight: 600;
+  font-size: 1.02rem; color: var(--plum-deep); margin-bottom: 1.2rem;
+}
+.fork-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.fork-col {
+  background: var(--card);
+  border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: var(--radius-md);
+  padding: 1.2rem 1.1rem;
+  display: flex; flex-direction: column;
+}
+.fork-col-quiz {
+  border-color: rgba(227, 168, 172, 0.55);
+  background: radial-gradient(130% 100% at 50% 0%, rgba(227, 168, 172, 0.14), var(--card) 62%);
+  text-align: center;
+  justify-content: center;
+}
+/* the short column centres its pair rather than stranding the button */
+.fork-col-quiz .fork-btn { margin-top: 0.4rem; }
+.fork-col-quiz p { margin-bottom: 1.1rem; }
+.fork-t {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: 0.98rem; color: var(--plum-deep); margin-bottom: 0.5rem;
+}
+.fork-col p { font-size: 0.88rem !important; line-height: 1.95; margin-bottom: 0.9rem; }
+.fork-picks { display: grid; gap: 0.4rem; margin-top: auto; }
+.fork-picks a {
+  display: block; min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.86rem; line-height: 1.4;
+  color: var(--plum-deep) !important; text-decoration: none;
+  border: 1px solid rgba(201, 167, 94, 0.32);
+  border-radius: var(--radius-md);
+  background: rgba(201, 167, 94, 0.05);
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+.fork-picks a:hover {
+  border-color: var(--gold); background: rgba(201, 167, 94, 0.14);
+  transform: translateY(-1px);
+}
+.fork-btn {
+  margin-top: auto; min-height: 50px;
+  white-space: normal; line-height: 1.45;
+  font-size: 0.95rem; padding-inline: 1.2rem;
+}
+@media (max-width: 620px) { .fork-cols { grid-template-columns: 1fr; } }
+
+.art-kicker {
+  display: block; text-align: center;
+  font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em;
+  color: var(--gold-deep); margin-bottom: 0.7rem;
+}
+.art-byline {
+  text-align: center; font-size: 0.88rem;
+  color: var(--taupe); margin-top: 0.35rem;
+}
+.art-lead {
+  font-size: 1.06rem !important; line-height: 2.15;
+  color: var(--ink) !important;
+}
+/* Legal pages never run two paragraphs together — an h2 always separates
+   them — so .legal-card leans on the global margin reset. An article does,
+   and without this the body reads as one unbroken block. */
+.legal-card > p { margin-bottom: 1.15rem; line-height: 2.05; }
+.legal-card > ul { margin-bottom: 1.15rem; }
+.legal-card h3 {
+  font-size: 1.02rem; color: var(--plum-deep);
+  margin: 1.3rem 0 0.4rem;
+}
+.art-pull {
+  border-inline-start: 3px solid var(--gold);
+  background: rgba(201, 167, 94, 0.07);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 1.1rem 1.3rem;
+  margin: 1.5rem 0;
+  font-family: var(--font-quote);
+  font-size: 1.02rem !important; line-height: 2.05;
+  color: var(--plum-deep) !important;
+}
+.art-note {
+  margin-top: 2rem; padding-top: 1.2rem;
+  border-top: 1px solid rgba(201, 167, 94, 0.3);
+  font-size: 0.84rem !important; color: var(--taupe) !important;
+}
+
+/* The quiz door, mid-article. Deliberately the loudest element on the
+   page — an article reader is cold, and this is the only ask. */
+.art-bridge {
+  text-align: center;
+  margin: 2.4rem 0;
+  padding: 1.9rem 1.4rem 1.7rem;
+  border: 1px solid rgba(227, 168, 172, 0.55);
+  border-radius: var(--radius-lg);
+  background: radial-gradient(130% 100% at 50% 0%, rgba(227, 168, 172, 0.16), rgba(255, 253, 248, 0.4) 65%);
+}
+.art-bridge-h {
+  display: block; font-family: var(--font-kufi); font-weight: 600;
+  font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+  color: var(--plum-deep); margin-bottom: 0.6rem;
+}
+.art-bridge p { margin-bottom: 1.3rem; }
+.art-bridge-btn {
+  font-size: clamp(0.98rem, 2.6vw, 1.08rem);
+  padding: 1.05rem 2.4rem; min-height: 52px;
+  max-width: 100%; white-space: normal; line-height: 1.5;
+}
+
+@media (max-width: 430px) {
+  .art-bridge { padding-inline: 1rem; }
+  .art-bridge-btn { padding-inline: 1.3rem; }
+}
 
 /* ============================================================
    UTILITIES / MEDIA
@@ -1118,7 +1942,7 @@ select:focus-visible,
    Ambient sound — opt-in blossom control (matches the site's flower motif).
    A recognisable flower at all times: a soft upward bud when off, a full bloom
    with gold glow + sound-wave ripples when playing. A small caption states its
-   purpose. Lavender→rose petals, gold core, gold sparkles (dashboard palette).
+   purpose. Lavender->rose petals, gold core, gold sparkles (dashboard palette).
    ============================================================ */
 /* Clip the decorative flower art that bleeds ~10px past the edges so the page
    never scrolls horizontally. `clip` (not `hidden`) prevents scroll without
@@ -1347,4 +2171,89 @@ html[lang="en"] .ambient-caption { direction: ltr; }
 .reduced-motion .lang-switch { animation: none; }
 @media (max-width: 640px) {
   .lang-switch { top: 78px; left: 10px; width: 44px; height: 44px; }
+}
+
+/* ============================================================
+   DRAGGABLE FLOATING CONTROLS
+   The sound bloom and the language pill can be moved off whatever
+   they happen to be covering; JS writes left/top and remembers it.
+   ============================================================ */
+.is-draggable { cursor: grab; }
+.is-draggable:active { cursor: grabbing; }
+.is-dragging {
+  cursor: grabbing;
+  opacity: 0.9;
+  transition: none !important;
+  animation: none !important;
+}
+/* the hint appears once, on hover, and never on touch where there is no hover */
+@media (hover: hover) {
+  .is-draggable::after {
+    content: '';
+    position: absolute; inset: -6px;
+    border-radius: inherit;
+    border: 1px dashed transparent;
+    transition: border-color 0.25s ease;
+    pointer-events: none;
+  }
+  .is-draggable:hover::after { border-color: rgba(201, 167, 94, 0.45); }
+}
+
+/* ---------- Support address toast ----------
+   Shown when a mailto: link is clicked. On a phone the mail app opens and
+   this is redundant; on a desktop with no mail handler the link does nothing
+   at all, and this is the only thing that hands her the address. */
+.mail-toast {
+  position: fixed; inset-inline: 1rem; bottom: 1.1rem;
+  margin-inline: auto; max-width: 26rem; z-index: 9999;
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(220, 192, 134, 0.5);
+  background: rgba(28, 18, 52, 0.96);
+  color: #F1E8D8; font-size: 0.9rem; line-height: 1.7; text-align: center;
+  box-shadow: 0 20px 44px -18px rgba(4, 2, 10, 0.9);
+  opacity: 0; transform: translateY(10px); pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.mail-toast.is-on { opacity: 1; transform: translateY(0); }
+.reduced-motion .mail-toast { transition: none; }
+
+/* ---------- Comparison table inside an article ----------
+   Wide content must scroll inside its own box, never push the page sideways. */
+.art-table-wrap { overflow-x: auto; margin: 1.6rem 0; -webkit-overflow-scrolling: touch; }
+.art-table {
+  width: 100%; min-width: 34rem; border-collapse: collapse;
+  font-size: 0.9rem; line-height: 1.85; text-align: start;
+}
+.art-table caption {
+  caption-side: top; text-align: start;
+  font-size: 0.84rem; color: var(--taupe); padding-bottom: 0.7rem;
+}
+.art-table th, .art-table td {
+  padding: 0.7rem 0.85rem; vertical-align: top; text-align: start;
+  border-bottom: 1px solid rgba(201, 167, 94, 0.22);
+}
+.art-table thead th {
+  font-family: var(--font-kufi); font-weight: 600; font-size: 0.85rem;
+  color: var(--plum-deep); background: rgba(201, 167, 94, 0.09);
+  border-bottom: 1px solid rgba(201, 167, 94, 0.4);
+}
+.art-table tbody th { font-weight: 700; color: var(--plum-deep); white-space: nowrap; }
+.art-table tbody td { color: var(--ink-soft); }
+.art-table tbody tr:last-child th, .art-table tbody tr:last-child td { border-bottom: 0; }
+
+/* Citations at the foot of an article. Small, quiet, and honest enough to
+   carry a caveat when a finding did not replicate well. */
+.art-refs { list-style: none; padding: 0; margin: 1.2rem 0 0; }
+.art-refs li {
+  padding: 0.8rem 0; font-size: 0.85rem; line-height: 1.9; color: var(--taupe);
+  border-bottom: 1px solid rgba(201, 167, 94, 0.18); direction: ltr; text-align: left;
+}
+.art-refs li:last-child { border-bottom: 0; }
+.art-refs a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }
+.art-refs cite { font-style: italic; }
+.art-refs-note {
+  display: block; margin-top: 0.4rem;
+  direction: rtl; text-align: right;
+  font-size: 0.82rem; color: var(--taupe); opacity: 0.9;
 }

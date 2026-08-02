@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://nizamok.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://nizamok.com/ikhtibar/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://nizamok.com/rebuild/mubdia/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://nizamok.com/rebuild/asirat/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://nizamok.com/rebuild/mutafadia/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://nizamok.com/rebuild/kafua/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://nizamok.com/interdash/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://nizamok.com/privacy/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://nizamok.com/terms/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://nizamok.com/refund/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://nizamok.com/en/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://nizamok.com/en/quiz/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://nizamok.com/en/interdash/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://nizamok.com/en/privacy/</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://nizamok.com/en/terms/</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://nizamok.com/en/refund/</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+<urlset xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://nizamok.com/</loc><lastmod>2026-07-31</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://nizamok.com/ikhtibar/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://nizamok.com/rebuild/mubdia/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority><image:image><image:loc>https://nizamok.com/assets/product/mubdia/cover.webp</image:loc><image:title>الغلاف والوعد الأساسي</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/mubdia/p07.webp</image:loc><image:title>خريطة المنعطفات الأربعة</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/mubdia/p08.webp</image:loc><image:title>خريطة العبور</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/mubdia/p23.webp</image:loc><image:title>تجربة الوصول</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/mubdia/p33.webp</image:loc><image:title>خطة الثلاثين يومًا</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/mubdia/p36.webp</image:loc><image:title>قوس التسعين يومًا</image:title></image:image></url>
+  <url><loc>https://nizamok.com/rebuild/asirat/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority><image:image><image:loc>https://nizamok.com/assets/product/asirat/cover.webp</image:loc><image:title>الغلاف والوعد الأساسي</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/asirat/p05.webp</image:loc><image:title>الحراسة الثلاثية</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/asirat/p06.webp</image:loc><image:title>خريطة الإغلاق</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/asirat/p20.webp</image:loc><image:title>محكمة التعديل الأخير</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/asirat/p31.webp</image:loc><image:title>بداية سريعة وتحدّي سبعة أيام</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/asirat/p35.webp</image:loc><image:title>قوس التسعين يومًا</image:title></image:image></url>
+  <url><loc>https://nizamok.com/rebuild/mutafadia/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority><image:image><image:loc>https://nizamok.com/assets/product/mutafadia/cover.webp</image:loc><image:title>الغلاف والوعد الأساسي</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/mutafadia/p06.webp</image:loc><image:title>المواجهات الأربع</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/mutafadia/p07.webp</image:loc><image:title>خريطة الباب المؤجّل</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/mutafadia/p22.webp</image:loc><image:title>الأداة التوقيعية ودفترها</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/mutafadia/p32.webp</image:loc><image:title>خطة الثلاثين يومًا</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/mutafadia/p35.webp</image:loc><image:title>قوس التسعين يومًا</image:title></image:image></url>
+  <url><loc>https://nizamok.com/rebuild/kafua/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority><image:image><image:loc>https://nizamok.com/assets/product/kafua/cover.webp</image:loc><image:title>الغلاف والوعد الأساسي</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/kafua/p07.webp</image:loc><image:title>عقد الاعتماد: البنود الأربعة</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/kafua/p08.webp</image:loc><image:title>خريطة الفسخ</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/kafua/p23.webp</image:loc><image:title>تجربة الكشف</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/kafua/p33.webp</image:loc><image:title>خطة الثلاثين يومًا</image:title></image:image><image:image><image:loc>https://nizamok.com/assets/product/kafua/p36.webp</image:loc><image:title>قوس التسعين يومًا</image:title></image:image></url>
+  <url><loc>https://nizamok.com/almasar/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://nizamok.com/maqalat/</loc><lastmod>2026-08-01</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nizamok.com/maqalat/limadha-abda-wala-ukmil/</loc><lastmod>2026-08-01</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://nizamok.com/maqalat/idman-al-bidayat/</loc><lastmod>2026-08-01</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://nizamok.com/maqalat/al-kasal-wa-ilajuh/</loc><lastmod>2026-08-01</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://nizamok.com/maqalat/al-taswif-laysa-mushkilat-waqt/</loc><lastmod>2026-08-01</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://nizamok.com/maqalat/limadha-tufakkir-alnisa-kathiran/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://nizamok.com/maqalat/mbti-wa-mada-baad/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://nizamok.com/natija/mubdia/</loc><lastmod>2026-08-01</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://nizamok.com/natija/asirat/</loc><lastmod>2026-08-01</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://nizamok.com/natija/mutafadia/</loc><lastmod>2026-08-01</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://nizamok.com/natija/kafua/</loc><lastmod>2026-08-01</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://nizamok.com/interdash/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nizamok.com/privacy/</loc><lastmod>2026-07-31</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://nizamok.com/terms/</loc><lastmod>2026-07-31</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://nizamok.com/refund/</loc><lastmod>2026-07-31</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://nizamok.com/en/</loc><lastmod>2026-07-31</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://nizamok.com/en/quiz/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://nizamok.com/en/interdash/</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://nizamok.com/en/privacy/</loc><lastmod>2026-07-31</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://nizamok.com/en/terms/</loc><lastmod>2026-07-31</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://nizamok.com/en/refund/</loc><lastmod>2026-07-31</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
 </urlset>

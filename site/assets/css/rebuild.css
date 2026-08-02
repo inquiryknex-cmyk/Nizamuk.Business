@@ -1,7 +1,7 @@
 /* ============================================================
    NizamOk — «نظام إعادة البناء» direct-sale landing pages.
    One shared layout; the copy is what differs per pattern
-   (/rebuild/mubdia/ · /rebuild/asirat/ · /rebuild/kafua/ ·
+   (/rebuild/mubdia/ - /rebuild/asirat/ - /rebuild/kafua/ -
     /rebuild/mutafadia/).
 
    Follows the house v2 system: velvet-plum brand chambers
@@ -17,8 +17,8 @@
    needs more size than Latin at the same measure, and this is long, heavy
    copy read mostly on a phone. These two ramps carry every reading surface. */
 :root {
-  --rb-read: clamp(1.0625rem, 0.98rem + 0.42vw, 1.1875rem);  /* 17px → 19px */
-  --rb-read-lg: clamp(1.125rem, 1.04rem + 0.42vw, 1.25rem);  /* 18px → 20px */
+  --rb-read: clamp(1.0625rem, 0.98rem + 0.42vw, 1.1875rem);  /* 17px -> 19px */
+  --rb-read-lg: clamp(1.125rem, 1.04rem + 0.42vw, 1.25rem);  /* 18px -> 20px */
 }
 
 /* ---------- Page shell ---------- */
@@ -109,10 +109,9 @@
   line-height: 1.95;
 }
 .rb-promises li::before {
-  content: '✦';
-  content: '✦' / '';  /* alt-text form: silences the marker for screen readers where supported */
-  position: absolute; inset-inline-start: 0; top: 0.6rem;
-  color: var(--gold-soft); font-size: 0.78rem;
+  content: '';  /* a drawn dot, not a glyph: nothing for a screen reader to announce */
+  position: absolute; inset-inline-start: 0.2rem; top: 1.02rem;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--gold-soft);
 }
 
 /* Hero product shot — a real cover from the file the buyer receives */
@@ -166,6 +165,65 @@
    hides the billing-portal line this way on a payment that did not succeed. */
 .rb-alt[hidden] { display: none; }
 
+/* ---------- Uncertainty escape hatch (book-first) ----------
+   The funnel sells the book; the quiz is the fallback for a visitor who cannot
+   place her own pattern. So this block is deliberately subordinate to the buy
+   button on every axis at once — it sits BELOW it (never in the same row),
+   outlined instead of filled, one step smaller, and narrower. A hairline rule
+   separates the two so the eye reads them as primary -> alternative, not as a
+   pair of equal choices. */
+.rb-uncertain {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(201, 167, 94, 0.22);
+  max-width: 26rem;              /* matches .rb-cta so the rule aligns with it */
+}
+.rb-uncertain-q {
+  margin: 0 0 0.7rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--taupe);
+}
+.rb-quiz-btn {
+  display: inline-flex;
+  /* Always strictly narrower than .rb-cta (min(100%, 26rem)) — including on a
+     360px phone, where a plain max-width would let both buttons fill the
+     container and read as equals. The percentage guarantees the gap survives
+     at every width. */
+  width: min(86%, 21rem);
+  min-height: 44px;              /* touch target floor */
+  padding: 0.7rem 1.15rem;
+  font-size: 0.9rem;             /* .rb-cta is 1.03rem */
+  font-weight: 600;              /* .btn is 700 */
+  line-height: 1.45;
+  text-align: center;
+  white-space: normal;           /* the label is long — it must wrap, not clip */
+  box-shadow: none;              /* no lift: only the primary gets presence */
+}
+.rb-quiz-btn:hover { transform: none; }
+
+/* On the velvet chambers (hero + final CTA) the ghost variant already flips to
+   gold-on-dark via main.css; this only softens the border further so it never
+   competes with the gold button directly above it. */
+.velvet .rb-uncertain { border-top-color: rgba(214, 186, 128, 0.2); }
+.velvet .rb-uncertain-q { color: rgba(239, 231, 218, 0.66); }
+
+/* Inside a FAQ <details> the block is flush left with the answer text. */
+.rb-faq .rb-uncertain { margin-top: 1.1rem; max-width: 24rem; }
+
+/* Centred wherever the surrounding CTA is centred. */
+.rb-final .rb-uncertain,
+.rb-buy .rb-uncertain,
+.rb-cta-row .rb-uncertain { margin-inline: auto; text-align: center; }
+.rb-final .rb-quiz-btn,
+.rb-buy .rb-quiz-btn,
+.rb-cta-row .rb-quiz-btn { margin-inline: auto; }
+
+@media (max-width: 430px) {
+  .rb-uncertain { margin-top: 1.25rem; padding-top: 1rem; }
+  .rb-quiz-btn { font-size: 0.875rem; padding-inline: 0.9rem; }
+}
+
 /* Short trust strip under the hero CTA */
 .rb-trust {
   display: flex; flex-wrap: wrap; gap: 0.55rem 1.1rem;
@@ -175,13 +233,16 @@
 }
 .rb-trust span { display: inline-flex; align-items: center; gap: 0.45rem; }
 .rb-trust span::before {
-  content: '·'; color: var(--gold-soft); font-weight: 700; font-size: 1.1rem;
+  content: ''; width: 4px; height: 4px; border-radius: 50%; flex: none; background: var(--gold-soft);
 }
 
 /* ============================================================
    IVORY READING SECTIONS
    ============================================================ */
-.rb-section { padding: clamp(2.6rem, 6vw, 4.2rem) 0; }
+/* Sixteen sections of near-identical height, each isolated in its own field of
+   whitespace, is what made the page read as one endless column. Tightening the
+   gaps groups what belongs together and lets the velvet bands do the separating. */
+.rb-section { padding: clamp(1.7rem, 4vw, 3rem) 0; }
 .rb-section + .rb-section { padding-top: 0; }
 .rb-section h2 {
   font-family: var(--font-display);
@@ -213,10 +274,9 @@
 }
 .rb-list li + li { border-top: 1px solid rgba(201, 167, 94, 0.16); }
 .rb-list li::before {
-  content: '✦';
-  content: '✦' / '';
-  position: absolute; inset-inline-start: 0; top: 0.72rem;
-  color: var(--gold); font-size: 0.78rem;
+  content: '';
+  position: absolute; inset-inline-start: 0.2rem; top: 1.18rem;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--gold);
 }
 .rb-close {
   margin-top: 1.2rem; padding-top: 1.1rem;
@@ -408,10 +468,10 @@
   font-size: var(--rb-read); line-height: 1.95; color: var(--ink-soft);
 }
 .rb-fit-col li::before {
-  position: absolute; inset-inline-start: 0; top: 0.5rem; font-size: 0.9rem;
+  content: ''; position: absolute; inset-inline-start: 0.15rem; top: 0.95rem;
 }
-.rb-fit-col.yes li::before { content: '✓'; content: '✓' / ''; color: var(--gold-deep); }
-.rb-fit-col.no li::before { content: '—'; content: '—' / ''; color: var(--taupe); }
+.rb-fit-col.yes li::before { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-deep); }
+.rb-fit-col.no li::before  { width: 8px; height: 2px; border-radius: 1px; background: var(--taupe); }
 
 /* ---------- Purchase card ---------- */
 .rb-buy {
@@ -540,7 +600,29 @@
 .rb-sticky .btn { flex: none; padding: 0.7rem 1.5rem; font-size: 0.95rem; }
 
 /* Desktop keeps the in-page decision points only — 4–5 is enough. */
-@media (min-width: 861px) { .rb-sticky { display: none; } }
+/* The bar used to be mobile-only, so a desktop reader crossed thirteen screens
+   with no way to buy in view. On a wide screen it becomes a slim rail that
+   finally uses the empty horizontal space instead of stacking into it. */
+@media (min-width: 861px) {
+  .rb-sticky {
+    /* the ambient bloom owns the bottom-left corner, so the rail takes the
+       other side and the two never overlap */
+    inset-inline: 1.4rem auto; bottom: 1.4rem;
+    width: min(340px, 26vw);
+    flex-direction: column; align-items: stretch; gap: 0.7rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: var(--rb-radius-lg, 18px);
+    border: 1px solid rgba(220, 192, 134, 0.45);
+    transform: translateY(140%);
+  }
+  .rb-sticky.is-on { transform: none; }
+  .rb-sticky .btn { width: 100%; }
+  .rb-sticky-quiz {
+    display: block; text-align: center;
+    font-size: 0.8rem; color: rgba(240, 233, 222, 0.72);
+    text-decoration: underline; text-underline-offset: 4px;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .rb-sticky { transition: none; }
@@ -587,3 +669,143 @@
   color: var(--taupe);
 }
 .rb-pay-methods a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- The smaller rungs, for a visitor who read everything and did not buy ----------
+   Deliberately quieter than the purchase card: ivory, outlined, no gold fill.
+   She should read this as a way down the ladder, not as a competing offer. */
+.rb-ladder { padding-top: 0; }
+.rb-ladder-card {
+  border: 1px solid rgba(201, 167, 94, 0.32);
+  border-radius: var(--rb-radius-lg, 18px);
+  background: rgba(201, 167, 94, 0.045);
+  padding: clamp(1.4rem, 4vw, 2.1rem) clamp(1.1rem, 3.4vw, 1.9rem);
+}
+.rb-ladder-card h2 { margin-bottom: 0.5rem; }
+.rb-ladder-lead { color: var(--ink-soft); font-size: var(--rb-read); line-height: 1.95; margin-bottom: 1.3rem; }
+
+.rb-ladder-rungs { display: grid; gap: 0.7rem; }
+.rb-rung {
+  display: grid; gap: 0.3rem;
+  padding: 1rem 1.1rem; min-height: 44px;
+  border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: var(--rb-radius, 12px);
+  background: rgba(255, 255, 255, 0.6);
+  text-decoration: none; color: inherit;
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+.rb-rung:hover {
+  border-color: var(--gold); background: rgba(201, 167, 94, 0.1);
+  transform: translateY(-2px);
+}
+.rb-rung b { font-size: 1.02rem; color: var(--plum-deep); font-weight: 700; }
+.rb-rung-k {
+  justify-self: start;
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.05em;
+  padding: 0.2rem 0.7rem; border-radius: var(--radius-pill, 999px);
+  border: 1px solid rgba(201, 167, 94, 0.45);
+  color: var(--gold-deep);
+}
+.rb-rung-free { border-color: rgba(122, 158, 126, 0.5); color: #4C7A52; }
+.rb-rung-d { font-size: 0.88rem; line-height: 1.85; color: var(--ink-soft); }
+.rb-ladder-note {
+  margin-top: 1.2rem; padding-top: 1rem;
+  border-top: 1px dashed rgba(201, 167, 94, 0.35);
+  font-size: 0.86rem; line-height: 1.9; color: var(--taupe);
+}
+@media (min-width: 720px) {
+  .rb-ladder-rungs { grid-template-columns: repeat(3, 1fr); }
+  .rb-rung { align-content: start; }
+}
+
+/* Onward reading. Quiet rows, not cards: this is a corridor out of the page,
+   not a third offer competing with the two above it. */
+.rb-reads {
+  display: grid; gap: 0.35rem;
+  margin-top: 1.4rem; padding-top: 1.2rem;
+  border-top: 1px dashed rgba(201, 167, 94, 0.35);
+}
+.rb-reads-h {
+  font-family: var(--font-kufi); font-weight: 600;
+  font-size: 0.9rem; color: var(--plum-deep); margin-bottom: 0.3rem;
+}
+.rb-read {
+  display: grid; gap: 0.15rem;
+  padding: 0.6rem 0.75rem; min-height: 44px;
+  border-radius: var(--rb-radius, 12px);
+  text-decoration: none; color: inherit;
+  transition: background 0.3s ease;
+}
+.rb-read:hover { background: rgba(201, 167, 94, 0.09); }
+.rb-read b {
+  font-size: 0.94rem; font-weight: 700; color: var(--gold-deep);
+  text-decoration: underline; text-underline-offset: 4px;
+}
+.rb-read span { font-size: 0.84rem; line-height: 1.8; color: var(--taupe); }
+.rb-read-path b { color: var(--plum-deep); }
+
+
+/* ---------- Swipe rails on small screens ----------
+   The repeating groups were one card per row on mobile: five tools and five
+   doors alone accounted for ten full-height blocks, which is most of why the
+   page measured 17.6 screens. Side by side with a swipe they cost one screen
+   each, and the peeking next card tells her there is more without a label. */
+@media (max-width: 699px) {
+  .rb-doors,
+  .rb-tools,
+  .rb-gallery-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 76%;
+    grid-template-columns: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 1rem;
+    padding-bottom: 0.7rem;
+    scrollbar-width: none;
+  }
+  .rb-gallery-grid { grid-auto-columns: 58%; }
+  .rb-doors::-webkit-scrollbar,
+  .rb-tools::-webkit-scrollbar,
+  .rb-gallery-grid::-webkit-scrollbar { display: none; }
+  .rb-doors > *,
+  .rb-tools > *,
+  .rb-gallery-grid > * { scroll-snap-align: start; }
+  /* equal heights inside a rail, so the row does not look ragged */
+  .rb-door, .rb-tool { height: 100%; }
+  .rb-ladder-rungs {
+    grid-auto-flow: column; grid-auto-columns: 82%;
+    overflow-x: auto; scroll-snap-type: x proximity;
+    scroll-padding-inline: 1rem; padding-bottom: 0.7rem; scrollbar-width: none;
+  }
+  .rb-ladder-rungs::-webkit-scrollbar { display: none; }
+  .rb-ladder-rungs > * { scroll-snap-align: start; }
+}
+
+
+/* Rails run to the screen edge on a phone. The cut-off card at the margin says
+   "there is more this way" without a label, and the row stops looking like a
+   narrow column of its own. */
+@media (max-width: 699px) {
+  .rb-doors, .rb-tools, .rb-gallery-grid, .rb-ladder-rungs {
+    margin-inline: calc(50% - 50vw);
+    padding-inline: calc(50vw - 50% + 0.2rem);
+    scroll-padding-inline: calc(50vw - 50% + 0.2rem);
+  }
+}
+
+/* The foot bar on a phone is one tight row, so the secondary line would clip.
+   It belongs to the wide rail, where there is a column to hold it. */
+.rb-sticky-quiz { display: none; }
+@media (min-width: 861px) { .rb-sticky-quiz { display: block; } }
+
+/* The bar changes character once she has seen a page: from an invitation in
+   to an offer. A quiet warm-up marks the moment without announcing it. */
+.rb-sticky.is-promoted { border-color: rgba(220, 192, 134, 0.7); }
+.rb-sticky.is-promoted .btn { animation: rb-sticky-wake 0.9s ease-out 1; }
+@keyframes rb-sticky-wake {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.035); }
+  100% { transform: scale(1); }
+}
+.reduced-motion .rb-sticky.is-promoted .btn { animation: none; }
