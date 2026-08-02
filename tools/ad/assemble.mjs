@@ -51,6 +51,11 @@ const SHOTS = [
 const TOTAL = SHOTS.reduce((s, x) => s + x.d, 0);
 if (Math.abs(TOTAL - 29) > 1e-9) throw new Error(`shots sum to ${TOTAL}s, not 29`);
 
+/* Where each cut lands in the finished timeline — the running sum of on-screen
+   time. xfade wants exactly this as its offset. */
+const cuts = [];
+for (let i = 0, t = 0; i < SHOTS.length - 1; i++) { t += SHOTS[i].d; cuts.push(t); }
+
 const FORMATS = {
   h: { w: 1920, h: 1080, name: '16x9' },
   v: { w: 1080, h: 1920, name: '9x16' }
@@ -68,48 +73,44 @@ mkdirSync(OUT, { recursive: true });
 mkdirSync(TMP, { recursive: true });
 
 /* ------------------------------------------------------------------ *
- * 1. Sound design. Synthesised, so there is nothing to licence.
+ * 1. The bed: real forest ambience, generated.
+ *
+ * The first pass synthesised its own sound — filtered noise, with a transient
+ * on every cut. Those transients read as clicks, and no amount of shaping was
+ * going to make noise sound like a place. This is location ambience instead:
+ * wind through a canopy, leaves, a few distant birds, generated on Higgsfield
+ * and therefore licensed with nothing attached to it.
+ *
+ * THREE different ten-second takes, not one looped three times — a repeating
+ * birdsong phrase is the single most audible way a bed gives itself away.
+ * They butt together with half-second crossfades: 10+10+10 − 2×0.5 = 29.000s,
+ * which is the whole film, so no maths is needed downstream.
+ *
+ * There are no accents on the cuts any more. Ambience this continuous does not
+ * want punctuation; the picture already carries the rhythm.
  * ------------------------------------------------------------------ */
-const PAPER = join(TMP, 'paper.wav');
-const THUMP = join(TMP, 'thump.wav');
 const BED = join(TMP, 'bed.wav');
+const TAKES = ['forest-a', 'forest-b', 'forest-c'].map(n => join(AD, 'ambience', `${n}.wav`));
 
-/* A sheet moving: a band of noise around 2.5 kHz with a fast attack and a
-   short exponential tail. Two of them, slightly apart, so it reads as a leaf
-   rather than a click. */
-ff(['-f', 'lavfi', '-i', 'anoisesrc=color=white:amplitude=0.6:duration=0.42:sample_rate=48000:seed=7',
-  '-af', ['bandpass=f=2500:width_type=o:w=2.2',
-    'afade=t=in:st=0:d=0.012',
-    'afade=t=out:st=0.045:d=0.36:curve=exp',
-    'aecho=0.7:0.5:38:0.35',
-    'volume=0.85'].join(','),
-  '-ac', '1', '-ar', '48000', PAPER], 'paper');
-
-/* The landing under the end card: one low sine, gone in half a second. */
-ff(['-f', 'lavfi', '-i', 'sine=frequency=58:duration=0.9:sample_rate=48000',
-  '-af', 'afade=t=in:st=0:d=0.008,afade=t=out:st=0.03:d=0.85:curve=exp,volume=0.5',
-  '-ac', '1', '-ar', '48000', THUMP], 'thump');
-
-/* Cut points, in the finished timeline. The paper lands ON the cut. */
-const cuts = [];
-for (let i = 0, t = 0; i < SHOTS.length - 1; i++) { t += SHOTS[i].d; cuts.push(t); }
+for (const t of TAKES) if (!existsSync(t)) throw new Error(`missing ambience take: ${t}`);
 
 {
-  const hits = cuts.map((t, i) =>
-    `[p${i}]adelay=${Math.round(t * 1000)}|${Math.round(t * 1000)},volume=${(0.62 - i * 0.02).toFixed(2)}[h${i}]`);
+  const XA = 0.5;
   const filter = [
-    /* Room tone: brown noise with everything above 210 Hz taken off it. Air,
-       not a drone — it should be felt and never noticed. */
-    `[0:a]lowpass=f=210,volume=0.22,afade=t=in:st=0:d=1.2,afade=t=out:st=27.6:d=1.4[tone]`,
-    `[1:a]asplit=${cuts.length}${cuts.map((_, i) => `[p${i}]`).join('')}`,
-    ...hits,
-    `[2:a]adelay=${Math.round(cuts[cuts.length - 1] * 1000)}|${Math.round(cuts[cuts.length - 1] * 1000)}[land]`,
-    `[tone]${cuts.map((_, i) => `[h${i}]`).join('')}[land]amix=inputs=${cuts.length + 2}:normalize=0:duration=longest[mix]`,
-    /* Nothing here speaks, so the bed sits well under a dialogue target. */
-    `[mix]loudnorm=I=-19:TP=-2.0:LRA=9,atrim=0:29,asetpts=N/SR/TB[a]`
+    /* Each take trimmed to exactly 10s and rid of the DC and rumble a
+       generated track carries under the audible band. */
+    ...TAKES.map((_, i) => `[${i}:a]atrim=0:10,asetpts=N/SR/TB,aformat=sample_rates=48000:channel_layouts=stereo,` +
+      `highpass=f=42,afade=t=in:st=0:d=0.02,afade=t=out:st=${10 - 0.02}:d=0.02[k${i}]`),
+    `[k0][k1]acrossfade=d=${XA}:c1=tri:c2=tri[ab]`,
+    `[ab][k2]acrossfade=d=${XA}:c1=tri:c2=tri[joined]`,
+    /* The source sits around −41 LUFS, so this is a big lift; the highpass
+       above and the gentle top-end trim below keep the codec floor down with
+       it. −20 LUFS is a deliberate background level: nothing here speaks. */
+    `[joined]lowpass=f=15000,loudnorm=I=-20:TP=-2.0:LRA=11,` +
+    `afade=t=in:st=0:d=1.4,afade=t=out:st=27.2:d=1.8,` +
+    `atrim=0:29,asetpts=N/SR/TB[a]`
   ].join(';');
-  ff(['-f', 'lavfi', '-i', 'anoisesrc=color=brown:amplitude=0.9:duration=29:sample_rate=48000:seed=3',
-    '-i', PAPER, '-i', THUMP,
+  ff([...TAKES.flatMap(t => ['-i', t]),
     '-filter_complex', filter, '-map', '[a]', '-ac', '2', '-ar', '48000', BED], 'bed');
 }
 

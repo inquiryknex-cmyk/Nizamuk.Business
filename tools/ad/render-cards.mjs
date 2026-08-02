@@ -66,11 +66,15 @@ const shotCard = (lines, f, opts = {}) => {
   const side = f.layout === 'side';
   const size = opts.size || (side ? 72 : 68);
   /* side   — a column at x>=1080, vertically centred on the staged book.
-     bottom — clear of the Shorts chrome: caption and controls own roughly the
-              lowest 320px, the top bar the highest 180. */
+     bottom — anchored by its TOP, directly under the book, ending above
+              y=1350. Two reasons it is a top anchor and not a bottom one:
+              a bottom anchor put the words down in the Shorts player's own
+              title-and-buttons band, where they read as a caption rather than
+              as part of the picture; and it made one-line cards sit lower than
+              two-line ones, so the type jumped between shots. */
   const place = side
     ? `top:50%;transform:translateY(-50%);right:100px;width:740px;`
-    : `bottom:430px;right:${f.safe}px;left:${f.safe}px;`;
+    : `top:1090px;right:${f.safe}px;left:${f.safe}px;`;
   /* A scrim, not a box. Under a column it has to be radial or it reads as a
      panel edge against the velvet; under a bottom third a rise is right. */
   /* Radial in BOTH layouts. The bottom third used to be a linear gradient,
@@ -86,7 +90,10 @@ const shotCard = (lines, f, opts = {}) => {
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{width:${f.w}px;height:${f.h}px;overflow:hidden;background:transparent}
-  .wrap{position:absolute;${place}direction:rtl;text-align:right;}
+  /* 16:9 sets the type as a right-aligned column beside the book; 9:16 centres
+     it, because there the book is dead centre and a right-aligned block under a
+     centred object reads as misaligned rather than as editorial. */
+  .wrap{position:absolute;${place}direction:rtl;text-align:${side ? 'right' : 'center'};}
   .scrim{position:absolute;${scrim}}
   .line{
     position:relative;font-family:'El Messiri','Almarai',sans-serif;font-weight:700;
@@ -95,7 +102,8 @@ const shotCard = (lines, f, opts = {}) => {
   }
   .line + .line{margin-top:6px}
   .accent{color:${C.goldSoft}}
-  .rule{position:relative;width:${side?120:96}px;height:2px;background:${C.gold};margin-bottom:26px;margin-right:0}
+  .rule{position:relative;width:${side?120:96}px;height:2px;background:${C.gold};
+    margin:0 ${side ? '0' : 'auto'} 26px ${side ? 'auto' : 'auto'}}
 </style>
 <div class="wrap">
   <div class="scrim"></div>
@@ -126,7 +134,9 @@ const endCard = (f) => {
        it in 9:16 — so the last cut does not slide the object across frame. */
     flex-direction:${vertical ? 'column-reverse' : 'row'};
     gap:${vertical ? '52px' : '96px'};
-    padding:${vertical ? '260px 110px 380px' : '90px 150px'};
+    /* Bottom-heavy padding on purpose: it lifts the whole end card out of the
+       band a Shorts player covers with its own title and buttons. */
+    padding:${vertical ? '200px 110px 520px' : '90px 150px'};
   }
   /* Same physical page-edge the plates give it. Without it the end card shows
      a flat rectangle where the film showed an object. */

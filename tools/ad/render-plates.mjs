@@ -40,10 +40,14 @@ const A = {
 };
 
 /* h: the book sits left, the type column owns x>=1080 (see render-cards.mjs).
-   v: the book sits high, the type sits under it, clear of Shorts chrome. */
+   v: book and type are ONE block in the upper two thirds. They used to sit
+      lower, which put the words down where a Shorts player stacks its title,
+      channel row and buttons — so the writing read as a caption pushed off the
+      bottom of the picture rather than as part of it. Everything is above
+      y=1350 now, and the empty band below is the platform's, not ours. */
 const FORMATS = {
   h: { w: 1920, h: 1080, cx: 600, cy: 512, maxW: 900, maxH: 860, cropW: 900, cropH: 700 },
-  v: { w: 1080, h: 1920, cx: 540, cy: 690, maxW: 800, maxH: 1040, cropW: 880, cropH: 880 }
+  v: { w: 1080, h: 1920, cx: 540, cy: 530, maxW: 780, maxH: 940, cropW: 880, cropH: 840 }
 };
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
