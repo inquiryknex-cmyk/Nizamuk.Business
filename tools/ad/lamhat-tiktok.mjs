@@ -1,9 +1,11 @@
-/* NizamOk — «لمحة المبدعة المشتّتة» TikTok promo. 1080x1920, 18 seconds.
+/* NizamOk — «لمحة المبدعة المشتّتة» TikTok promo. 1080x1920, 24 seconds.
  *
- * The cheap door: 19 SAR. A different film from the 109 one, and deliberately
- * so — this is the object seen once, held, and turned, with the words changing
- * over it. There are no interior pages for لمحات in the repo (only the cover),
- * so nothing here pretends there are: no page turns, no invented spreads.
+ * The cheap door: 19 SAR, in the same shape as the 109 film — cover, then real
+ * pages turning, then the offer.
+ *
+ * Earlier there were no interior pages for لمحات and the cut said so by showing
+ * none. The book's own PDF export supplied them: see lamhat-pages.mjs. Every
+ * word on those pages is the book's, set in the book's fonts.
  *
  * The cover is site/assets/covers/lamhat-mubdia.jpg, 700x964 — small. That one
  * fact settles the whole treatment: any push past about 1.1x makes a 700-pixel
@@ -34,7 +36,11 @@ const WORK = join(AD, 'lamhat');
 const OUT = join(AD, 'out');
 const FPS = 30;
 const W = 1080, H = 1920;
-const DUR = 18.0;
+const DUR = 24.0;
+const XF = 0.4;
+/* Three segments. The cover is a short establishing shot now, not the whole
+   film: the pages are what is worth looking at. */
+const COVER_D = 4.0, PAGES_D = 16.0, OFFER_D = 4.0;
 
 const COVER = '/assets/covers/lamhat-mubdia.jpg';
 const SEAL = '/assets/img/seal.png';
@@ -43,11 +49,16 @@ const MARK = '/assets/img/wordmark.png';
 /* ---- Approved copy. From the live ladder on /rebuild/mubdia/ and from the
         cover's own printed subtitle. Single source; do not retype. ---- */
 const COPY = {
+  /* Beats two to five are QUOTED FROM THE BOOK, not written for the ad. That is
+     the whole point of the change: a promo for a reading should be made of the
+     reading. Sources in order — p05 الفجوات الخمس, p08 ٣ لحظات آها,
+     p09 إشارتكِ قبل التراجع, p13 خلاصة الخريطة. */
   beats: [
-    { at: 0.4,  to: 3.4,  lines: ['تبدئين بحماس…', 'ثم تتوقفين؟'], accent: true },
-    { at: 3.9,  to: 7.0,  lines: ['ليس كسلًا', 'ولا ضعف إرادة'] },
-    { at: 7.5,  to: 10.6, lines: ['أين تتعطّلين', 'بالضبط؟'], accent: true },
-    { at: 11.1, to: 14.2, lines: ['وما السلوك الذي يخدعكِ', 'وأنتِ تحسبينه إنجازًا'] }
+    { at: 0.5,  to: 3.8,  size: 78, lines: ['تبدئين بحماس…', 'ثم تتوقفين؟'], accent: true },
+    { at: 4.5,  to: 7.5,  size: 70, lines: ['تشتّتكِ ليس نقص انضباط،', 'بل فائض بدايات', 'بلا طقس إنهاء'], accent: true },
+    { at: 8.7,  to: 11.7, size: 70, lines: ['لا تملّين من مشاريعكِ،', 'بل تغادرين قبل', 'لحظة الحكم عليها'], accent: true },
+    { at: 12.9, to: 15.9, size: 70, lines: ['إشارتكِ الأولى:', 'فكرةٌ تلمع قرب', 'اكتمال مشروع'], accent: true },
+    { at: 17.1, to: 20.0, size: 66, lines: ['«قيمتي في البداية اللامعة،', 'لا في الإنهاء الصبور»'], accent: true }
   ],
   /* The opposite move from the 109 film. There, naming the path would list
      cheaper doors at the moment of decision; here the path IS the argument —
@@ -62,7 +73,7 @@ const COPY = {
 /* TikTok owns the edges: the action rail down the right from about y=950, the
    caption and handle across the bottom from about y=1500. Everything here lives
    inside x 120–960 and above y=1430. */
-const SAFE = { x: 120, typeTop: 1060, typeBottom: 1430 };
+const SAFE = { x: 120, typeTop: 1080, typeBottom: 1470 };
 
 /* ------------------------------------------------------------------ *
  * The plate: emerald ground, the cover as an object.
@@ -109,7 +120,7 @@ const plate = () => `
 <img class="mark" src="${MARK}" alt="">
 <div class="vig"></div>
 <script>
-  const SETTLE = 2.4, DUR = ${DUR};
+  const SETTLE = 2.0, DUR = ${COVER_D + XF};
   const out = p => 1 - Math.pow(1 - p, 3);
   window.setT = (t) => {
     const p = out(Math.min(t / SETTLE, 1));
@@ -132,7 +143,7 @@ const plate = () => `
  * ------------------------------------------------------------------ */
 const C = { ivory: '#FAF5EC', gold: '#C9A75E', goldSoft: '#E6D3A3' };
 
-const beatCard = (lines, accent) => `
+const beatCard = (lines, accent, size = 78) => `
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
@@ -144,7 +155,7 @@ const beatCard = (lines, accent) => `
     filter:blur(34px)}
   .rule{position:relative;width:120px;height:3px;background:${C.gold};margin:0 auto 26px}
   .line{position:relative;font-family:'El Messiri','Almarai',sans-serif;font-weight:700;
-    font-size:80px;line-height:1.6;color:${C.ivory};text-shadow:0 2px 20px rgba(0,0,0,.6)}
+    font-size:${size}px;line-height:1.52;color:${C.ivory};text-shadow:0 2px 20px rgba(0,0,0,.65)}
   .line + .line{margin-top:6px}
   .accent{color:${C.goldSoft}}
 </style>
@@ -154,12 +165,22 @@ const beatCard = (lines, accent) => `
   ${lines.map((l, i) => `<div class="line${accent && i === lines.length - 1 ? ' accent' : ''}">${l}</div>`).join('\n  ')}
 </div>`;
 
+/* Opaque, and it carries the cover: the last thing on screen should be the
+   object she is buying, not words floating on a ground. */
 const offerCard = () => `
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:${W}px;height:${H}px;overflow:hidden;background:transparent}
-  .wrap{position:absolute;top:${SAFE.typeTop - 40}px;right:${SAFE.x}px;left:${SAFE.x}px;
+  html,body{width:${W}px;height:${H}px;overflow:hidden}
+  body{background:
+      radial-gradient(66% 44% at 70% 10%, rgba(201,167,94,.20), transparent 62%),
+      linear-gradient(158deg,#12312A 0%,#0D241F 56%,#071613 100%)}
+  .cov{position:absolute;top:250px;left:50%;transform:translateX(-50%);width:540px;height:744px}
+  .cov img{display:block;width:100%;height:100%;border-radius:5px;
+    box-shadow:0 40px 84px rgba(0,0,0,.66), 0 0 0 1px rgba(214,186,128,.30)}
+  .cov::before{content:'';position:absolute;top:7px;bottom:7px;left:-11px;width:11px;
+    background:linear-gradient(90deg,#1c2b26,#efe9dc 55%,#c2b9a6);border-radius:3px 0 0 3px}
+  .wrap{position:absolute;top:${SAFE.typeTop + 20}px;right:${SAFE.x}px;left:${SAFE.x}px;
     direction:rtl;text-align:center}
   .scrim{position:absolute;inset:-170px -180px;
     background:radial-gradient(58% 62% at 50% 50%,rgba(6,20,17,.86),rgba(6,20,17,.44) 60%,transparent 78%);
@@ -179,6 +200,7 @@ const offerCard = () => `
   .url{position:relative;margin-top:28px;font-family:'Almarai',sans-serif;font-weight:400;
     font-size:34px;color:rgba(230,211,163,.88);letter-spacing:.04em;direction:ltr}
 </style>
+<div class="cov"><img src="${COVER}" alt=""></div>
 <div class="wrap">
   <div class="scrim"></div>
   <div class="kicker">${COPY.offerKicker}</div>
@@ -190,7 +212,7 @@ const offerCard = () => `
 
 /* ------------------------------------------------------------------ */
 const ROUTES = { plate: plate(), offer: offerCard() };
-COPY.beats.forEach((b, i) => { ROUTES['beat' + i] = beatCard(b.lines, b.accent); });
+COPY.beats.forEach((b, i) => { ROUTES['beat' + i] = beatCard(b.lines, b.accent, b.size); });
 
 const server = await serveSite(PORT, url => {
   const m = url.match(/^\/__l\/(.+)$/);
@@ -199,7 +221,7 @@ const server = await serveSite(PORT, url => {
 
 /* Keep the frames if a full set is already on disk: they take five minutes and
    nothing about them depends on the type, which is the layer that changes. */
-const FRAME_COUNT = Math.round(DUR * FPS);
+const FRAME_COUNT = Math.round((COVER_D + XF) * FPS);
 const haveFrames = existsSync(join(WORK, 'frames', `f${String(FRAME_COUNT - 1).padStart(4, '0')}.png`));
 await mkdir(join(WORK, 'frames'), { recursive: true });
 mkdirSync(OUT, { recursive: true });
@@ -216,7 +238,7 @@ for (const name of Object.keys(ROUTES)) {
   await p.goto(`http://127.0.0.1:${PORT}/__l/${name}`, { waitUntil: 'networkidle' });
   if (missing.length) throw new Error(`${name}: missing ${missing.join(', ')}`);
   await p.evaluate(() => document.fonts.ready);
-  await writeFile(join(WORK, `${name}.png`), await p.screenshot({ type: 'png', omitBackground: true }));
+  await writeFile(join(WORK, `${name}.png`), await p.screenshot({ type: 'png', omitBackground: name !== 'offer' }));
   await p.close();
 }
 console.log(`  ${Object.keys(ROUTES).length - 1} cards`);
@@ -230,7 +252,7 @@ if (haveFrames) {
   p.on('response', r => { if (r.status() >= 400) missing.push(r.url()); });
   await p.goto(`http://127.0.0.1:${PORT}/__l/plate`, { waitUntil: 'networkidle' });
   if (missing.length) throw new Error(`plate: missing ${missing.join(', ')}`);
-  const frames = Math.round(DUR * FPS);
+  const frames = FRAME_COUNT;
   const t0 = Date.now();
   for (let i = 0; i < frames; i++) {
     /* Wait for the compositor to present, not just for the style to be set. */
@@ -274,20 +296,33 @@ const BED = join(WORK, 'bed.wav');
     '-map', '[a]', '-ac', '2', '-ar', '48000', BED], 'bed');
 }
 
-const inputs = ['-framerate', String(FPS), '-i', join(WORK, 'frames', 'f%04d.png')];
-const chains = [`[0:v]fps=${FPS},format=yuv420p,setsar=1[base]`];
-
-/* Every card lives on the same continuous shot: no cuts at all, the words
-   simply change. A cut here would break the one thing this film has, which is
-   an unbroken look at the object. */
-const CARDS = [
-  ...COPY.beats.map((x, i) => ({ file: `beat${i}.png`, ...x })),
-  { file: 'offer.png', at: 14.7, to: DUR }
+/* Three segments, crossfaded: cover → pages → offer. The page turns inside the
+   middle segment are its own transitions, exactly as in the 109 film. */
+const PAGEDIR = join(AD, 'lamhat-book');
+if (!existsSync(join(PAGEDIR, 'f0000.png'))) {
+  throw new Error(`missing page frames: ${PAGEDIR} (run lamhat-pages.mjs)`);
+}
+const inputs = [
+  '-framerate', String(FPS), '-i', join(WORK, 'frames', 'f%04d.png'),
+  '-framerate', String(FPS), '-i', join(PAGEDIR, 'f%04d.png'),
+  '-loop', '1', '-t', String(OFFER_D), '-i', join(WORK, 'offer.png')
 ];
+const chains = [
+  /* fps LAST in each chain: setpts after it wipes the frame-rate metadata and
+     xfade then refuses the link. */
+  `[0:v]trim=end_frame=${Math.round((COVER_D + XF) * FPS)},setpts=N/${FPS}/TB,format=yuv420p,setsar=1,fps=${FPS}[v0]`,
+  `[1:v]trim=end_frame=${Math.round((PAGES_D + XF) * FPS)},setpts=N/${FPS}/TB,format=yuv420p,setsar=1,fps=${FPS}[v1]`,
+  `[2:v]format=yuv420p,setsar=1,fps=${FPS}[v2]`,
+  `[v0][v1]xfade=transition=fade:duration=${XF}:offset=${COVER_D}[x0]`,
+  `[x0][v2]xfade=transition=fade:duration=${XF}:offset=${COVER_D + PAGES_D}[base]`
+];
+
+/* Type last, over the finished motion — never baked into a moving plate. */
+const CARDS = COPY.beats.map((x, i) => ({ file: `beat${i}.png`, at: x.at, to: x.to }));
 
 let stream = '[base]';
 CARDS.forEach((c, i) => {
-  const idx = i + 1;
+  const idx = 3 + i;
   const dur = c.to - c.at;
   inputs.push('-loop', '1', '-t', String(dur.toFixed(3)), '-i', join(WORK, c.file));
   const fd = 0.32;
@@ -304,17 +339,17 @@ const enc = ['-c:v', 'libx264', '-profile:v', 'high', '-preset', 'slow', '-crf',
   '-pix_fmt', 'yuv420p', '-r', String(FPS), '-movflags', '+faststart',
   '-t', String(DUR), '-fps_mode', 'cfr'];
 
-const withSound = join(OUT, 'nizamok-lamhat-tiktok-9x16-18s.mp4');
-const silent = join(OUT, 'nizamok-lamhat-tiktok-9x16-18s-silent.mp4');
+const withSound = join(OUT, 'nizamok-lamhat-tiktok-9x16-24s.mp4');
+const silent = join(OUT, 'nizamok-lamhat-tiktok-9x16-24s-silent.mp4');
 
 ff([...inputs, '-i', BED, '-filter_complex', chains.join(';'),
-  '-map', '[vout]', '-map', `${CARDS.length + 1}:a`,
+  '-map', '[vout]', '-map', `${CARDS.length + 3}:a`,
   ...enc, '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-ac', '2', '-shortest', withSound], 'sound');
 ff([...inputs, '-filter_complex', chains.join(';'), '-map', '[vout]', '-an', ...enc, silent], 'silent');
 
 /* A vertical cover frame doubles as the TikTok thumbnail. */
 const poster = join(OUT, 'nizamok-lamhat-tiktok-poster-1080x1920.jpg');
-ff(['-i', join(WORK, 'frames', 'f0090.png'), '-i', join(WORK, 'beat0.png'),
+ff(['-i', join(WORK, 'frames', 'f0100.png'), '-i', join(WORK, 'beat0.png'),
   '-filter_complex', '[0:v][1:v]overlay', '-frames:v', '1', '-q:v', '2', poster], 'poster');
 
 console.log('\n  check');
