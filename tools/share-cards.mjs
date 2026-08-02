@@ -52,12 +52,13 @@ const server = createServer(async (req, res) => {
   const url = req.url.split('?')[0];
   /* The card itself is served, not injected with setContent, so the page has a
      real origin and the font URLs resolve without a <base> rewrite. */
-  const m = url.match(/^\/__card\/([a-z]+)$/);
+  const m = url.match(/^\/__card\/([a-z]+)\/([a-z]+)$/);
   if (m) {
     const p = PATTERNS.find(x => x.slug === m[1]);
-    if (!p) { res.writeHead(404).end(); return; }
+    const f = FORMATS[m[2]];
+    if (!p || !f) { res.writeHead(404).end(); return; }
     res.writeHead(200, { 'Content-Type': MIME['.html'] });
-    res.end(card(p));
+    res.end(card(p, f));
     return;
   }
   try {
@@ -70,11 +71,23 @@ const server = createServer(async (req, res) => {
 });
 await new Promise(r => server.listen(PORT, '127.0.0.1', r));
 
-const card = (p) => `
+/* Two formats.
+   `og`    1200x630  — the link preview WhatsApp, X, Telegram and Facebook fetch.
+   `story` 1080x1920 — what she posts to Instagram, TikTok and Snapchat, none of
+                       which accept a shared link at all. On those platforms the
+                       image IS the share, so a landscape card is the wrong
+                       object: it would sit in a letterboxed band in a 9:16
+                       frame. */
+const FORMATS = {
+  og:    { w: 1200, h: 630,  suffix: '',        seal: 104, kicker: 24, name: 82,  truth: 33, para: 25, padB: 86, footB: 34, cta: false },
+  story: { w: 1080, h: 1920, suffix: '-story',  seal: 168, kicker: 34, name: 108, truth: 46, para: 33, padB: 150, footB: 90, cta: true }
+};
+
+const card = (p, f) => `
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:1200px;height:630px;overflow:hidden}
+  html,body{width:${f.w}px;height:${f.h}px;overflow:hidden}
   body{
     display:flex;align-items:center;justify-content:center;
     background:
@@ -84,10 +97,10 @@ const card = (p) => `
     color:#FAF5EC;direction:rtl;
   }
   .frame{
-    width:1112px;height:542px;border:1px solid rgba(214,186,128,0.42);
+    width:${f.w - 88}px;height:${f.h - 88}px;border:1px solid rgba(214,186,128,0.42);
     border-radius:14px;position:relative;
     display:flex;flex-direction:column;justify-content:center;
-    padding:0 74px 86px;
+    padding:0 ${f.w > 1100 ? 74 : 68}px ${f.padB}px;
   }
   .frame::before,.frame::after{
     content:'';position:absolute;width:54px;height:54px;
@@ -97,32 +110,37 @@ const card = (p) => `
   .frame::after{bottom:-1px;left:-1px;border-right:0;border-top:0;border-radius:0 0 0 14px}
   /* The mandala seal is the brand's primary mark; the wordmark alone made the
      card read as a generic quote graphic. */
-  .seal{height:104px;width:104px;margin-bottom:14px;opacity:.97}
+  .seal{height:${f.seal}px;width:${f.seal}px;margin-bottom:${f.cta?44:14}px;opacity:.97}
   .kicker{
-    font-family:'Almarai',sans-serif;font-weight:400;font-size:24px;
-    letter-spacing:.06em;color:#E6D3A3;margin-bottom:16px;
+    font-family:'Almarai',sans-serif;font-weight:400;font-size:${f.kicker}px;
+    letter-spacing:.06em;color:#E6D3A3;margin-bottom:${f.cta?40:16}px;
   }
   .name{
     font-family:'El Messiri','Almarai',sans-serif;font-weight:700;
-    font-size:82px;line-height:1.22;color:#FAF5EC;margin-bottom:20px;
+    font-size:${f.name}px;line-height:1.22;color:#FAF5EC;margin-bottom:${f.cta?46:20}px;
   }
-  .rule{width:112px;height:1px;background:rgba(214,186,128,0.65);margin-bottom:20px}
+  .rule{width:${f.cta?150:112}px;height:1px;background:rgba(214,186,128,0.65);margin-bottom:${f.cta?46:20}px}
   .truth{
-    font-family:'Almarai',sans-serif;font-weight:400;font-size:33px;
-    line-height:1.6;color:#E6D3A3;max-width:930px;margin-bottom:14px;
+    font-family:'Almarai',sans-serif;font-weight:400;font-size:${f.truth}px;
+    line-height:1.6;color:#E6D3A3;margin-bottom:${f.cta?38:14}px;
   }
   .para{
-    font-family:'Almarai',sans-serif;font-weight:300;font-size:25px;
-    line-height:1.78;color:rgba(250,245,236,0.80);max-width:930px;
+    font-family:'Almarai',sans-serif;font-weight:300;font-size:${f.para}px;
+    line-height:1.78;color:rgba(250,245,236,0.80);
+  }
+  .invite{
+    font-family:'Almarai',sans-serif;font-weight:400;font-size:34px;
+    line-height:1.75;color:#E6D3A3;margin-top:84px;
+    padding-top:50px;border-top:1px solid rgba(214,186,128,0.30);
   }
   .foot{
-    position:absolute;bottom:34px;left:74px;right:74px;
+    position:absolute;bottom:${f.footB}px;left:${f.w>1100?74:68}px;right:${f.w>1100?74:68}px;
     display:flex;align-items:center;justify-content:space-between;
   }
   .brand{display:flex;align-items:center;gap:14px}
-  .brand img{height:34px;width:auto;opacity:.95}
+  .brand img{height:${f.cta?52:34}px;width:auto;opacity:.95}
   .cta{
-    font-family:'Almarai',sans-serif;font-weight:400;font-size:24px;
+    font-family:'Almarai',sans-serif;font-weight:400;font-size:${f.cta?32:24}px;
     color:rgba(230,211,163,0.86);letter-spacing:.03em;
   }
 </style>
@@ -133,6 +151,7 @@ const card = (p) => `
   <div class="rule"></div>
   <div class="truth">${p.truth}</div>
   <div class="para">${p.para}</div>
+  ${f.cta ? '<div class="invite">اكتشفي نمطكِ في ثلاث دقائق، بلا بريد وبلا دفع.</div>' : ''}
   <div class="foot">
     <div class="brand"><img src="/assets/img/wordmark.png" alt=""></div>
     <div class="cta">nizamok.com</div>
@@ -141,17 +160,20 @@ const card = (p) => `
 
 await mkdir(OUT, { recursive: true });
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
-const page = await (await b.newContext({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 })).newPage();
-
-for (const p of PATTERNS) {
-  await page.goto(`http://127.0.0.1:${PORT}/__card/${p.slug}`, { waitUntil: 'load' });
-  await page.evaluate(() => document.fonts.ready);
-  const buf = await page.screenshot({ type: 'jpeg', quality: 88 });
-  const file = join(OUT, `natija-${p.slug}.jpg`);
-  await writeFile(file, buf);
-  console.log(`  ${p.slug.padEnd(11)} ${(buf.length / 1024).toFixed(0)} KB  ${p.name}`);
+for (const [key, f] of Object.entries(FORMATS)) {
+  const ctx = await b.newContext({ viewport: { width: f.w, height: f.h }, deviceScaleFactor: 1 });
+  const page = await ctx.newPage();
+  console.log(`\n  ${key}  ${f.w}x${f.h}`);
+  for (const p of PATTERNS) {
+    await page.goto(`http://127.0.0.1:${PORT}/__card/${p.slug}/${key}`, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    const buf = await page.screenshot({ type: 'jpeg', quality: 88 });
+    await writeFile(join(OUT, `natija-${p.slug}${f.suffix}.jpg`), buf);
+    console.log(`    ${p.slug.padEnd(11)} ${(buf.length / 1024).toFixed(0).padStart(3)} KB  ${p.name}`);
+  }
+  await ctx.close();
 }
 
 await b.close();
 server.close();
-console.log(`\n${PATTERNS.length} بطاقات مشاركة، 1200x630، في site/assets/share/`);
+console.log(`\n${PATTERNS.length * Object.keys(FORMATS).length} بطاقة في site/assets/share/`);

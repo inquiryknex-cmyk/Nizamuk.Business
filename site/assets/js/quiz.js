@@ -737,13 +737,15 @@
     sub: 'Send her the pattern. She can find her own in three minutes, no email.',
     text: (n) => 'My pattern in the NizamOk quiz: ' + n + '. Twelve real moments, three minutes, no email required. Find yours:',
     subject: (n) => 'My pattern in the NizamOk quiz: ' + n,
-    native: 'Share', copy: 'Copy link', copied: 'Link copied', email: 'Email'
+    native: 'Share', copy: 'Copy link', copied: 'Link copied', email: 'Email',
+    story: 'Story image', saved: 'Image saved. Post it and add the link.'
   } : {
     heading: 'عرفتِ إحداهنّ في هذه القراءة؟',
     sub: 'أرسلي لها النمط. تكتشف نمطها هي في ثلاث دقائق، بلا بريد وبلا دفع.',
     text: (n) => 'نمطي في اختبار نظامك: ' + n + '. اثنا عشر مشهدًا في ثلاث دقائق، بلا بريد وبلا دفع. اكتشفي نمطكِ:',
     subject: (n) => 'نمطي في اختبار نظامك: ' + n,
-    native: 'مشاركة', copy: 'نسخ الرابط', copied: 'نُسخ الرابط', email: 'بريد'
+    native: 'مشاركة', copy: 'نسخ الرابط', copied: 'نُسخ الرابط', email: 'بريد',
+    story: 'صورة للستوري', saved: 'حُفظت الصورة. انشريها وأضيفي الرابط.'
   };
 
   /* Inline SVG, because an icon font or a sprite would be a second request on
@@ -755,7 +757,8 @@
     telegram: '<path d="M21 4L3 11l5 2 2 5 3-4 5 4z"/><path d="M8 13l9-7"/>',
     facebook: '<path d="M14 8h2V5h-2a3 3 0 00-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.6c0-.4.3-.6.6-.6z"/>',
     email: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
-    copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a2 2 0 00-2 2v9"/>'
+    copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a2 2 0 00-2 2v9"/>',
+    story: '<rect x="6" y="3" width="12" height="18" rx="2.5"/><circle cx="12" cy="10" r="2.6"/><path d="M6 17l3.2-3 2.4 2 2.6-2.6L18 17"/>'
   };
   const svg = (k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" ' +
     'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICON[k] + '</svg>';
@@ -764,6 +767,28 @@
     /* English has no natija page, so it shares the English quiz itself. */
     const path = I18N ? location.pathname : ((CONFIG.natijaPages || {})[dom] || '/ikhtibar/');
     return location.origin + path + '?utm_source=share&utm_medium=social&utm_campaign=quiz_result';
+  }
+
+  /* Public slug, derived from the one map that reconciles it: '/natija/asirat/'
+     for the internal key 'asira'. */
+  function publicSlug(dom) {
+    const path = (CONFIG.natijaPages || {})[dom] || '';
+    return path.split('/').filter(Boolean).pop() || dom;
+  }
+
+  /* Instagram, TikTok and Snapchat accept no shared link at all: none of them
+     publishes a web share intent, so there is no URL to put behind a button.
+     What they do accept is an image. So the story card, 1080x1920, is offered
+     as a FILE: on a phone that supports Web Share Level 2 it goes straight into
+     the OS sheet, where those three appear alongside everything else. Where it
+     does not, the image downloads and she posts it herself.
+
+     Note the URL is unversioned, unlike the og:image in the natija pages. This
+     one is fetched by the browser at share time rather than cached by a
+     scraper, so a regenerated card is stale for at most the week in _headers,
+     and it self-heals. */
+  function storyCardUrl(dom) {
+    return location.origin + '/assets/share/natija-' + publicSlug(dom) + '-story.jpg';
   }
 
   function renderShare(dom) {
@@ -797,6 +822,8 @@
           SHARE.email + '">' + svg('email') + '<span>' + SHARE.email + '</span></a>' +
         '<button type="button" class="share-btn share-copy" data-share="copy">' +
           svg('copy') + '<span>' + SHARE.copy + '</span></button>' +
+        (I18N ? '' : '<button type="button" class="share-btn share-story" data-share="story">' +
+          svg('story') + '<span>' + SHARE.story + '</span></button>') +
       '</div>' +
       '<span class="share-note" hidden aria-live="polite"></span>';
 
@@ -839,12 +866,59 @@
 
       if (channel === 'copy') { e.preventDefault(); copyLink(); }
 
+      if (channel === 'story') {
+        e.preventDefault();
+        el.disabled = true;
+        shareStory(dom, name, text, flash).then(function (how) {
+          el.disabled = false;
+          fire('story_' + how);
+        });
+        return;                      /* fire() is called with the real outcome */
+      }
+
       /* mailto is silently dead on a desktop with no mail client, so the link
          is left to try first and the copy path is offered right after. */
       if (channel === 'email') setTimeout(() => flash(SHARE.copy + ': ' + url), 1200);
 
       fire(channel);
     });
+  }
+
+  /* Resolves to how it went: 'native' if the OS sheet took the image,
+     'cancel' if she dismissed it, 'download' if the file had to be saved.
+     Never rejects — a failure here must not break the result screen. */
+  function shareStory(dom, name, text, flash) {
+    const url = storyCardUrl(dom);
+    const filename = 'nizamok-' + publicSlug(dom) + '.jpg';
+
+    const save = function () {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      flash(SHARE.saved);
+      return 'download';
+    };
+
+    if (!(window.File && navigator.canShare && navigator.share && window.fetch)) {
+      return Promise.resolve(save());
+    }
+
+    return fetch(url)
+      .then(function (r) { return r.ok ? r.blob() : Promise.reject(new Error('http ' + r.status)); })
+      .then(function (blob) {
+        const file = new File([blob], filename, { type: 'image/jpeg' });
+        if (!navigator.canShare({ files: [file] })) return save();
+        /* Once the sheet is open the outcome is hers. A rejection here is a
+           dismissal, not a failure, so we must NOT then force a download. */
+        return navigator.share({ files: [file], text: text })
+          .then(function () { return 'native'; })
+          .catch(function () { return 'cancel'; });
+      })
+      .catch(function () { return save(); });
   }
 
   function fallbackCopy(str, done) {

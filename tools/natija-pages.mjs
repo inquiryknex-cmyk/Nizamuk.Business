@@ -40,7 +40,7 @@ async function cardVersion(slug) {
   }
   return createHash('sha256').update(buf).digest('hex').slice(0, 8);
 }
-const V = { css: '20260801h', analytics: '20260801a', main: '20260801b' };
+const V = { css: '20260801i', analytics: '20260801a', main: '20260801b' };
 
 /* slug = public URL, key = internal quiz key. The mismatch is deliberate and
    already documented in config.js; this is the second place it is reconciled. */

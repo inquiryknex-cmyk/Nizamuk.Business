@@ -1191,6 +1191,15 @@ html[dir="rtl"] .video-play::after { transform: translateX(-3px); }
   background: rgba(201, 167, 94, 0.16);
   color: #FBF5E9;
 }
+/* The route to Instagram, TikTok and Snapchat, which take an image rather than
+   a link. Tinted rose so it reads as a different kind of action from the
+   link-sharing buttons beside it. */
+.share-btn.share-story {
+  border-color: rgba(227, 168, 172, 0.48);
+  background: rgba(227, 168, 172, 0.10);
+}
+.share-btn.share-story:hover { border-color: rgba(227, 168, 172, 0.85); }
+.share-btn[disabled] { opacity: 0.55; cursor: progress; transform: none; }
 .share-note {
   display: block; margin-top: 0.85rem; font-size: 0.8rem;
   color: var(--gold-soft); word-break: break-all;
@@ -1203,6 +1212,7 @@ html[dir="rtl"] .video-play::after { transform: translateX(-3px); }
      «close», not as a network. */
   .share-btn.share-native span,
   .share-btn.share-copy span,
+  .share-btn.share-story span,
   .share-btn.share-x span { display: inline; }
 }
 @media (prefers-reduced-motion: reduce) {
