@@ -203,6 +203,35 @@ test('extractPurchase pulls the real amount and the forwarded identity', () => {
   assert.equal(purchase.pattern, 'mubdia');
 });
 
+test('the ladder rung survives into the item, so 19 is not booked as 109', () => {
+  /* The regression this guards: item_id was once hard-coded `rebuild-${pattern}`,
+     written before لمحات 19 and جذور 49 existed. Every cheap sale would have
+     been reported as the full system, corrupting revenue-by-product. */
+  const lamhat = sampleEvent({
+    total_amount: 1900,
+    metadata: { ga_cid: '1.1', ga_sid: '2', pattern: 'mubdia', level: 'lamhat' }
+  });
+  const purchase = extractPurchase(lamhat);
+  assert.equal(purchase.value, 19);
+  assert.equal(purchase.level, 'lamhat');
+
+  const payload = buildPurchasePayload(purchase);
+  const params = payload.events[0].params;
+  assert.equal(params.level, 'lamhat');
+  assert.equal(params.items[0].item_id, 'lamhat-mubdia');
+  assert.equal(params.items[0].price, 19);
+  assert.notEqual(params.items[0].item_id, 'rebuild-mubdia');
+});
+
+test('a checkout link predating the ladder still books as the full system', () => {
+  /* No metadata_level means the link was minted before the rungs existed, and
+     those links only ever sold إعادة البناء. Defaulting beats a null item. */
+  const purchase = extractPurchase(sampleEvent());
+  assert.equal(purchase.level, 'rebuild');
+  const params = buildPurchasePayload(purchase).events[0].params;
+  assert.equal(params.items[0].item_id, 'rebuild-mubdia');
+});
+
 test('a payment with no metadata still yields a usable amount', () => {
   const purchase = extractPurchase(sampleEvent({ metadata: undefined }));
   assert.equal(purchase.value, 109);
