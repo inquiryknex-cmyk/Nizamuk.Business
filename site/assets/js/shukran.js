@@ -9,7 +9,7 @@
   visitor was actually charged.
 
   The conversion now comes from Dodo's signed `payment.succeeded` webhook, in
-  src/worker.js, where the amount is the real one and the signature is proof.
+  src/worker.mjs, where the amount is the real one and the signature is proof.
 
   There must never be two sources. If you are tempted to re-add a client-side
   fire here "just in case the webhook misses one", read docs §5 first: every
