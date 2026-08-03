@@ -20,7 +20,7 @@
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260801i">
-  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260803c">
+  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260803d">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -59,9 +59,17 @@
   <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:2%;opacity:0.40">
   <img class="flower fl-l" src="/assets/img/flower-l.png" alt="" width="220" height="220" style="bottom:4%;opacity:0.30" loading="lazy">
   <div class="container lm-hero-in">
-    <a class="lm-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
-      <img src="/assets/img/wordmark.png" alt="نظامك" width="460" height="150" loading="eager">
-    </a>
+    <div class="lm-topbar">
+      <a class="lm-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
+        <img src="/assets/img/wordmark.png" alt="نظامك" width="460" height="150" loading="eager">
+      </a>
+      <!-- العلامة تربط بالرئيسية أصلًا، لكنها لا تُقرأ زرًّا. وهذه صفحة هبوطٍ
+           تصلها زائرةٌ من إعلانٍ لا تعرف الموقع، فتحتاج مخرجًا مسمّى وواضحًا
+           في الطرف المقابل. -->
+      <a class="lm-home" href="/">
+        <span aria-hidden="true">⌂</span> الصفحة الرئيسية
+      </a>
+    </div>
 
     <div class="lm-hero-grid">
       <div class="lm-hero-copy">
