@@ -25,7 +25,7 @@
   same action counted twice.
 
   `purchase` is NOT fired here — a click on Dodo is not a sale. It is fired
-  server-side by src/worker.js when Dodo's signed `payment.succeeded` webhook
+  server-side by src/worker.mjs when Dodo's signed `payment.succeeded` webhook
   arrives. What this file must do is hand the visitor's GA4 identity to Dodo on
   the way out, as `metadata_*` query params: without them the webhook has no
   way to say WHICH session bought, GA4 invents a new user, and the sale is
@@ -139,7 +139,7 @@
 
     /* Hand our GA4 identity to Dodo. Its checkout collects every query
        parameter into the session it creates and returns the `metadata_*` ones
-       on the webhook, which is how src/worker.js learns who bought and what.
+       on the webhook, which is how src/worker.mjs learns who bought and what.
 
        The href in the markup is already a complete, working checkout link —
        we only decorate it. Rewriting it here (capture phase, before the

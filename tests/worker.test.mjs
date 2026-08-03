@@ -1,5 +1,5 @@
 /*
-  Tests for the parts of src/worker.js that handle money and proof.
+  Tests for the parts of src/worker.mjs that handle money and proof.
 
   These two things are why this file exists:
 

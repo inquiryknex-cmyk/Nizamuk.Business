@@ -3,7 +3,7 @@
 # This was an assets-only Worker until the purchase conversion moved
 # server-side. The static site is unchanged and still lives entirely in ./site
 # — _headers and _redirects there are still honored — but a Worker script now
-# sits in front of it to receive one webhook. See src/worker.js.
+# sits in front of it to receive one webhook. See src/worker.mjs.
 name = "nizamok"
 main = "src/worker.mjs"
 compatibility_date = "2026-07-01"
