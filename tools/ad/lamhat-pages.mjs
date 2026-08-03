@@ -32,17 +32,27 @@ import { serveSite } from './stage.mjs';
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 
-const PORT = 8995;
+const PORT = 9021;
 const SRC = '/home/user/Nizamuk.Business/build/ad/lamhat-src';
 const OUT = '/home/user/Nizamuk.Business/build/ad/lamhat-book';
 const FPS = 30;
 
-/* 16.400s on the timeline: four holds, three turns, plus the 0.4 the crossfade
-   out consumes. */
+/* 16.400s on the timeline: three holds, two turns, plus the 0.4 the crossfade
+   out consumes. THREE pages, not four — fewer pages held longer beats more
+   pages glimpsed, and these three carry the book on their own. */
 export const DUR = 16.4;
-const TURNS = [{ at: 3.70, d: 0.55 }, { at: 7.95, d: 0.55 }, { at: 12.20, d: 0.55 }];
+const TURNS = [{ at: 5.15, d: 0.55 }, { at: 10.30, d: 0.55 }];
 
-const PAGES = ['p05.png', 'p08.png', 'p09.png', 'p13.png'];
+/* Chosen for what they do, in this order:
+     p04  قراءة نمطكِ الغالب — the 65/15/10/10 bars. The one page that reads at a
+          glance on a phone even when the body text does not, and the one that
+          says «this is about you specifically» without a word.
+     p06  فجوة الإنتاج المتراكم + فجوة الهوية — «أعمالكِ عند ثمانين في المئة لا
+          يراها أحد» and «من أكون إن اكتمل العمل وكان عاديًا؟». The two hardest
+          sentences in the book.
+     p12  خطة ٣ أيام — numbered, dated, doable. Proof that something happens
+          after the diagnosis. */
+const PAGES = ['p04.png', 'p06.png', 'p12.png'];
 const BACKS = PAGES.map((_, i) => PAGES[(i + 2) % PAGES.length]);
 
 /* Full page WIDTH, windowed on its top. Cropping horizontally would cut lines

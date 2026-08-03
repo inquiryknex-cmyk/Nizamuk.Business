@@ -54,10 +54,12 @@ const COPY = {
      p09 إشارتكِ قبل التراجع, p13 خلاصة الخريطة. */
   beats: [
     { at: 0.5,  to: 3.8,  size: 78, lines: ['تبدئين بحماس…', 'ثم تتوقفين؟'], accent: true },
-    { at: 4.5,  to: 7.5,  size: 70, lines: ['تشتّتكِ ليس نقص انضباط،', 'بل فائض بدايات', 'بلا طقس إنهاء'], accent: true },
-    { at: 8.7,  to: 11.7, size: 70, lines: ['لا تملّين من مشاريعكِ،', 'بل تغادرين قبل', 'لحظة الحكم عليها'], accent: true },
-    { at: 12.9, to: 15.9, size: 70, lines: ['إشارتكِ الأولى:', 'فكرةٌ تلمع قرب', 'اكتمال مشروع'], accent: true },
-    { at: 17.1, to: 20.0, size: 66, lines: ['«قيمتي في البداية اللامعة،', 'لا في الإنهاء الصبور»'], accent: true }
+    /* p04 — قراءة نمطكِ الغالب */
+    { at: 4.6,  to: 9.0,  size: 68, lines: ['لستِ نمطًا واحدًا مغلقًا،', 'بل مزيجٌ من طبقات', 'تتداخل في قراراتكِ'], accent: true },
+    /* p06 — فجوة الإنتاج المتراكم */
+    { at: 9.9,  to: 14.3, size: 72, lines: ['أعمالكِ عند ثمانين', 'في المئة', 'لا يراها أحد'], accent: true },
+    /* p12 — خطة ٣ أيام */
+    { at: 15.2, to: 20.0, size: 66, lines: ['٣ أيام تكفي لتشعري بالفرق', 'بين يومٍ يقوده النمط', 'ويومٍ تقودينه أنتِ'], accent: true }
   ],
   /* The opposite move from the 109 film. There, naming the path would list
      cheaper doors at the moment of decision; here the path IS the argument —
