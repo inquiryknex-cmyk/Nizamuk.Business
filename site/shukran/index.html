@@ -28,8 +28,8 @@
     This runs in <head>, before config.js / analytics.js load at the end of body,
     so the address is gone from the URL before any tag reads it. payment_id and
     status are kept: they are opaque identifiers, not personal data, and
-    shukran.js needs them to fire the purchase conversion. debug_mode is kept so
-    DebugView still works through the funnel.
+    shukran.js reads status to know whether to say "thank you" at all.
+    debug_mode is kept so DebugView still works through the funnel.
   */
   (function stripPii() {
     try {
@@ -111,19 +111,16 @@
 </footer>
 
 <!--
-  The `purchase` conversion fires from shukran.js, and ONLY when Dodo redirects
-  here with its own payment_id and status=succeeded. It is deduplicated on
-  payment_id so a refresh or a back-navigation never double-counts.
-
-  This is not cryptographic proof of payment, a crafted URL could fake it. For
-  a server-verified conversion, use Dodo's webhook or its native GA4/GTM
-  integration; this is the documented fallback. See
-  docs/rebuild-landing-pages.md §القياس.
+  No conversion fires from this page. `purchase` is sent server-side by
+  src/worker.mjs when Dodo's signed `payment.succeeded` webhook arrives, so the
+  amount is the one actually charged and the event cannot be faked by typing a
+  URL. shukran.js is left with one job: not saying "thank you" for a payment
+  that failed. See docs/rebuild-landing-pages.md §القياس.
 -->
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
-<script src="/assets/js/shukran.js?v=20260802a"></script>
+<script src="/assets/js/shukran.js?v=20260803a"></script>
 <script>
   document.querySelectorAll('[data-year]').forEach(function (el) {
     el.textContent = new Date().getFullYear();
