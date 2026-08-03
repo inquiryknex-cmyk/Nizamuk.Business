@@ -102,6 +102,7 @@ const quizBlock = (p, pos, variant) => {
   const c = QUIZ_COPY[pos];
   return `
   <section class="lm-sec lm-quiz ${variant}" aria-labelledby="quizH-${pos}">
+    <img class="flower fl-l" src="/assets/img/flower-l.png" alt="" width="200" height="200" style="top:8%;opacity:0.22" loading="lazy">
     <div class="container lm-narrow">
       <h2 id="quizH-${pos}" class="lm-quiz-h">${c.h}</h2>
       <p class="lm-quiz-p">${c.p}</p>
@@ -141,7 +142,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260801i">
-  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260803b">
+  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260803c">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -169,10 +170,12 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
   }
   </script>
 </head>
-<body class="lm-body" data-lm-pattern="${p.slug}" data-lang-alt="/en/" style="--lm-ground:${p.ground};--lm-accent:${p.accent}">
+<body class="lm-body" data-lm-pattern="${p.slug}" data-ambient data-lang-alt="/en/" style="--lm-ground:${p.ground};--lm-accent:${p.accent}">
 
 <!-- ====== 1, الواجهة ====== -->
 <header class="lm-hero">
+  <img class="flower fl-r" src="/assets/img/flower-r.png" alt="" width="240" height="240" style="top:2%;opacity:0.40">
+  <img class="flower fl-l" src="/assets/img/flower-l.png" alt="" width="220" height="220" style="bottom:4%;opacity:0.30" loading="lazy">
   <div class="container lm-hero-in">
     <a class="lm-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
       <img src="/assets/img/wordmark.png" alt="نظامك" width="460" height="150" loading="eager">
@@ -181,7 +184,7 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
     <div class="lm-hero-grid">
       <div class="lm-hero-copy">
         <p class="lm-kicker">${p.kicker}</p>
-        <h1 class="lm-h1">${p.h1}</h1>
+        <h1 class="lm-h1">${p.h1a}<br><em>${p.h1b}</em></h1>
         <p class="lm-lead">${p.lead}</p>
         <p class="lm-price"><b>${nb('١٩ ر.س')}</b> <span>·  ملف PDF يصلكِ على بريدكِ بعد الدفع مباشرة</span></p>
         ${buy('hero', 'خذي اللمحة، ١٩ ر.س')}

@@ -25,7 +25,7 @@
 .lm-hero {
   background: var(--lm-ground);
   padding: clamp(18px, 3vw, 30px) 0 clamp(48px, 7vw, 86px);
-  position: relative;
+  position: relative; overflow: hidden;
 }
 .lm-hero::after {
   content: ''; position: absolute; inset-inline: 0; bottom: 0; height: 1px;
@@ -196,7 +196,7 @@
 .lm-ladder-foot { margin: 0; }
 
 /* ---------- 6, الاختبار: الزر الكبير ---------- */
-.lm-quiz { background: var(--lm-ground); padding: clamp(44px, 7vw, 78px) 0; }
+.lm-quiz { background: var(--lm-ground); padding: clamp(44px, 7vw, 78px) 0; position: relative; overflow: hidden; }
 .lm-quiz .lm-narrow { text-align: center; }
 .lm-quiz-h {
   margin: 0 0 14px; font-family: 'El Messiri', serif; font-weight: 700;
@@ -298,3 +298,7 @@
   content: '—'; position: absolute; inset-inline-start: 0; top: 0;
   color: var(--rose-deep); font-weight: 700;
 }
+
+/* شطرا العنوان: الجملة ثم سؤالها. السؤال هو ما تسأله هي عن نفسها، فيأخذ
+   لون التمييز ووزنًا أثقل. */
+.lm-h1 em { font-style: normal; color: var(--lm-accent); display: inline-block; }
