@@ -9,7 +9,7 @@ export default {
   slug: 'mubdia',
   name: 'المبدعة المشتّتة',
   /* لون الأرضية: الزمرّدي هو لون درجة «لمحات» في main.css. */
-  ground: 'linear-gradient(158deg,#12312A 0%,#0D241F 56%,#071613 100%)',
+  ground: 'linear-gradient(158deg,#102D30 0%,#0B2023 56%,#051315 100%)',
   accent: '#E6D3A3',
   cover: '/assets/covers/lamhat-mubdia.webp',
   coverJpg: '/assets/covers/lamhat-mubdia.jpg',

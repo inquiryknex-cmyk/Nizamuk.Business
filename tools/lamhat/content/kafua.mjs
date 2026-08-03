@@ -5,7 +5,7 @@
 export default {
   slug: 'kafua',
   name: 'الكفؤة المنهكة',
-  ground: 'linear-gradient(158deg,#1B3228 0%,#12241C 56%,#081511 100%)',
+  ground: 'linear-gradient(158deg,#102D30 0%,#0B2023 56%,#051315 100%)',
   accent: '#E8C88A',
   cover: '/assets/covers/lamhat-kafua.webp',
   coverJpg: '/assets/covers/lamhat-kafua.jpg',
@@ -17,7 +17,7 @@ export default {
 
   kicker: 'لمحات نظامك · الدرجة الأولى',
   h1a: 'الكلّ يعتمد عليكِ…',
-  h1b: 'فلماذا تنتهين وحدكِ ومنهكة؟',
+  h1b: 'فلماذا ينتهي بكِ المطافُ مستنزَفةً ومنهَكة؟',
   lead: 'ليست هذه دعوة إلى أن تصبحي قاسية. إنها قراءة لما يحدث في يومكِ حين تتحول قدرتكِ إلى تصريحٍ مفتوح: أين تتسرّب طاقتكِ، وما العلامة الصغيرة التي تسبق «أبشري».',
 
   mirrorH: 'هل يبدو يومكِ هكذا؟',

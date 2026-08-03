@@ -5,7 +5,7 @@
 export default {
   slug: 'asirat',
   name: 'أسيرة الكمال',
-  ground: 'linear-gradient(158deg,#14322F 0%,#0E2422 56%,#071615 100%)',
+  ground: 'linear-gradient(158deg,#102D30 0%,#0B2023 56%,#051315 100%)',
   accent: '#F0E9DC',
   cover: '/assets/covers/lamhat-asira.webp',
   coverJpg: '/assets/covers/lamhat-asira.jpg',
