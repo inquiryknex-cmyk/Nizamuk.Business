@@ -10,6 +10,12 @@
   لذلك الاختبار هنا زرٌّ أول بحجمٍ كامل، له قسمه الخاص فوق الطيّة، ويتكرر قبل
   الشراء النهائي. هذا انعكاسٌ متعمَّد للقاعدة المكتوبة في template.mjs الآخر،
   لا سهوٌ عنها.
+
+  ولا جدول محتويات هنا. النسخة الأولى عدّدت أقسام الكتاب الخمسة ووصفت كلًّا
+  منها، فصارت الصفحة خريطةً كافية لإعادة بناء المنهج في أي نموذج لغوي. ما
+  يُقنع بالشراء هو أن تتعرّف على نفسها ويثق قلبها بالكتابة — لا أن تعرف
+  ترتيب الفصول. فحلّت المخرجات محلّ المحتويات، وحُذفت أرقام الصفحات لأنها
+  ترسم الخريطة نفسها.
 */
 
 const PRICE = 19;
@@ -21,7 +27,7 @@ const RUNGS = [
   { k: 'taqrir',  t: 'تقرير نمطكِ',      p: 'مجاني',   d: 'من أنتِ في هذا النمط، يصلكِ على بريدكِ بعد الاختبار.', href: null },
   { k: 'lamhat',  t: 'لمحات نظامك',      p: '١٩ ر.س',  d: 'ما يفعله النمط داخل يومكِ، وخطة ٣ أيام.', href: null },
   { k: 'juthur',  t: 'جذور نمطكِ',       p: '٤٩ ر.س',  d: 'من أين بدأ النمط، وما الشعور الذي يحميه، ولماذا يعود.', href: '/almasar/' },
-  { k: 'rebuild', t: 'نظام إعادة البناء', p: '١٠٩ ر.س', d: 'خمس مراحل، وخطة ٣٠ يومًا، ومسار متابعة ٩٠ يومًا.', href: null }
+  { k: 'rebuild', t: 'نظام إعادة البناء', p: '١٠٩ ر.س', d: 'خمس مراحل، وخطة ٣٠ يومًا، ومسار متابعة ٩٠ يومًا.', href: '/rebuild/' }
 ];
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -47,14 +53,13 @@ const passages = (p) => {
       <div class="lm-quote-grid">
 ${p.passages.map(q => `        <figure class="lm-quote">
           <blockquote>${q.t}</blockquote>
-          <figcaption>صفحة ${q.p}</figcaption>
         </figure>`).join('\n')}
       </div>
     </div>
   </section>`;
 };
 
-const ladder = (slug) => `
+const ladder = (p) => `
   <section class="lm-sec lm-ladder-sec" aria-labelledby="ladderH">
     <div class="container lm-narrow">
       <h2 id="ladderH" class="lm-h2">أين تقع هذه اللمحة؟</h2>
@@ -66,7 +71,7 @@ ${RUNGS.map(r => {
             <span class="lm-rung-p">${nb(r.p)}</span>
             <span class="lm-rung-d">${r.d}</span>
             ${here ? '<span class="lm-here">أنتِ هنا</span>' : ''}`;
-  return `        <li class="lm-rung${here ? ' is-here' : ''}"${here ? ' aria-current="step"' : ''}>
+  return `        <li class="lm-rung rung-${r.k}${here ? ' is-here' : ''}"${here ? ' aria-current="step"' : ''}>
           ${r.href ? `<a href="${r.href}">${inner}</a>` : `<div>${inner}</div>`}
         </li>`;
 }).join('\n')}
@@ -136,7 +141,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260801i">
-  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260803a">
+  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260803b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -207,19 +212,37 @@ ${li(p.mirror)}
 <!-- ====== 4, من داخل الكتاب (يظهر فقط حين يوجد نصّ حقيقي) ====== -->
 ${passages(p)}
 
-<!-- ====== 5, ما الذي تفتحه اللمحة ====== -->
-<section class="lm-sec lm-inside" aria-labelledby="insideH">
+<!-- ====== 5, ما ستخرجين به — مخرجات لا محتويات ====== -->
+<section class="lm-sec lm-inside" aria-labelledby="outH">
   <div class="container lm-narrow">
-    <h2 id="insideH" class="lm-h2">${p.insideH}</h2>
-    <ul class="lm-in-list" role="list">
-${insideRows(p.inside)}
+    <h2 id="outH" class="lm-h2">${p.outcomesH}</h2>
+    <ul class="lm-out-list" role="list">
+${p.outcomes.map(o => `          <li>${o}</li>`).join('\n')}
     </ul>
-    <p class="lm-promise"><span>${p.promiseH}</span>${p.promise}</p>
+    <p class="lm-readtime">قراءةٌ أولى في ٧ دقائق، وثانيةٌ تعودين فيها إلى ما آلمكِ.</p>
+  </div>
+</section>
+
+<!-- ====== 5ب, اعتراض الدفع ====== -->
+<section class="lm-sec lm-why" aria-labelledby="whyH">
+  <div class="container lm-narrow">
+    <h2 id="whyH" class="lm-h2">${p.whyH}</h2>
+    <p class="lm-why-p">${p.why}</p>
+  </div>
+</section>
+
+<!-- ====== 5ج, ما لن تجديه ====== -->
+<section class="lm-sec lm-not" aria-labelledby="notH">
+  <div class="container lm-narrow">
+    <h2 id="notH" class="lm-h2">${p.notH}</h2>
+    <ul class="lm-not-list" role="list">
+${p.not.map(n => `          <li>${n}</li>`).join('\n')}
+    </ul>
   </div>
 </section>
 
 <!-- ====== 6, السلّم ====== -->
-${ladder(p.slug)}
+${ladder(p)}
 
 <!-- ====== 7, الزر الكبير مرة أخرى، قبل القرار ====== -->
 ${quizBlock(p, 'mid', 'is-mid')}
@@ -229,7 +252,7 @@ ${quizBlock(p, 'mid', 'is-mid')}
   <div class="container lm-narrow">
     <h2 id="buyH" class="lm-h2">لمحات نظامك · ${p.name}</h2>
     <p class="lm-buy-price">${nb('١٩ ر.س')}</p>
-    <p class="lm-buy-d">${p.promise}</p>
+    <p class="lm-buy-d">${p.outcomes[p.outcomes.length - 1]}</p>
     ${buy('final', 'خذي اللمحة الآن')}
     <p class="lm-assure">السعر شامل الضرائب · وصولٌ رقميّ فوري · دعم على support@nizamok.com</p>
   </div>

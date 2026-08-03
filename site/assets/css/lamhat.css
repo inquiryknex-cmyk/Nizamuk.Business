@@ -160,9 +160,30 @@
 .lm-rung-p { color: var(--gold-deep); font-family: 'El Messiri', serif; white-space: nowrap; }
 .lm-rung-d { grid-column: 1 / -1; font-size: .9rem; line-height: 1.8; color: var(--ink-soft); }
 
-/* الدرجة الحالية: العلامة الوحيدة الملوّنة في القائمة، فلا تُقرأ كزرّ. */
+/* كل درجةٍ مدفوعة تحمل لون درجتها من main.css: الزمرّدي للمحات، العنّابي
+   لجذور، البنفسجي لإعادة البناء. المجانيتان تبقيان عاجيتين، فيُقرأ السلّم
+   لونًا قبل أن يُقرأ نصًّا، وتُعرف الدرجة حيثما ظهرت في الموقع. */
+.lm-rung.rung-lamhat  > a, .lm-rung.rung-lamhat  > div {
+  background: linear-gradient(168deg, #175446 0%, var(--tier-lamhat) 55%, #092620 100%);
+  border-color: transparent;
+}
+.lm-rung.rung-juthur  > a, .lm-rung.rung-juthur  > div {
+  background: linear-gradient(168deg, #61202F 0%, var(--tier-juthur) 55%, #300C14 100%);
+  border-color: transparent;
+}
+.lm-rung.rung-rebuild > a, .lm-rung.rung-rebuild > div {
+  background: linear-gradient(168deg, #4A3566 0%, var(--tier-rebuild) 55%, #201530 100%);
+  border-color: transparent;
+}
+.lm-rung.rung-lamhat .lm-rung-t, .lm-rung.rung-juthur .lm-rung-t, .lm-rung.rung-rebuild .lm-rung-t { color: var(--star); }
+.lm-rung.rung-lamhat .lm-rung-p, .lm-rung.rung-juthur .lm-rung-p, .lm-rung.rung-rebuild .lm-rung-p { color: var(--gold-soft); }
+.lm-rung.rung-lamhat .lm-rung-d, .lm-rung.rung-juthur .lm-rung-d, .lm-rung.rung-rebuild .lm-rung-d { color: rgba(247,239,223,.78); }
+.lm-rung.rung-juthur > a:hover, .lm-rung.rung-rebuild > a:hover { filter: brightness(1.14); }
+
+/* «أنتِ هنا» يعلّم الدرجة الحالية بإطارٍ ذهبي، لا بلونٍ مختلف — لونها
+   محجوز لدرجتها. */
 .lm-rung.is-here > div {
-  background: var(--lm-ground); border-color: transparent;
+  outline: 2px solid var(--gold-soft); outline-offset: 2px;
 }
 .lm-rung.is-here .lm-rung-t { color: var(--star); }
 .lm-rung.is-here .lm-rung-p { color: var(--lm-accent); }
@@ -241,4 +262,39 @@
 @media (prefers-reduced-motion: reduce) {
   .lm-buy, .lm-quiz-btn { transition: none; }
   .lm-buy:hover, .lm-quiz-btn:hover { transform: none; }
+}
+
+
+/* ---------- المخرجات، والاعتراض، وما لن تجديه ---------- */
+.lm-out-list { list-style: none; margin: 0 0 22px; padding: 0; }
+.lm-out-list li {
+  position: relative; padding-inline-start: 34px; margin-bottom: 16px;
+  line-height: 1.95; color: var(--ink); font-size: 1.03rem;
+}
+.lm-out-list li::before {
+  content: '✓'; position: absolute; inset-inline-start: 0; top: 0;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--tier-lamhat); color: var(--gold-soft);
+  display: grid; place-items: center; font-size: .8rem;
+}
+.lm-readtime {
+  margin: 0; padding: 14px 18px; border-radius: 10px;
+  background: var(--ivory-2); color: var(--ink-soft); font-size: .93rem;
+}
+
+.lm-why { background: var(--ivory-2); padding-top: clamp(46px, 7vw, 84px); }
+.lm-why-p {
+  margin: 0; padding: 24px 26px; background: var(--card);
+  border-radius: 12px; border-inline-start: 3px solid var(--gold);
+  line-height: 2.05; color: var(--ink); font-size: 1.02rem;
+}
+
+.lm-not-list { list-style: none; margin: 0; padding: 0; }
+.lm-not-list li {
+  position: relative; padding-inline-start: 30px; margin-bottom: 14px;
+  line-height: 1.9; color: var(--ink-soft);
+}
+.lm-not-list li::before {
+  content: '—'; position: absolute; inset-inline-start: 0; top: 0;
+  color: var(--rose-deep); font-weight: 700;
 }

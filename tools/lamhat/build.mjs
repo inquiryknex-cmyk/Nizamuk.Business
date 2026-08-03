@@ -31,9 +31,20 @@ for (const p of [mubdia, asirat, kafua, mutafadia]) {
     }
   }
 
+  const html = renderPage(p);
+
+  /* حقلٌ حُذف من ملف المحتوى ولم يُحذف من القالب يطبع «undefined» في الصفحة
+     المنشورة بلا أي خطأ. حدث هذا فعلًا حين حلّت outcomes محلّ promise، وظهرت
+     الكلمة تحت السعر مباشرةً في قسم الشراء. البناء يتوقف الآن بدل أن يمرّ. */
+  for (const bad of ['undefined', 'null', 'NaN', '[object Object]']) {
+    if (html.includes(`>${bad}<`) || html.includes(`"${bad}"`)) {
+      throw new Error(`${p.slug}: القالب طبع «${bad}» — حقلٌ ناقص في ملف المحتوى`);
+    }
+  }
+
   const dir = join(ROOT, p.slug);
   mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, 'index.html'), renderPage(p), 'utf8');
+  writeFileSync(join(dir, 'index.html'), html, 'utf8');
 
   const hasQuotes = Array.isArray(p.passages) && p.passages.length > 0;
   if (hasQuotes) quoted++;
