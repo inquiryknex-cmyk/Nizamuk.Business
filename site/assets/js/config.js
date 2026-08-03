@@ -48,8 +48,27 @@ window.NIZAMOK = {
   // Set gtmId if you want to manage tags in GTM (recommended: Google Ads
   // conversion import lives there too). Set ga4Id alone for plain GA4.
   // If both are set, GTM wins and GA4 should be configured inside GTM.
-  // IMPORTANT: use the SAME property in Dodo's analytics integration, or the
-  // journey breaks across the checkout domain and purchase never ties back.
+  //
+  // DO NOT put this id into Dodo's own GA4 integration. An earlier note here
+  // said to, and it cost us: Dodo's hosted checkout then reported into this
+  // property and, on 2026-07-26, two sandbox test payments landed in live
+  // reporting as SAR 21,797.78 of revenue from a "purchaser" who never existed.
+  // Two failures compounded —
+  //   1. Dodo fires `purchase` on any successful payment and its docs draw no
+  //      distinction between test mode and live, so a sandbox payment lands in
+  //      the production property as real revenue, and
+  //   2. it sends `value` in minor units (10900 halalas read as SAR 10,900),
+  //      inflating every amount by 100×.
+  // It would also double-count, because `purchase` is already sent once, from
+  // src/worker.mjs, when Dodo's signed payment.succeeded webhook arrives. That
+  // is the ONE source. Nothing in the browser fires a purchase any more.
+  //
+  // ga4Id is not only handed to gtag: rebuild.js derives the session cookie
+  // name from it (_ga_<id minus the G- prefix>) to forward the visitor's GA4
+  // identity through checkout. Change the id and that follows automatically —
+  // but the same id must also be set as GA4_MEASUREMENT_ID in wrangler.toml,
+  // or the webhook will report into a different property than the site.
+  // See docs/rebuild-landing-pages.md §5.
   analytics: {
     gtmId: '',
     ga4Id: 'G-MVH7ZVH1KJ'   // NizamOK - property 545877279 - SAR - Riyadh
