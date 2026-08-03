@@ -47,9 +47,9 @@ const TURNS = [{ at: 5.15, d: 0.55 }, { at: 10.30, d: 0.55 }];
      p04  قراءة نمطكِ الغالب — the 65/15/10/10 bars. The one page that reads at a
           glance on a phone even when the body text does not, and the one that
           says «this is about you specifically» without a word.
-     p06  فجوة الإنتاج المتراكم + فجوة الهوية — «أعمالكِ عند ثمانين في المئة لا
-          يراها أحد» and «من أكون إن اكتمل العمل وكان عاديًا؟». The two hardest
-          sentences in the book.
+     p06  فجوة الإنتاج المتراكم + فجوة الهوية — «في ملفاتكِ مشاريع اكتمل معظمها
+          ثم توقفت قبل الخروج» and «من أكون إن اكتمل العمل وكان عاديًا؟». The two
+          hardest sentences in the book.
      p12  خطة ٣ أيام — numbered, dated, doable. Proof that something happens
           after the diagnosis. */
 const PAGES = ['p04.png', 'p06.png', 'p12.png'];

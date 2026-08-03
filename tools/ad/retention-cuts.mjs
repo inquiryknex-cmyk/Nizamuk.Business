@@ -107,9 +107,12 @@ const offerCard = () => `
 /* ---- The cards. Every word is already-approved copy from the book or the
         product page; nothing is newly written for these cuts. ---- */
 const CARDS = {
-  /* The hardest sentence in the book, and the one a creative woman recognises
-     in herself instantly. It is on p06, which is where the cut opens. */
-  recog:  beatCard(['أعمالكِ عند ثمانين', 'في المئة', 'لا يراها أحد'], 82),
+  /* p06, which is where the cut opens. The page states the same idea twice —
+     once as a measurement ("your work at eighty percent") and once as a
+     picture of her own folders. The measurement is the artificial-sounding
+     one out of context: no woman thinks in percentages about her own drafts.
+     The picture is what she recognises. Verbatim from the same paragraph. */
+  recog:  beatCard(['في ملفاتكِ مشاريع', 'اكتمل معظمها…', 'ثم توقفت قبل الخروج'], 74),
   /* 109 — owner's own script, the three beats that carry the whole argument. */
   r_recog:  beatCard(['لستِ كسولة.', 'لكنكِ تتعثرين', 'عند النقطة نفسها.'], 76),
   r_contra: beatCard(['وما لم تفهمي', 'سبب هذا التعثر…', 'ستعودين إلى نقطة الصفر.'], 66),
