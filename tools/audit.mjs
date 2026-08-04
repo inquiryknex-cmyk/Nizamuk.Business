@@ -5,6 +5,7 @@ const PAGES = [
   '/', '/almasar/', '/ikhtibar/', '/interdash/', '/shukran/',
   '/rebuild/mubdia/', '/rebuild/asirat/', '/rebuild/mutafadia/', '/rebuild/kafua/',
   '/lamhat/mubdia/', '/lamhat/asirat/', '/lamhat/mutafadia/', '/lamhat/kafua/',
+  '/mirrors/', '/mirrors/bidayat/', '/mirrors/irsal/', '/mirrors/muhimma/',
   '/maqalat/', '/maqalat/limadha-abda-wala-ukmil/', '/maqalat/idman-al-bidayat/',
   '/maqalat/al-kasal-wa-ilajuh/', '/maqalat/al-taswif-laysa-mushkilat-waqt/',
   '/maqalat/mbti-wa-mada-baad/', '/maqalat/limadha-tufakkir-alnisa-kathiran/',
