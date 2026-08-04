@@ -685,6 +685,11 @@
        keeps its direct checkout link. Falls back to checkout if the map is
        missing, so a config slip can never leave the card dead. */
     const rebuildPage = !I18N ? ((CONFIG.rebuildPages || {})[dom] || '') : '';
+    /* ولمحات مثلها: صفحة النمط قبل الدفع. عربيٌّ فقط، فلا نسخة إنجليزية
+       لصفحات لمحات، والاختبار الإنجليزي يبقى على رابط الدفع المباشر. */
+    const lamhatPage = !I18N ? ((CONFIG.lamhatPages || {})[dom] || '') : '';
+    const lamhatDest = lamhatPage ? withAttrib(lamhatPage) : links.lamhat;
+    const lamhatSameTab = !!lamhatPage;
     /* withAttrib only touches our own path; the checkout fallback is off-site
        and passes through unchanged. */
     const rebuildDest = rebuildPage ? withAttrib(rebuildPage) : links.rebuild;
@@ -694,7 +699,7 @@
       '<p>' + T.pathIntro + '</p>' +
       '<div class="path-cards">' +
         pathCard('tier-lamhat', T.cardLamhat.label, T.cardLamhat.title, T.cardLamhat.desc,
-          prices.lamhat, links.lamhat, T.cardLamhat.cta, 'lamhat_click', dom, 'lamhat') +
+          prices.lamhat, lamhatDest, T.cardLamhat.cta, 'lamhat_click', dom, 'lamhat', lamhatSameTab) +
         pathCard('tier-juthur', T.cardJuthur.label, T.cardJuthur.title, T.cardJuthur.desc,
           prices.juthur, links.juthur, T.cardJuthur.cta, 'juthur_click', dom, 'juthur') +
         pathCard('tier-rebuild', T.cardRebuild.label, T.cardRebuild.title, T.cardRebuild.desc,

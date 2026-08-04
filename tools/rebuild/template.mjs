@@ -55,7 +55,12 @@ function lowerRungs(slug) {
     if (!m) throw new Error(`config.js: لا رابط ${level} للنمط ${key}`);
     return m[1];
   };
-  return { lamhat: pick('lamhat'), juthur: pick('juthur') };
+  /* درجة لمحات تقصد صفحة بيعها لا رابط الدفع: الصفحة تحمل المرآة
+     والاقتباسات ومخرج الاختبار، وصفحة الدفع لا تحمل شيئًا منها. تُقرأ من
+     lamhatPages بالمفتاح الداخلي نفسه. */
+  const lamhatPage = new RegExp("lamhatPages\\s*:\\s*\\{[^}]*?" + key + "\\s*:\\s*'([^']+)'", 's').exec(src);
+  if (!lamhatPage) throw new Error('config.js: لا صفحة لمحات للنمط ' + key);
+  return { lamhat: lamhatPage[1], juthur: pick('juthur') };
 }
 
 const li = (a) => a.map(t => `          <li>${t}</li>`).join('\n');
@@ -183,7 +188,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260801e">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260801i">
   <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801j">
 
   <script type="application/ld+json">
@@ -526,8 +531,8 @@ ${faqs(p.faq, p.slug)}
             <span class="rb-rung-d">صفحات حقيقية من الملف الذي تستلمينه، لا وصفًا له. اقرئيها بحجمها الكامل ثم قرّري.</span>
           </a>
 
-          <a class="rb-rung" href="${rungs.lamhat}" target="_blank" rel="nofollow noopener"
-             data-rb-cta="buy" data-rb-pos="ladder" data-level="lamhat" data-price="19"
+          <a class="rb-rung" href="${rungs.lamhat}"
+             data-rb-cta="lamhat_page" data-rb-pos="ladder" data-level="lamhat"
              data-ev="ladder_down_click">
             <span class="rb-rung-k">19 ر.س</span>
             <b>لمحات نمطكِ</b>
