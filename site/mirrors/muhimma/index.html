@@ -22,20 +22,34 @@
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804b">
+  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804c">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "هل أنتِ مشغولة… أم تدورين حول المهمة الحاسمة؟",
-    "url": "https://nizamok.com/mirrors/muhimma/",
-    "applicationCategory": "LifestyleApplication",
-    "operatingSystem": "Any",
-    "inLanguage": "ar",
-    "isAccessibleForFree": true,
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "SAR" },
-    "publisher": { "@type": "Organization", "name": "نظامك", "url": "https://nizamok.com/" },
-    "description": "أربع لحظات تكشف هل ازدحامكِ يخدم الأولويات أم يحميكِ من خطوة واحدة ثقيلة."
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://nizamok.com/mirrors/muhimma/#tool",
+        "name": "هل أنتِ مشغولة… أم تدورين حول المهمة الحاسمة؟",
+        "url": "https://nizamok.com/mirrors/muhimma/",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Any",
+        "inLanguage": "ar",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "SAR" },
+        "publisher": { "@type": "Organization", "name": "نظامك", "url": "https://nizamok.com/" },
+        "description": "أربع لحظات تكشف هل ازدحامكِ يخدم الأولويات أم يحميكِ من خطوة واحدة ثقيلة."
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://nizamok.com/mirrors/muhimma/#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://nizamok.com/" },
+          { "@type": "ListItem", "position": 2, "name": "المرايا", "item": "https://nizamok.com/mirrors/" },
+          { "@type": "ListItem", "position": 3, "name": "مرآة المهمة الحاسمة" }
+        ]
+      }
+    ]
   }
   </script>
 </head>
@@ -47,12 +61,12 @@
     <header class="mr-top">
       <a class="mr-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
         <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="92" height="92">
-        <img class="mr-wordmark" src="/assets/img/wordmark-dark.png" alt="نظامك" width="460" height="150" loading="eager">
+        <img class="mr-wordmark" src="/assets/img/wordmark-ink.png" alt="نظامك" width="460" height="150" loading="eager">
       </a>
-      <a class="mr-home" href="/mirrors/"><span aria-hidden="true">⌂</span> كل المرايا</a>
+      <a class="mr-home" href="/mirrors/">كل المرايا</a>
     </header>
 
-    <p class="mr-kicker">مرآة المهمة الحاسمة · المتفادية الذكية</p>
+    <p class="mr-kicker">مرآة المهمة الحاسمة، المتفادية الذكية</p>
     <h1 class="mr-h1">هل أنتِ مشغولة… أم تدورين حول المهمة الحاسمة؟</h1>
     <p class="mr-lead">أربع لحظات تكشف هل ازدحامكِ يخدم الأولويات أم يحميكِ من خطوة واحدة ثقيلة.</p>
 
@@ -137,7 +151,7 @@
         <div class="mr-next">
           <a class="mr-cta" href="/ikhtibar/" data-quiz>اعرفي نمطكِ الكامل، ٣ دقائق مجانًا</a>
           <div class="mr-next-row">
-            <a class="mr-ghost" href="/lamhat/mutafadia/" data-lamhat>لمحة المتفادية الذكية · ١٩ ر.س</a>
+            <a class="mr-ghost" href="/lamhat/mutafadia/" data-lamhat>لمحة المتفادية الذكية، ١٩ ر.س</a>
             <button type="button" class="mr-ghost" data-restart>أعيدي المرآة</button>
           </div>
           <div class="mr-share" data-share-row></div>
@@ -172,7 +186,7 @@
 
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
-<script src="/assets/js/mirrors.js?v=20260804a" defer></script>
+<script src="/assets/js/mirrors.js?v=20260804c" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 </body>
 </html>

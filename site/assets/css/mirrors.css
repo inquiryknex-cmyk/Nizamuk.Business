@@ -28,7 +28,6 @@
   color: var(--gold-deep); text-decoration: none;
   font-size: .9rem; font-weight: 700; white-space: nowrap;
 }
-.mr-home span { font-size: 1.02rem; line-height: 1; }
 .mr-home:hover { background: var(--gold-soft); border-color: var(--gold-deep); color: #2A2010; }
 .mr-home:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 

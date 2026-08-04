@@ -52,7 +52,6 @@
   backdrop-filter: blur(6px);
   transition: background .18s ease, border-color .18s ease, transform .16s ease;
 }
-.lm-home span { font-size: 1.05rem; color: var(--lm-accent); line-height: 1; }
 .lm-home:hover {
   background: var(--lm-accent); border-color: transparent;
   color: #10201C; transform: translateY(-1px);

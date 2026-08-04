@@ -157,6 +157,7 @@ const page = (p) => `<!doctype html>
     <nav class="nav-links">
       <a href="/">الرئيسية</a>
       <a href="/maqalat/">مقالات</a>
+      <a href="/mirrors/">المرايا</a>
       <a href="/almasar/">المسار</a>
       <a class="btn btn-rose" href="/ikhtibar/?source=natija_${p.slug}&amp;origin=share">ابدئي الاختبار</a>
     </nav>
@@ -232,6 +233,7 @@ const page = (p) => `<!doctype html>
         <a href="/ikhtibar/?source=natija_${p.slug}&amp;origin=share">الاختبار</a>
         <a href="/almasar/">المسار</a>
         <a href="/maqalat/">مقالات</a>
+        <a href="/mirrors/">المرايا</a>
         <a href="/interdash/">لوحة نمطكِ</a>
         <a href="/privacy/">سياسة الخصوصية</a>
         <a href="/terms/">الشروط والأحكام</a>

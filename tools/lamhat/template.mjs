@@ -144,7 +144,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804b">
+  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804c">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -171,6 +171,17 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
     ]
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://nizamok.com/" },
+      { "@type": "ListItem", "position": 2, "name": "لمحات نظامك", "item": "https://nizamok.com/#rebuild" },
+      { "@type": "ListItem", "position": 3, "name": "${esc(p.name)}" }
+    ]
+  }
+  </script>
 </head>
 <body class="lm-body" data-lm-pattern="${p.slug}" data-ambient data-lang-alt="/en/" style="--lm-ground:${p.ground};--lm-accent:${p.accent}">
 
@@ -188,7 +199,7 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
            تصلها زائرةٌ من إعلانٍ لا تعرف الموقع، فتحتاج مخرجًا مسمّى وواضحًا
            في الطرف المقابل. -->
       <a class="lm-home" href="/">
-        <span aria-hidden="true">⌂</span> الصفحة الرئيسية
+        الصفحة الرئيسية
       </a>
     </div>
 
@@ -197,13 +208,13 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
         <p class="lm-kicker">${p.kicker}</p>
         <h1 class="lm-h1">${p.h1a}<br><em>${p.h1b}</em></h1>
         <p class="lm-lead">${p.lead}</p>
-        <p class="lm-price"><b>${nb('١٩ ر.س')}</b> <span>·  ملف PDF يصلكِ على بريدكِ بعد الدفع مباشرة</span></p>
+        <p class="lm-price"><b>${nb('١٩ ر.س')}</b> <span>ملف PDF يصلكِ على بريدكِ بعد الدفع مباشرة</span></p>
         ${buy('hero', 'خذي اللمحة، ١٩ ر.س')}
-        <p class="lm-assure">السعر شامل الضرائب · وصولٌ رقميّ فوري</p>
+        <p class="lm-assure">السعر شامل الضرائب، ووصولٌ رقميّ فوري</p>
       </div>
       <figure class="lm-cover">
         <img src="${p.cover}" alt="غلاف لمحات نظامك، ${p.name}" width="700" height="964" loading="eager" fetchpriority="high">
-        <figcaption>لمحات نظامك · ${p.name}</figcaption>
+        <figcaption>لمحات نظامك، ${p.name}</figcaption>
       </figure>
     </div>
   </div>
@@ -264,11 +275,11 @@ ${quizBlock(p, 'mid', 'is-mid')}
 <!-- ====== 8, الشراء ====== -->
 <section class="lm-sec lm-buy-sec" aria-labelledby="buyH">
   <div class="container lm-narrow">
-    <h2 id="buyH" class="lm-h2">لمحات نظامك · ${p.name}</h2>
+    <h2 id="buyH" class="lm-h2">لمحات نظامك، ${p.name}</h2>
     <p class="lm-buy-price">${nb('١٩ ر.س')}</p>
     <p class="lm-buy-d">${p.outcomes[p.outcomes.length - 1]}</p>
     ${buy('final', 'خذي اللمحة الآن')}
-    <p class="lm-assure">السعر شامل الضرائب · وصولٌ رقميّ فوري · دعم على support@nizamok.com</p>
+    <p class="lm-assure">السعر شامل الضرائب، وصولٌ رقميّ فوري، ودعم على support@nizamok.com</p>
   </div>
 </section>
 
@@ -294,6 +305,7 @@ ${p.faqs.map(f => `      <details>
       <a href="/almasar/">المسار</a>
       <a href="/ikhtibar/">الاختبار</a>
       <a href="/maqalat/">المقالات</a>
+      <a href="/mirrors/">المرايا</a>
       <a href="/privacy/">الخصوصية</a>
       <a href="/terms/">الشروط</a>
       <a href="/refund/">الاسترداد</a>

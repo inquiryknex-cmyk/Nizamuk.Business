@@ -149,7 +149,7 @@
         e.preventDefault();
         var done = function () {
           track('mirror_share', p);
-          var old = el.textContent; el.textContent = 'نُسخ ✓';
+          var old = el.textContent; el.textContent = 'نُسخ';
           setTimeout(function () { el.textContent = old; }, 1800);
         };
         if (navigator.clipboard && navigator.clipboard.writeText) {

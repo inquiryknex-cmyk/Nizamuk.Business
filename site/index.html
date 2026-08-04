@@ -30,6 +30,48 @@
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://nizamok.com/#org",
+        "name": "نظامك",
+        "alternateName": "NizamOk",
+        "url": "https://nizamok.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://nizamok.com/assets/img/seal.png",
+          "width": 270,
+          "height": 270
+        },
+        "description": "مسار عربي للفهم الذاتي والتنظيم العملي، مكتوب للمرأة العربية أصلًا لا مترجمًا.",
+        "email": "support@nizamok.com",
+        "areaServed": "SA",
+        "knowsLanguage": ["ar", "en"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://nizamok.com/#site",
+        "name": "نظامك",
+        "url": "https://nizamok.com/",
+        "inLanguage": "ar",
+        "publisher": { "@id": "https://nizamok.com/#org" }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://nizamok.com/#page",
+        "url": "https://nizamok.com/",
+        "name": "نظامك، افهمي النمط الذي يدير طاقتكِ قبل أن تحاولي تنظيم يومكِ",
+        "isPartOf": { "@id": "https://nizamok.com/#site" },
+        "about": { "@id": "https://nizamok.com/#org" },
+        "inLanguage": "ar"
+      }
+    ]
+  }
+  </script>
 </head>
 <body data-ambient data-lang-alt="/en/">
 
@@ -46,6 +88,7 @@
       <a href="#why">لماذا نظامك</a>
       <a href="#patterns">الأنماط الأربعة</a>
       <a href="/almasar/">المسار</a>
+      <a href="/mirrors/">المرايا</a>
       <a href="#rebuild">إعادة البناء</a>
       <a href="#interdash">لوحة نمطكِ</a>
       <a href="#team">من نحن</a>
@@ -634,6 +677,7 @@
         <a href="/#rebuild">إعادة البناء</a>
         <a href="/almasar/">المسار</a>
         <a href="/maqalat/">مقالات</a>
+        <a href="/mirrors/">المرايا</a>
         <a href="/interdash/">لوحة نمطكِ</a>
         <a href="/privacy/">سياسة الخصوصية</a>
         <a href="/terms/">الشروط والأحكام</a>
