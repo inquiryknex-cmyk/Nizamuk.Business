@@ -22,7 +22,7 @@
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804c">
+  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -154,7 +154,7 @@
             <a class="mr-ghost" href="/lamhat/asirat/" data-lamhat>لمحة أسيرة الكمال، ١٩ ر.س</a>
             <button type="button" class="mr-ghost" data-restart>أعيدي المرآة</button>
           </div>
-          <div class="mr-share" data-share-row></div>
+          <div class="mr-share" data-share-row data-article-share></div>
         </div>
       </div>
     </section>
@@ -168,6 +168,15 @@
         <li><b>الهوية</b><span>الخوف ليس من نقصٍ في العمل، بل من أن يُقرأ نقصُه نقصًا فيكِ. فيصبح التسليم اختبارًا لصورتكِ لا للعمل.</span></li>
       </ul>
       <p class="mr-more">وللقراءة الأطول: <a href="/maqalat/al-taswif-laysa-mushkilat-waqt/">التسويف ليس مشكلة وقت</a>.</p>
+    </section>
+
+    <!-- تُقرأ الطبقة الثالثة بلا إجابة أي سؤال، فلها مشاركتها المستقلّة عن
+         مشاركة النتيجة: من قرأت ولم تُجب لا تصل إلى تلك. -->
+    <section class="mr-share-sec">
+      <div data-article-share
+           data-share-context="mirror_page"
+           data-share-h="تعرفين من تحتاج هذه المرآة؟"
+           data-share-sub="دقيقة واحدة، بلا بريد وبلا تسجيل."></div>
     </section>
 
     <p class="mr-disc">هذه المرآة أداة للفهم الذاتي والتنظيم العملي، وليست تشخيصًا نفسيًا ولا بديلًا عن استشارة مختصة.</p>
@@ -186,7 +195,8 @@
 
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
-<script src="/assets/js/mirrors.js?v=20260804c" defer></script>
+<script src="/assets/js/share-article.js?v=20260804d" defer></script>
+<script src="/assets/js/mirrors.js?v=20260804d" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 </body>
 </html>

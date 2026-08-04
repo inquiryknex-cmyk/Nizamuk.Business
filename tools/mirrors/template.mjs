@@ -79,7 +79,7 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804c">
+  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -154,7 +154,7 @@ ${results}
             <a class="mr-ghost" href="${m.lamhat}" data-lamhat>لمحة ${m.pattern}، ١٩ ر.س</a>
             <button type="button" class="mr-ghost" data-restart>أعيدي المرآة</button>
           </div>
-          <div class="mr-share" data-share-row></div>
+          <div class="mr-share" data-share-row data-article-share></div>
         </div>
       </div>
     </section>
@@ -166,6 +166,15 @@ ${results}
 ${m.interp.map(i => `        <li><b>${i.t}</b><span>${i.d}</span></li>`).join('\n')}
       </ul>
       <p class="mr-more">وللقراءة الأطول: <a href="${m.article}">${m.articleName}</a>.</p>
+    </section>
+
+    <!-- تُقرأ الطبقة الثالثة بلا إجابة أي سؤال، فلها مشاركتها المستقلّة عن
+         مشاركة النتيجة: من قرأت ولم تُجب لا تصل إلى تلك. -->
+    <section class="mr-share-sec">
+      <div data-article-share
+           data-share-context="mirror_page"
+           data-share-h="تعرفين من تحتاج هذه المرآة؟"
+           data-share-sub="دقيقة واحدة، بلا بريد وبلا تسجيل."></div>
     </section>
 
     <p class="mr-disc">هذه المرآة أداة للفهم الذاتي والتنظيم العملي، وليست تشخيصًا نفسيًا ولا بديلًا عن استشارة مختصة.</p>
@@ -184,7 +193,8 @@ ${m.interp.map(i => `        <li><b>${i.t}</b><span>${i.d}</span></li>`).join('\
 
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
-<script src="/assets/js/mirrors.js?v=20260804c" defer></script>
+<script src="/assets/js/share-article.js?v=20260804d" defer></script>
+<script src="/assets/js/mirrors.js?v=20260804d" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 </body>
 </html>
@@ -216,7 +226,7 @@ export function renderIndex(mirrors) {
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804c">
+  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
   {
@@ -284,6 +294,13 @@ ${mirrors.map(m => `      <li class="mr-card">
       </li>`).join('\n')}
     </ul>
 
+    <div class="mr-share-sec">
+      <div data-article-share
+           data-share-context="mirror_index"
+           data-share-h="أرسليها لمن تشبهها"
+           data-share-sub="ثلاث مرايا قصيرة، كلٌّ منها أقلّ من دقيقة."></div>
+    </div>
+
     <p class="mr-disc">هذه المرايا أدوات للفهم الذاتي والتنظيم العملي، وليست تشخيصًا نفسيًا ولا بديلًا عن استشارة مختصة.</p>
 
     <nav class="mr-foot-nav">
@@ -298,6 +315,7 @@ ${mirrors.map(m => `      <li class="mr-card">
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
+<script src="/assets/js/share-article.js?v=20260804d" defer></script>
 </body>
 </html>
 `;
