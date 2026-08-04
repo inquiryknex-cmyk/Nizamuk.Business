@@ -73,11 +73,13 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
   <meta name="twitter:card" content="summary_large_image">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/assets/img/seal.png">
+  <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804a">
+  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -101,7 +103,8 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
 
     <header class="mr-top">
       <a class="mr-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
-        <img src="/assets/img/wordmark.png" alt="نظامك" width="460" height="150" loading="eager">
+        <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="92" height="92">
+        <img class="mr-wordmark" src="/assets/img/wordmark-dark.png" alt="نظامك" width="460" height="150" loading="eager">
       </a>
       <a class="mr-home" href="/mirrors/"><span aria-hidden="true">⌂</span> كل المرايا</a>
     </header>
@@ -195,16 +198,19 @@ export function renderIndex(mirrors) {
   <meta name="twitter:card" content="summary_large_image">
   <meta name="robots" content="index,follow">
   <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/assets/img/seal.png">
+  <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804a">
+  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804b">
 </head>
 <body class="mr-body" data-ambient data-lang-alt="/en/">
 <div class="mr-wrap">
   <div class="container mr-narrow">
     <header class="mr-top">
       <a class="mr-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
-        <img src="/assets/img/wordmark.png" alt="نظامك" width="460" height="150" loading="eager">
+        <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="92" height="92">
+        <img class="mr-wordmark" src="/assets/img/wordmark-dark.png" alt="نظامك" width="460" height="150" loading="eager">
       </a>
       <a class="mr-home" href="/"><span aria-hidden="true">⌂</span> الصفحة الرئيسية</a>
     </header>

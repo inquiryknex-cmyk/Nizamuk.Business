@@ -138,11 +138,13 @@ export function renderPage(p) {
   <meta name="twitter:card" content="summary_large_image">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/assets/img/seal.png">
+  <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804a">
+  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -179,7 +181,8 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
   <div class="container lm-hero-in">
     <div class="lm-topbar">
       <a class="lm-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
-        <img src="/assets/img/wordmark.png" alt="نظامك" width="460" height="150" loading="eager">
+        <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="92" height="92">
+        <img class="lm-wordmark" src="/assets/img/wordmark.png" alt="نظامك" width="460" height="150" loading="eager">
       </a>
       <!-- العلامة تربط بالرئيسية أصلًا، لكنها لا تُقرأ زرًّا. وهذه صفحة هبوطٍ
            تصلها زائرةٌ من إعلانٍ لا تعرف الموقع، فتحتاج مخرجًا مسمّى وواضحًا

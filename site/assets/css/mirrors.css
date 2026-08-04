@@ -18,7 +18,9 @@
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; margin-bottom: clamp(22px, 4vw, 38px);
 }
-.mr-brand img { width: 124px; height: auto; display: block; }
+.mr-brand { display: inline-flex; align-items: center; gap: 10px; }
+.mr-brand .seal-img { width: 42px; height: 42px; object-fit: contain; display: block; }
+.mr-brand .mr-wordmark { width: 124px; height: auto; display: block; }
 .mr-home {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 9px 18px; border-radius: 999px;
