@@ -1,0 +1,174 @@
+/*
+  مرايا نظامك.
+
+  عاجٌ لا مخمل: المرآة أداةٌ تُستعمل في دقيقة، لا صفحة بيعٍ تُقرأ بتمهّل.
+  فالخلفية فاتحة، والتباين عالٍ، والزرّ كبيرٌ يُصاب بالإبهام.
+*/
+
+.mr-body {
+  margin: 0; background: var(--ivory);
+  color: var(--ink); font-family: 'Almarai', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+.mr-wrap { padding: clamp(18px, 3vw, 30px) 0 clamp(40px, 6vw, 70px); }
+.mr-narrow { width: min(720px, 92vw); margin-inline: auto; }
+
+/* ---------- الشريط العلوي ---------- */
+.mr-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-bottom: clamp(22px, 4vw, 38px);
+}
+.mr-brand { display: inline-flex; align-items: center; gap: 10px; }
+.mr-brand .seal-img { width: 42px; height: 42px; object-fit: contain; display: block; }
+.mr-brand .mr-wordmark { width: 124px; height: auto; display: block; }
+.mr-home {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 18px; border-radius: 999px;
+  border: 1px solid rgba(201,167,94,.5); background: var(--card);
+  color: var(--gold-deep); text-decoration: none;
+  font-size: .9rem; font-weight: 700; white-space: nowrap;
+}
+.mr-home span { font-size: 1.02rem; line-height: 1; }
+.mr-home:hover { background: var(--gold-soft); border-color: var(--gold-deep); color: #2A2010; }
+.mr-home:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* ---------- الترويسة ---------- */
+.mr-kicker {
+  margin: 0 0 10px; font-size: .8rem; letter-spacing: .1em; color: var(--gold-deep);
+}
+.mr-h1 {
+  margin: 0 0 14px; font-family: 'El Messiri', serif; font-weight: 700;
+  font-size: clamp(1.6rem, 4.6vw, 2.5rem); line-height: 1.38; color: var(--ink);
+  text-wrap: balance;
+}
+.mr-lead { margin: 0 0 30px; font-size: clamp(1rem, 2.2vw, 1.1rem); line-height: 1.95; color: var(--ink-soft); }
+
+.mr-h2 {
+  margin: 0 0 14px; font-family: 'El Messiri', serif; font-weight: 700;
+  font-size: clamp(1.18rem, 3vw, 1.5rem); line-height: 1.5; color: var(--ink);
+}
+.mr-note { margin: 0 0 20px; font-size: .9rem; color: var(--taupe); }
+
+/* ---------- الطبقة ١، المقدمة ---------- */
+.mr-intro { margin-bottom: clamp(30px, 5vw, 48px); }
+.mr-intro p { margin: 0 0 1rem; line-height: 2; color: var(--ink-soft); }
+.mr-intro a { color: var(--gold-deep); }
+
+/* ---------- الطبقة ٢، الأداة ---------- */
+.mr-tool {
+  background: var(--card); border: 1px solid rgba(201,167,94,.34);
+  border-radius: 16px; padding: clamp(20px, 4vw, 34px);
+  box-shadow: 0 10px 30px rgba(42,35,51,.07);
+  margin-bottom: clamp(30px, 5vw, 48px);
+}
+.mr-bar {
+  height: 5px; border-radius: 999px; background: var(--ivory-2);
+  overflow: hidden; margin-bottom: 22px;
+}
+.mr-bar span {
+  display: block; height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--gold-soft), var(--gold-deep));
+  transition: width .3s ease;
+}
+.mr-q { border: 0; margin: 0; padding: 0; }
+.mr-q-t {
+  padding: 0; margin: 0 0 16px; font-weight: 700; line-height: 1.8;
+  font-size: clamp(1.02rem, 2.4vw, 1.14rem); color: var(--ink);
+}
+.mr-a {
+  display: block; width: 100%; text-align: start;
+  margin-bottom: 10px; padding: 15px 18px;
+  border: 1px solid rgba(201,167,94,.4); border-radius: 12px;
+  background: var(--ivory); color: var(--ink);
+  font: inherit; font-size: .98rem; line-height: 1.75; cursor: pointer;
+  transition: border-color .16s ease, background .16s ease, transform .12s ease;
+}
+.mr-a:hover { border-color: var(--gold-deep); background: var(--ivory-2); transform: translateY(-1px); }
+.mr-a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ---------- النتيجة ---------- */
+.mr-out:focus { outline: none; }
+.mr-result-k { margin: 0 0 6px; font-size: .78rem; letter-spacing: .12em; color: var(--gold-deep); }
+.mr-result-t {
+  margin: 0 0 12px; font-family: 'El Messiri', serif; font-weight: 700;
+  font-size: clamp(1.2rem, 3.2vw, 1.6rem); line-height: 1.55; color: var(--ink);
+}
+.mr-result-s, .mr-result-r, .mr-result-a { margin: 0 0 .9rem; line-height: 1.95; color: var(--ink-soft); }
+.mr-result-a {
+  padding: 15px 18px; border-radius: 10px;
+  background: var(--plum); color: var(--star);
+}
+.mr-result-a b { color: var(--gold-soft); }
+.mr-result-r b { color: var(--ink); }
+
+.mr-next { margin-top: 22px; padding-top: 20px; border-top: 1px solid rgba(201,167,94,.3); }
+.mr-cta {
+  display: block; text-align: center; padding: 16px 24px; border-radius: 999px;
+  background: linear-gradient(180deg, var(--gold-soft), var(--gold));
+  color: #221A0C; font-weight: 700; text-decoration: none; font-size: 1.02rem;
+}
+.mr-cta:hover { filter: brightness(1.05); }
+.mr-cta:focus-visible { outline: 3px solid var(--gold-deep); outline-offset: 3px; }
+.mr-next-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.mr-ghost {
+  flex: 1 1 auto; text-align: center; padding: 12px 18px; border-radius: 999px;
+  border: 1px solid rgba(201,167,94,.45); background: transparent;
+  color: var(--gold-deep); text-decoration: none; font: inherit;
+  font-size: .9rem; font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.mr-ghost:hover { background: var(--ivory-2); border-color: var(--gold-deep); }
+.mr-ghost:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.mr-share { margin-top: 20px; }
+.mr-share-h { display: block; font-size: .88rem; color: var(--taupe); margin-bottom: 10px; }
+/* .share-btn معرّف في main.css بألوان اللوحة الداكنة، فيُعاد هنا إلى العاج —
+   وهو العطب نفسه الذي أصاب أزرار المقالات. */
+.mr-share .share-row { justify-content: flex-start; }
+.mr-share .share-btn {
+  color: var(--gold-deep); background: var(--ivory);
+  border-color: rgba(201,167,94,.45); text-decoration: none; font-weight: 700;
+}
+.mr-share .share-btn:hover { background: var(--gold-soft); border-color: var(--gold-deep); color: #2A2010; }
+
+/* ---------- الطبقة ٣، التفسير ---------- */
+.mr-interp { margin-bottom: clamp(26px, 4vw, 40px); }
+.mr-mech { list-style: none; margin: 0 0 16px; padding: 0; }
+.mr-mech li {
+  padding: 16px 0; border-bottom: 1px solid rgba(201,167,94,.26);
+}
+.mr-mech li:last-child { border-bottom: 0; }
+.mr-mech b { display: block; margin-bottom: 6px; color: var(--gold-deep); font-size: 1.02rem; }
+.mr-mech span { display: block; line-height: 1.95; color: var(--ink-soft); }
+.mr-more { margin: 0; color: var(--ink-soft); }
+.mr-more a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- فهرس المرايا ---------- */
+.mr-cards { list-style: none; margin: 0 0 30px; padding: 0; display: grid; gap: 14px; }
+.mr-card > a {
+  display: block; padding: 20px 22px; border-radius: 14px;
+  background: var(--card); border: 1px solid rgba(201,167,94,.34);
+  text-decoration: none; color: inherit;
+  transition: border-color .16s ease, transform .16s ease;
+}
+.mr-card > a:hover { border-color: var(--gold-deep); transform: translateY(-2px); }
+.mr-card-k { display: block; font-size: .78rem; letter-spacing: .1em; color: var(--gold-deep); margin-bottom: 8px; }
+.mr-card b {
+  display: block; margin-bottom: 8px; font-family: 'El Messiri', serif;
+  font-size: clamp(1.05rem, 2.6vw, 1.22rem); line-height: 1.6; color: var(--ink);
+}
+.mr-card-d { display: block; line-height: 1.85; color: var(--ink-soft); font-size: .94rem; margin-bottom: 10px; }
+.mr-card-go { display: block; color: var(--gold-deep); font-weight: 700; font-size: .9rem; }
+
+/* ---------- الحدود والتذييل ---------- */
+.mr-disc {
+  margin: 0 0 22px; padding: 14px 18px; border-radius: 10px;
+  background: var(--ivory-2); font-size: .85rem; line-height: 1.85; color: var(--taupe);
+}
+.mr-foot-nav { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.mr-foot-nav a { color: var(--ink-soft); font-size: .86rem; text-decoration: none; }
+.mr-foot-nav a:hover { color: var(--gold-deep); text-decoration: underline; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mr-a, .mr-card > a, .mr-bar span { transition: none; }
+  .mr-a:hover, .mr-card > a:hover { transform: none; }
+}

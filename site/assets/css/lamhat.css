@@ -38,8 +38,9 @@
   gap: 16px; margin-bottom: clamp(24px, 4vw, 44px);
   position: relative; z-index: 2;
 }
-.lm-brand { display: inline-block; }
-.lm-brand img { width: 132px; height: auto; opacity: .92; display: block; }
+.lm-brand { display: inline-flex; align-items: center; gap: 10px; }
+.lm-brand .seal-img { width: 44px; height: 44px; object-fit: contain; display: block; opacity: .95; }
+.lm-brand .lm-wordmark { width: 132px; height: auto; opacity: .92; display: block; }
 
 .lm-home {
   display: inline-flex; align-items: center; gap: 8px;
@@ -62,7 +63,8 @@
 /* على الهاتف تكفي الكلمة بلا «الصفحة»، فلا يزاحم الزرُّ العلامةَ. */
 @media (max-width: 430px) {
   .lm-home { padding: 9px 15px; font-size: .86rem; }
-  .lm-brand img { width: 104px; }
+  .lm-brand .seal-img { width: 36px; height: 36px; }
+  .lm-brand .lm-wordmark { width: 104px; }
 }
 
 .lm-hero-grid {
