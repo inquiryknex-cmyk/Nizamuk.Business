@@ -2287,3 +2287,37 @@ html[lang="en"] .ambient-caption { direction: ltr; }
   border-color: var(--gold-deep);
   color: #2A2010;
 }
+
+
+/* ---------- أسئلة المقال، مطويّة ----------
+   كانت ٣٢ سؤالًا وجوابًا مفرودة عبر المقالات الستّة، تشغل شاشاتٍ كاملة بين
+   نهاية المقال ومراجعه. والنصّ يبقى في DOM حين تُطوى، فتقرؤه محرّكات البحث
+   ومخطّط FAQPage كما كان. */
+.art-faq { margin: .6rem 0 2rem; }
+.art-faq details {
+  border-bottom: 1px solid rgba(201, 167, 94, .3);
+}
+.art-faq details:first-child { border-top: 1px solid rgba(201, 167, 94, .3); }
+.art-faq summary {
+  cursor: pointer; list-style: none;
+  padding: .95rem 0 .95rem 2rem;   /* مكان العلامة في المنتهى، أي اليسار */
+  position: relative;
+}
+.art-faq summary::-webkit-details-marker { display: none; }
+.art-faq summary h3 {
+  display: inline; margin: 0; font-size: 1.02rem; line-height: 1.7;
+  color: var(--ink); font-weight: 700;
+}
+.art-faq summary::after {
+  content: '+'; position: absolute; inset-inline-end: .25rem; top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold-deep); font-size: 1.4rem; line-height: 1;
+  transition: transform .18s ease;
+}
+.art-faq details[open] summary::after { content: '\2212'; }
+.art-faq summary:hover h3 { color: var(--gold-deep); }
+.art-faq summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.art-faq details p {
+  margin: 0 0 1.1rem; padding-inline-end: 2rem;
+  line-height: 1.95; color: var(--ink-soft);
+}
