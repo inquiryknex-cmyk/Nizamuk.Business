@@ -109,61 +109,23 @@
     out.focus({ preventScroll: false });
   }
 
-  /* بطاقة المشاركة نصّها من النتيجة الظاهرة نفسها، فلا يُكتب هنا شيء. */
+  /* المشاركة يبنيها share-article.js نفسه الذي يبنيها في المقالات، فالأزرار
+     واحدة في الموقع كلّه: خمس منصّات، ومشاركة الهاتف الأصلية، ونسخ الرابط.
+     ونصّ النتيجة يُمرَّر إليه، فلا يُكتب هنا حرفٌ من نصوص المرآة. */
   function buildShare(panel) {
     var row = out.querySelector('[data-share-row]');
-    if (!row || row.dataset.built) return;
-    row.dataset.built = '1';
+    if (!row || typeof window.nzShare !== 'function') return;
     var t = panel.querySelector('.mr-result-t');
     var line = t ? t.textContent.trim() : document.title;
     var url = location.origin + location.pathname;
-    var msg = line + ' — ' + url;
-
-    var btn = function (k, href, label) {
-      return '<a class="share-btn" href="' + href + '" target="_blank" rel="noopener" data-mshare="' + k + '">' + label + '</a>';
-    };
-    var html = '<span class="mr-share-h">عرفتِ إحداهنّ في هذه النتيجة؟</span><div class="share-row">';
-    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
-      html += '<button type="button" class="share-btn" data-mshare="native">مشاركة</button>';
-    }
-    html += btn('whatsapp', 'https://wa.me/?text=' + encodeURIComponent(msg), 'WhatsApp');
-    html += btn('telegram', 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(line), 'Telegram');
-    html += '<button type="button" class="share-btn" data-mshare="copy">نسخ الرابط</button>';
-    html += '</div>';
-    row.innerHTML = html;
-
-    row.addEventListener('click', function (e) {
-      var el = e.target.closest ? e.target.closest('[data-mshare]') : null;
-      if (!el) return;
-      var kind = el.getAttribute('data-mshare');
-      var p = attribution(); p.method = kind;
-
-      if (kind === 'native') {
-        e.preventDefault();
-        navigator.share({ title: line, text: line, url: url })
-          .then(function () { track('mirror_share', p); })
-          .catch(function () { /* ألغت المشاركة */ });
-        return;
-      }
-      if (kind === 'copy') {
-        e.preventDefault();
-        var done = function () {
-          track('mirror_share', p);
-          var old = el.textContent; el.textContent = 'نُسخ';
-          setTimeout(function () { el.textContent = old; }, 1800);
-        };
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(url).then(done).catch(function () {});
-        } else {
-          var ta = document.createElement('textarea');
-          ta.value = url; ta.style.position = 'absolute'; ta.style.left = '-9999px';
-          document.body.appendChild(ta); ta.select();
-          try { document.execCommand('copy'); done(); } catch (err) { /* ignore */ }
-          document.body.removeChild(ta);
-        }
-        return;
-      }
-      track('mirror_share', p);
+    row.setAttribute('data-share-title', line);
+    row.setAttribute('data-share-url', url);
+    window.nzShare(row, {
+      title: line,
+      url: url,
+      context: 'mirror',
+      heading: 'عرفتِ إحداهنّ في هذه النتيجة؟',
+      sub: 'أرسليها لها، فقد توفّر عليها شهورًا من المحاولة في الاتجاه الخطأ.'
     });
   }
 

@@ -144,7 +144,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804c">
+  <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804e">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -287,6 +287,13 @@ ${quizBlock(p, 'mid', 'is-mid')}
 <section class="lm-sec" aria-labelledby="faqH">
   <div class="container lm-narrow">
     <h2 id="faqH" class="lm-h2">أسئلة قبل أن تقرري</h2>
+    <div class="lm-share-sec">
+      <div data-article-share
+           data-share-context="lamhat"
+           data-share-h="تعرفين من تشبه هذا النمط؟"
+           data-share-sub="أرسليها لها، القراءة وحدها قد تكفيها."></div>
+    </div>
+
     <div class="lm-faq">
 ${p.faqs.map(f => `      <details>
         <summary>${f.q}</summary>
@@ -317,6 +324,7 @@ ${p.faqs.map(f => `      <details>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
 <script src="/assets/js/lamhat.js?v=20260803a" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
+<script src="/assets/js/share-article.js?v=20260804d" defer></script>
 </body>
 </html>
 `;
