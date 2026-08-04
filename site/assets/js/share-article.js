@@ -101,7 +101,7 @@
         var s = el.querySelector('span');
         if (!s) return;
         var old = s.textContent;
-        s.textContent = 'نُسخ ✓';
+        s.textContent = 'نُسخ';
         setTimeout(function () { s.textContent = old; }, 1800);
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {

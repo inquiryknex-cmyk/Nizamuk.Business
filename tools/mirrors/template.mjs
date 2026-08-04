@@ -79,20 +79,34 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804b">
+  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804c">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "${esc(m.title)}",
-    "url": "${url}",
-    "applicationCategory": "LifestyleApplication",
-    "operatingSystem": "Any",
-    "inLanguage": "ar",
-    "isAccessibleForFree": true,
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "SAR" },
-    "publisher": { "@type": "Organization", "name": "نظامك", "url": "${SITE}/" },
-    "description": "${esc(m.description)}"
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "${url}#tool",
+        "name": "${esc(m.title)}",
+        "url": "${url}",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Any",
+        "inLanguage": "ar",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "SAR" },
+        "publisher": { "@type": "Organization", "name": "نظامك", "url": "${SITE}/" },
+        "description": "${esc(m.description)}"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "${url}#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "${SITE}/" },
+          { "@type": "ListItem", "position": 2, "name": "المرايا", "item": "${SITE}/mirrors/" },
+          { "@type": "ListItem", "position": 3, "name": "${esc(m.slugAr)}" }
+        ]
+      }
+    ]
   }
   </script>
 </head>
@@ -104,12 +118,12 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
     <header class="mr-top">
       <a class="mr-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
         <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="92" height="92">
-        <img class="mr-wordmark" src="/assets/img/wordmark-dark.png" alt="نظامك" width="460" height="150" loading="eager">
+        <img class="mr-wordmark" src="/assets/img/wordmark-ink.png" alt="نظامك" width="460" height="150" loading="eager">
       </a>
-      <a class="mr-home" href="/mirrors/"><span aria-hidden="true">⌂</span> كل المرايا</a>
+      <a class="mr-home" href="/mirrors/">كل المرايا</a>
     </header>
 
-    <p class="mr-kicker">${m.slugAr} · ${m.pattern}</p>
+    <p class="mr-kicker">${m.slugAr}، ${m.pattern}</p>
     <h1 class="mr-h1">${m.title}</h1>
     <p class="mr-lead">${m.description}</p>
 
@@ -137,7 +151,7 @@ ${results}
         <div class="mr-next">
           <a class="mr-cta" href="/ikhtibar/" data-quiz>اعرفي نمطكِ الكامل، ٣ دقائق مجانًا</a>
           <div class="mr-next-row">
-            <a class="mr-ghost" href="${m.lamhat}" data-lamhat>لمحة ${m.pattern} · ١٩ ر.س</a>
+            <a class="mr-ghost" href="${m.lamhat}" data-lamhat>لمحة ${m.pattern}، ١٩ ر.س</a>
             <button type="button" class="mr-ghost" data-restart>أعيدي المرآة</button>
           </div>
           <div class="mr-share" data-share-row></div>
@@ -170,7 +184,7 @@ ${m.interp.map(i => `        <li><b>${i.t}</b><span>${i.d}</span></li>`).join('\
 
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
-<script src="/assets/js/mirrors.js?v=20260804a" defer></script>
+<script src="/assets/js/mirrors.js?v=20260804c" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 </body>
 </html>
@@ -202,7 +216,42 @@ export function renderIndex(mirrors) {
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
   <link rel="stylesheet" href="/assets/css/main.css?v=20260804b">
-  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804b">
+  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804c">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": "${url}#page",
+        "name": "مرايا نظامك",
+        "url": "${url}",
+        "inLanguage": "ar",
+        "isAccessibleForFree": true,
+        "description": "${esc(desc)}",
+        "publisher": { "@type": "Organization", "name": "نظامك", "url": "${SITE}/" }
+      },
+      {
+        "@type": "ItemList",
+        "@id": "${url}#list",
+        "itemListOrder": "https://schema.org/ItemListUnordered",
+        "numberOfItems": ${mirrors.length},
+        "itemListElement": [
+${mirrors.map((x, i) => `          { "@type": "ListItem", "position": ${i + 1}, "name": "${esc(x.slugAr)}", "url": "${SITE}/mirrors/${x.slug}/" }`).join(',\n')}
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "${url}#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "${SITE}/" },
+          { "@type": "ListItem", "position": 2, "name": "المرايا" }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body class="mr-body" data-ambient data-lang-alt="/en/">
 <div class="mr-wrap">
@@ -210,9 +259,9 @@ export function renderIndex(mirrors) {
     <header class="mr-top">
       <a class="mr-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
         <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="92" height="92">
-        <img class="mr-wordmark" src="/assets/img/wordmark-dark.png" alt="نظامك" width="460" height="150" loading="eager">
+        <img class="mr-wordmark" src="/assets/img/wordmark-ink.png" alt="نظامك" width="460" height="150" loading="eager">
       </a>
-      <a class="mr-home" href="/"><span aria-hidden="true">⌂</span> الصفحة الرئيسية</a>
+      <a class="mr-home" href="/">الصفحة الرئيسية</a>
     </header>
 
     <p class="mr-kicker">مرايا نظامك</p>
@@ -230,7 +279,7 @@ ${mirrors.map(m => `      <li class="mr-card">
           <span class="mr-card-k">${m.pattern}</span>
           <b>${m.title}</b>
           <span class="mr-card-d">${m.description}</span>
-          <span class="mr-card-go">ابدئي المرآة ←</span>
+          <span class="mr-card-go">ابدئي المرآة</span>
         </a>
       </li>`).join('\n')}
     </ul>
