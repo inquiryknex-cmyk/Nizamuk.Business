@@ -1284,7 +1284,9 @@ html[dir="rtl"] .video-play::after { transform: translateX(-3px); }
 .legal-card p, .legal-card li { color: var(--ink-soft); font-size: 0.98rem; }
 .legal-card ul { padding-inline-start: 1.3rem; margin: 0.4rem 0; }
 .legal-card li { margin-bottom: 0.4rem; }
-.legal-card a { color: var(--gold-deep); text-decoration: underline; }
+/* الأزرار ليست روابط نصّية. المقالات تستعمل .legal-card حاويةً، فكان هذا
+   السطر يخطّ تحت كل زرٍّ فيها — زرّ الاختبار الوردي وأزرار المشاركة معًا. */
+.legal-card a:not(.btn):not(.share-btn) { color: var(--gold-deep); text-decoration: underline; }
 
 
 
@@ -2256,4 +2258,66 @@ html[lang="en"] .ambient-caption { direction: ltr; }
   display: block; margin-top: 0.4rem;
   direction: rtl; text-align: right;
   font-size: 0.82rem; color: var(--taupe); opacity: 0.9;
+}
+
+
+/* ---------- كتلة المشاركة على أرضية عاجية ----------
+   .share-btn صُمّم للوحة نتيجة الاختبار المخملية: نصٌّ شبه أبيض على تعتيمٍ
+   خفيف. وعلى عاج المقال يختفي النص تمامًا، فبدا زرّا «مشاركة» و«نسخ الرابط»
+   فارغَين — ونجت وسوم <a> وحدها لأن .legal-card لوّنتها بالذهبي. فهنا
+   تُعاد الكتلة كلها إلى ألوان العاج بلونٍ واحد للجميع، زرًّا كان أو رابطًا. */
+[data-article-share] .share-block { margin: 2.2rem 0 1.6rem; }
+[data-article-share] .share-h {
+  display: block; font-family: 'El Messiri', serif; font-weight: 700;
+  font-size: 1.05rem; color: var(--ink); margin-bottom: .35rem;
+}
+[data-article-share] .share-sub {
+  color: var(--ink-soft); font-size: .93rem; margin: 0 0 1rem;
+}
+[data-article-share] .share-row { justify-content: flex-start; }
+[data-article-share] .share-btn {
+  color: var(--gold-deep);
+  background: var(--card);
+  border-color: rgba(201, 167, 94, .45);
+  text-decoration: none;
+  font-weight: 700;
+}
+[data-article-share] .share-btn:hover {
+  background: var(--gold-soft);
+  border-color: var(--gold-deep);
+  color: #2A2010;
+}
+
+
+/* ---------- أسئلة المقال، مطويّة ----------
+   كانت ٣٢ سؤالًا وجوابًا مفرودة عبر المقالات الستّة، تشغل شاشاتٍ كاملة بين
+   نهاية المقال ومراجعه. والنصّ يبقى في DOM حين تُطوى، فتقرؤه محرّكات البحث
+   ومخطّط FAQPage كما كان. */
+.art-faq { margin: .6rem 0 2rem; }
+.art-faq details {
+  border-bottom: 1px solid rgba(201, 167, 94, .3);
+}
+.art-faq details:first-child { border-top: 1px solid rgba(201, 167, 94, .3); }
+.art-faq summary {
+  cursor: pointer; list-style: none;
+  padding: .95rem 0 .95rem 2rem;   /* مكان العلامة في المنتهى، أي اليسار */
+  position: relative;
+}
+.art-faq summary::-webkit-details-marker { display: none; }
+.art-faq summary h3 {
+  display: inline; margin: 0; font-size: 1.02rem; line-height: 1.7;
+  color: var(--ink); font-weight: 700;
+}
+.art-faq summary::after {
+  content: '+'; position: absolute; inset-inline-end: .25rem; top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold-deep); font-size: 1.4rem; line-height: 1;
+  transition: transform .18s ease;
+}
+.art-faq details[open] summary::after { content: '\2212'; }
+.art-faq summary:hover h3 { color: var(--gold-deep); }
+.art-faq summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.art-faq details p {
+  margin: 0 0 1.1rem; padding-inline-end: 2rem;
+  line-height: 1.95; color: var(--ink-soft);
 }

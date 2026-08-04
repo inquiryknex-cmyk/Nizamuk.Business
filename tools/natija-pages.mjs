@@ -40,7 +40,7 @@ async function cardVersion(slug) {
   }
   return createHash('sha256').update(buf).digest('hex').slice(0, 8);
 }
-const V = { css: '20260801i', analytics: '20260801a', main: '20260801b' };
+const V = { css: '20260804b', analytics: '20260801a', main: '20260801b' };
 
 /* slug = public URL, key = internal quiz key. The mismatch is deliberate and
    already documented in config.js; this is the second place it is reconciled. */
@@ -50,7 +50,7 @@ const PATTERNS = [
     truth: 'لا تنقصكِ الأفكار، تنقصكِ فكرة واحدة تصل.',
     headline: 'ليس الهرب من الإنجاز، بل من منتصف الطريق. البداية تعطيها نسخة جديدة منها، لكنها تسحبها من الشيء الذي كان على وشك الوصول.',
     wound: 'الذي يتكرر ليس نقص قدرة، بل صعوبة البقاء مع الفكرة عندما يبهت بريقها وتطلب صبرًا بدل حماس.',
-    lamhat: 'https://dodo.pe/lamhat-mubdia-inter',
+    lamhat: '/lamhat/mubdia/',
     rebuild: '/rebuild/mubdia/',
     article: '/maqalat/idman-al-bidayat/',
     articleName: 'لماذا يختفي الحماس بعد البداية؟'
@@ -60,7 +60,7 @@ const PATTERNS = [
     truth: 'نقص العمل لا يعني نقصًا فيها.',
     headline: 'ليس الخوف من العمل، بل من لحظة ظهوره أمام عين أخرى. لذلك صار التعديل بيتًا آمنًا تسكنه بدل التسليم.',
     wound: 'الذي يتكرر أن جودة الشغل التصقت بقيمتها هي، فصارت كل ملاحظة محتملة على العمل تهديدًا شخصيًا.',
-    lamhat: 'https://dodo.pe/lamhat-asirat-inter',
+    lamhat: '/lamhat/asirat/',
     rebuild: '/rebuild/asirat/',
     article: '/maqalat/al-taswif-laysa-mushkilat-waqt/',
     articleName: 'التسويف ليس مشكلة وقت'
@@ -70,7 +70,7 @@ const PATTERNS = [
     truth: 'لا تتجنب المهمة، بل الشعور الذي خلفها.',
     headline: 'ليست كسولة، ويومها مليء بالإنجاز الصغير. لكن الباب الواحد المهم يكبر في الخيال كل يوم تأجيل، حتى يصير أكبر من حجمه.',
     wound: 'الذي يتكرر أن الشعور خلف المهمة، توتر أو حكم أو مواجهة، يصل قبلها، فتُشترى هدنة يومية بثمن أسبوع.',
-    lamhat: 'https://dodo.pe/lamhat-mutafadia-inter',
+    lamhat: '/lamhat/mutafadia/',
     rebuild: '/rebuild/mutafadia/',
     article: '/maqalat/al-taswif-laysa-mushkilat-waqt/',
     articleName: 'التسويف ليس مشكلة وقت'
@@ -80,7 +80,7 @@ const PATTERNS = [
     truth: 'أن تكون قادرة لا يعني أن تكون متاحة دائمًا.',
     headline: 'الجميع يظن أنها بخير لأنها دائمًا تتصرف. لكن قدرتها صارت تصريح دخول مفتوحًا للجميع، إلا لها.',
     wound: 'الذي يتكرر أن كل «نعم» سريعة تشتري راحة العلاقة لحظة، وتدفع ثمنها من طاقتها ومشروعها وما يخصها.',
-    lamhat: 'https://dodo.pe/lamhat-kafua-inter',
+    lamhat: '/lamhat/kafua/',
     rebuild: '/rebuild/kafua/',
     article: '/maqalat/al-kasal-wa-ilajuh/',
     articleName: 'الكسل وعلاجه، وماذا لو كان عارضًا لشيء آخر'
@@ -145,7 +145,7 @@ const page = (p) => `<!doctype html>
   }
   </script>
 </head>
-<body data-lang-alt="/en/quiz/">
+<body data-ambient data-lang-alt="/en/quiz/">
 
 <header class="site-header">
   <div class="container nav">
@@ -208,7 +208,7 @@ const page = (p) => `<!doctype html>
           <div>
             <span class="art-type-h">لمحات ${p.name}، 19 ر.س</span>
             <p>المرآة الكاملة للنمط في كرّاسة واحدة. وإن أردتِ بعدها المسار التطبيقي الكامل، فهو في <a href="${p.rebuild}?source=natija_${p.slug}" data-ev="rebuild_card_click" data-pattern="${p.key}" data-level="rebuild" data-section="natija_${p.slug}">نظام إعادة بناء ${p.name}</a>.</p>
-            <p class="art-type-fix"><a href="${p.lamhat}" rel="nofollow noopener" target="_blank" data-ev="lamhat_click" data-pattern="${p.key}" data-level="lamhat" data-section="natija_${p.slug}">ابدئي بلمحات، 19 ر.س</a></p>
+            <p class="art-type-fix"><a href="${p.lamhat}" data-ev="lamhat_click" data-pattern="${p.key}" data-level="lamhat" data-section="natija_${p.slug}">ابدئي بلمحات، 19 ر.س</a></p>
           </div>
         </article>
       </div>

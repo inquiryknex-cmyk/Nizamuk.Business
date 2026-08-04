@@ -114,7 +114,14 @@
 
 /* ---------- 2, الأقسام العاجية ---------- */
 .lm-sec { padding: clamp(46px, 7vw, 84px) 0; background: var(--ivory); }
+
+/* طيّ الحشو العلوي مقصودٌ بين قسمين عاجيّين، ليُقرآ صفحةً متصلة لا بطاقتين.
+   لكنه كان يصيب الأقسام الداكنة أيضًا — تخصّصه (0,2,0) يغلب .lm-buy-sec
+   و.lm-quiz (0,1,0) مهما كان ترتيبها — فيلتصق عنوان قسم الشراء بحدّ اللون
+   فوقه مباشرة. فالحشو يعود عند كل انتقال لون، ذهابًا وإيابًا. */
 .lm-sec + .lm-sec { padding-top: 0; }
+.lm-sec.lm-quiz, .lm-sec.lm-buy-sec { padding-top: clamp(46px, 7vw, 84px); }
+.lm-quiz + .lm-sec, .lm-buy-sec + .lm-sec { padding-top: clamp(46px, 7vw, 84px); }
 
 .lm-h2 {
   margin: 0 0 20px; font-family: 'El Messiri', serif; font-weight: 700;
