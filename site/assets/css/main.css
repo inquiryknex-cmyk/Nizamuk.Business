@@ -1284,7 +1284,9 @@ html[dir="rtl"] .video-play::after { transform: translateX(-3px); }
 .legal-card p, .legal-card li { color: var(--ink-soft); font-size: 0.98rem; }
 .legal-card ul { padding-inline-start: 1.3rem; margin: 0.4rem 0; }
 .legal-card li { margin-bottom: 0.4rem; }
-.legal-card a { color: var(--gold-deep); text-decoration: underline; }
+/* الأزرار ليست روابط نصّية. المقالات تستعمل .legal-card حاويةً، فكان هذا
+   السطر يخطّ تحت كل زرٍّ فيها — زرّ الاختبار الوردي وأزرار المشاركة معًا. */
+.legal-card a:not(.btn):not(.share-btn) { color: var(--gold-deep); text-decoration: underline; }
 
 
 
@@ -2256,4 +2258,32 @@ html[lang="en"] .ambient-caption { direction: ltr; }
   display: block; margin-top: 0.4rem;
   direction: rtl; text-align: right;
   font-size: 0.82rem; color: var(--taupe); opacity: 0.9;
+}
+
+
+/* ---------- كتلة المشاركة على أرضية عاجية ----------
+   .share-btn صُمّم للوحة نتيجة الاختبار المخملية: نصٌّ شبه أبيض على تعتيمٍ
+   خفيف. وعلى عاج المقال يختفي النص تمامًا، فبدا زرّا «مشاركة» و«نسخ الرابط»
+   فارغَين — ونجت وسوم <a> وحدها لأن .legal-card لوّنتها بالذهبي. فهنا
+   تُعاد الكتلة كلها إلى ألوان العاج بلونٍ واحد للجميع، زرًّا كان أو رابطًا. */
+[data-article-share] .share-block { margin: 2.2rem 0 1.6rem; }
+[data-article-share] .share-h {
+  display: block; font-family: 'El Messiri', serif; font-weight: 700;
+  font-size: 1.05rem; color: var(--ink); margin-bottom: .35rem;
+}
+[data-article-share] .share-sub {
+  color: var(--ink-soft); font-size: .93rem; margin: 0 0 1rem;
+}
+[data-article-share] .share-row { justify-content: flex-start; }
+[data-article-share] .share-btn {
+  color: var(--gold-deep);
+  background: var(--card);
+  border-color: rgba(201, 167, 94, .45);
+  text-decoration: none;
+  font-weight: 700;
+}
+[data-article-share] .share-btn:hover {
+  background: var(--gold-soft);
+  border-color: var(--gold-deep);
+  color: #2A2010;
 }
