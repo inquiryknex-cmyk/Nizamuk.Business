@@ -163,7 +163,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805k">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805m">
   <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804e">
   <script type="application/ld+json">
   {
@@ -228,7 +228,7 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
         <h1 class="lm-h1">${p.h1a}<br><em>${p.h1b}</em></h1>
         <p class="lm-lead">${p.lead}</p>
         <p class="lm-price"><b>${nb('١٩ ر.س')}</b> <span>ملف PDF يصلكِ على بريدكِ بعد الدفع مباشرة</span></p>
-        ${buy('hero', 'خذي اللمحة، ١٩ ر.س')}
+        ${buy('hero', 'اقتني اللمحة، ١٩ ر.س')}
         <p class="lm-assure">السعر شامل الضرائب، ووصولٌ رقميّ فوري</p>
       </div>
       <figure class="lm-cover">
@@ -297,7 +297,7 @@ ${quizBlock(p, 'mid', 'is-mid')}
     <h2 id="buyH" class="lm-h2">لمحات نظامك، ${p.name}</h2>
     <p class="lm-buy-price">${nb('١٩ ر.س')}</p>
     <p class="lm-buy-d">${p.outcomes[p.outcomes.length - 1]}</p>
-    ${buy('final', 'خذي اللمحة الآن')}
+    ${buy('final', 'اقتني اللمحة الآن')}
     <p class="lm-assure">السعر شامل الضرائب، وصولٌ رقميّ فوري، ودعم على support@nizamok.com</p>
   </div>
 </section>
@@ -387,7 +387,7 @@ export function renderIndex(items) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805k">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805m">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
