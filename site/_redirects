@@ -36,8 +36,6 @@
 # تشخيص GA4 أظهر /juthur و/mubdia بين العناوين المطروقة — أي أن أحدًا
 # يكتبها أو يصل إليها من خارج، فيقع على 404. ومن يكتب /mubdia سيكتب
 # /kafua، فعولجت الأربعة ومعها مفتاحا الاختبار الداخليان.
-/juthur      /almasar/#juthur      301
-/juthur/     /almasar/#juthur      301
 /mubdia      /lamhat/mubdia/       301
 /mubdia/     /lamhat/mubdia/       301
 /asirat      /lamhat/asirat/       301

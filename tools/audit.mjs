@@ -1,11 +1,14 @@
 import { chromium } from '/home/user/Nizamuk.Business/node_modules/playwright/index.mjs';
 
 const BASE = process.argv[2] || 'https://nizamok.com';
+/* القائمة يدوية، وقد تخلّفت: /lamhat/ و/rebuild/ نُشرتا وفهرسُهما لم
+   يُفحَص، ومرآة النعم كذلك. فأي صفحةٍ جديدة تُضاف هنا وإلا مرّت بلا فحص. */
 const PAGES = [
   '/', '/almasar/', '/ikhtibar/', '/interdash/', '/shukran/',
   '/rebuild/mubdia/', '/rebuild/asirat/', '/rebuild/mutafadia/', '/rebuild/kafua/',
   '/lamhat/mubdia/', '/lamhat/asirat/', '/lamhat/mutafadia/', '/lamhat/kafua/',
-  '/mirrors/', '/mirrors/bidayat/', '/mirrors/irsal/', '/mirrors/muhimma/',
+  '/lamhat/', '/rebuild/', '/juthur/', '/rukn/',
+  '/mirrors/', '/mirrors/bidayat/', '/mirrors/irsal/', '/mirrors/muhimma/', '/mirrors/naam/',
   '/maqalat/', '/maqalat/limadha-abda-wala-ukmil/', '/maqalat/idman-al-bidayat/',
   '/maqalat/al-kasal-wa-ilajuh/', '/maqalat/al-taswif-laysa-mushkilat-waqt/',
   '/maqalat/mbti-wa-mada-baad/', '/maqalat/limadha-tufakkir-alnisa-kathiran/',
