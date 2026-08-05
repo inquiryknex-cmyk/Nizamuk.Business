@@ -2321,3 +2321,23 @@ html[lang="en"] .ambient-caption { direction: ltr; }
   margin: 0 0 1.1rem; padding-inline-end: 2rem;
   line-height: 1.95; color: var(--ink-soft);
 }
+
+/* ---------- ما بعد المسار ---------- */
+/* اللوحة ليست درجةً رابعة تُشترى بين لمحات وجذور، بل شيءٌ قادم. فهي
+   خارج الترقيم بصريًا أيضًا: بلا رقم، وبإطارٍ متقطّع يقول «ليست بعد». */
+.journey-soon {
+  margin-top: 1.6rem; padding: 1.4rem 1.6rem; border-radius: 14px;
+  background: transparent;
+  border: 1px dashed rgba(201, 167, 94, 0.45);
+}
+.journey-soon-k {
+  display: block; font-size: 0.78rem; letter-spacing: 0.08em;
+  color: var(--gold-deep); margin-bottom: 0.6rem;
+}
+.journey-soon h3 {
+  font-size: 1.1rem; font-weight: 700; color: var(--plum-deep);
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.7rem;
+  margin-bottom: 0.5rem;
+}
+.journey-soon p { color: var(--ink-soft); line-height: 1.9; margin: 0; }
+.journey-soon a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 3px; }
