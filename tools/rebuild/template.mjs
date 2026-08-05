@@ -188,7 +188,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805a">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
   <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801j">
 
   <script type="application/ld+json">
@@ -617,6 +617,136 @@ ${reads(p.slug)}
 <script src="/assets/js/analytics.js?v=20260801a"></script>
 <script src="/assets/js/rebuild.js?v=20260803a" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
+</body>
+</html>
+`;
+}
+/*
+  فهرس /rebuild/.
+
+  كالحال في لمحات: الصفحات الأربع منشورة والفهرس يعطي 404. وهذه الدرجة
+  الأغلى في السلّم، فغياب صفحةٍ تجمعها يعني أن أحدًا لا يصل إليها إلا
+  بمعرفة نمطه سلفًا.
+*/
+export function renderIndex(items) {
+  const SITE = 'https://nizamok.com';
+  const url = `${SITE}/rebuild/`;
+  const desc = 'أربعة أنظمة، واحد لكل نمط. المرحلة المتقدمة لإعادة بناء علاقتكِ بالطاقة والإنجاز والراحة والقرار. 109 ريالات للواحد.';
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  return `<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>نظام إعادة البناء: أربعة أنظمة، واحد لكل نمط | نظامك</title>
+  <meta name="description" content="${esc(desc)}">
+  <link rel="canonical" href="${url}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="نظامك">
+  <meta property="og:locale" content="ar_SA">
+  <meta property="og:title" content="نظام إعادة البناء">
+  <meta property="og:description" content="${esc(desc)}">
+  <meta property="og:url" content="${url}">
+  <meta property="og:image" content="${SITE}/assets/covers/rebuild/rebuild-mubdia.jpg?v=2">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/assets/img/seal.png">
+  <link rel="apple-touch-icon" href="/assets/img/seal.png">
+  <link rel="stylesheet" href="/assets/fonts/fonts.css">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": "${url}#page",
+        "name": "نظام إعادة البناء",
+        "url": "${url}",
+        "inLanguage": "ar",
+        "description": "${esc(desc)}",
+        "publisher": { "@type": "Organization", "name": "نظامك", "url": "${SITE}/" }
+      },
+      {
+        "@type": "ItemList",
+        "@id": "${url}#list",
+        "numberOfItems": ${items.length},
+        "itemListElement": [
+${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "name": "${esc('نظام ' + p.name)}", "url": "${SITE}/rebuild/${p.slug}/" }`).join(',\n')}
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "${url}#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "${SITE}/" },
+          { "@type": "ListItem", "position": 2, "name": "نظام إعادة البناء" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="mr-body" data-ambient data-lang-alt="/en/">
+<div class="mr-wrap">
+  <div class="container mr-narrow">
+
+    <header class="mr-top">
+      <a class="mr-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
+        <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="92" height="92">
+        <img class="mr-wordmark" src="/assets/img/wordmark-ink.png" alt="نظامك" width="460" height="150" loading="eager">
+      </a>
+      <a class="mr-home" href="/">الصفحة الرئيسية</a>
+    </header>
+
+    <p class="mr-kicker">الدرجة الأخيرة، 109 ريالات</p>
+    <h1 class="mr-h1">نظام إعادة البناء: أربعة أنظمة، واحد لكل نمط</h1>
+    <p class="mr-lead">${desc}</p>
+
+    <section class="mr-intro">
+      <p>اللمحة تُسمّي ما يتكرر معكِ. وإعادة البناء تغيّر ما تفعلينه به: أدوات مسمّاة، وتطبيق على سبعة أيام ثم ثلاثين ثم تسعين، ولمن لا يصلح هذا النظام صراحةً قبل الشراء.</p>
+      <p>ولكل نمطٍ نظامه، لأن ما يوقف المبدعة ليس ما يوقف الكفؤة. وإن لم تحسمي أيّها يشبهكِ، فـ<a href="/ikhtibar/">الاختبار</a> ثلاث دقائق بلا دفع.</p>
+    </section>
+
+    <ul class="mr-cards" role="list">
+${items.map(p => `      <li class="mr-card">
+        <a href="/rebuild/${p.slug}/" data-ev="rebuild_index_click" data-pattern="${p.slug}">
+          <span class="mr-card-k">${esc(p.kicker)}</span>
+          <b>${esc('نظام ' + p.name)}</b>
+          <span class="mr-card-d">${esc(p.h1)}</span>
+          <span class="mr-card-go">اقرئي التفاصيل، 109 ريالات</span>
+        </a>
+      </li>`).join('\n')}
+    </ul>
+
+    <div class="mr-share-sec">
+      <div data-article-share
+           data-share-context="rebuild_index"
+           data-share-h="تعرفين من قد تشبه أحد هذه الأنماط؟"
+           data-share-sub="أرسليها لها، فقد توفّر عليها شهورًا من المحاولة في الاتجاه الخطأ."></div>
+    </div>
+
+    <p class="mr-disc">أنظمة نظامك قراءات تعليمية للفهم الذاتي والتنظيم العملي، وليست تشخيصًا نفسيًا ولا بديلًا عن استشارة مختصة.</p>
+
+    <nav class="mr-foot-nav">
+      <a href="/">الرئيسية</a>
+      <a href="/ikhtibar/">الاختبار</a>
+      <a href="/almasar/">المسار</a>
+      <a href="/lamhat/">لمحات</a>
+      <a href="/maqalat/">المقالات</a>
+      <a href="/mirrors/">المرايا</a>
+      <a href="/privacy/">الخصوصية</a>
+    </nav>
+  </div>
+</div>
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/analytics.js?v=20260801a"></script>
+<script src="/assets/js/main.js?v=20260801b" defer></script>
+<script src="/assets/js/share-article.js?v=20260804d" defer></script>
 </body>
 </html>
 `;

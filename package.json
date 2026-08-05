@@ -16,7 +16,8 @@
     "check:versions": "node tools/check-versions.mjs",
     "audit": "node tools/audit.mjs",
     "natija": "node tools/share-cards.mjs && node tools/natija-pages.mjs",
-    "share:cards": "node tools/share-cards.mjs"
+    "share:cards": "node tools/share-cards.mjs",
+    "build:sitemap": "node tools/sitemap.mjs && node tools/sitemap-images.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.110.0"
