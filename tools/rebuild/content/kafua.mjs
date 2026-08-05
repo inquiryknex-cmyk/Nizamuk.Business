@@ -90,11 +90,6 @@ export default {
       cap: "عقد الاعتماد: البنود الأربعة، صفحة 7"
     },
     {
-      alt: "خريطة الفسخ",
-      src: "/assets/product/kafua/p08.webp",
-      cap: "خريطة الفسخ، صفحة 8"
-    },
-    {
       alt: "تجربة الكشف",
       src: "/assets/product/kafua/p23.webp",
       cap: "تجربة الكشف، صفحة 23"
@@ -103,12 +98,8 @@ export default {
       alt: "خطة الثلاثين يومًا",
       src: "/assets/product/kafua/p33.webp",
       cap: "خطة الثلاثين يومًا، صفحة 33"
-    },
-    {
-      alt: "قوس التسعين يومًا",
-      src: "/assets/product/kafua/p36.webp",
-      cap: "قوس التسعين يومًا، صفحة 36"
     }
+  
   ],
   outcomes: [
     "إبطاء الموافقة التلقائية حتى يصبح الرد قرارًا لا انعكاسًا.",

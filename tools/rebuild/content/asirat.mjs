@@ -90,11 +90,6 @@ export default {
       cap: "الحراسة الثلاثية، صفحة 5"
     },
     {
-      alt: "خريطة الإغلاق",
-      src: "/assets/product/asirat/p06.webp",
-      cap: "خريطة الإغلاق، صفحة 6"
-    },
-    {
       alt: "محكمة التعديل الأخير",
       src: "/assets/product/asirat/p20.webp",
       cap: "محكمة التعديل الأخير، صفحة 20"
@@ -103,12 +98,8 @@ export default {
       alt: "بداية سريعة وتحدّي سبعة أيام",
       src: "/assets/product/asirat/p31.webp",
       cap: "بداية سريعة - تحدّي 7 أيام، صفحة 31"
-    },
-    {
-      alt: "قوس التسعين يومًا",
-      src: "/assets/product/asirat/p35.webp",
-      cap: "قوس التسعين يومًا، صفحة 35"
     }
+  
   ],
   outcomes: [
     "التفريق بين التعديل الخادم والتعديل الحارس.",

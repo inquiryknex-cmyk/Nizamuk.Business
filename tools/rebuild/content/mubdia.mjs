@@ -90,11 +90,6 @@ export default {
       cap: "خريطة المنعطفات الأربعة، صفحة 7"
     },
     {
-      alt: "خريطة العبور",
-      src: "/assets/product/mubdia/p08.webp",
-      cap: "خريطة العبور، صفحة 8"
-    },
-    {
       alt: "تجربة الوصول",
       src: "/assets/product/mubdia/p23.webp",
       cap: "تجربة الوصول، صفحة 23"
@@ -103,12 +98,8 @@ export default {
       alt: "خطة الثلاثين يومًا",
       src: "/assets/product/mubdia/p33.webp",
       cap: "خطة الثلاثين يومًا، صفحة 33"
-    },
-    {
-      alt: "قوس التسعين يومًا",
-      src: "/assets/product/mubdia/p36.webp",
-      cap: "قوس التسعين يومًا، صفحة 36"
     }
+  
   ],
   outcomes: [
     "تمييز انخفاض الحماس الطبيعي عن فقدان المشروع لقيمته.",

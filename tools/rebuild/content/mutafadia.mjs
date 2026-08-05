@@ -90,11 +90,6 @@ export default {
       cap: "المواجهات الأربع، صفحة 6"
     },
     {
-      alt: "خريطة الباب المؤجّل",
-      src: "/assets/product/mutafadia/p07.webp",
-      cap: "خريطة الباب المؤجّل، صفحة 7"
-    },
-    {
       alt: "الأداة التوقيعية ودفترها",
       src: "/assets/product/mutafadia/p22.webp",
       cap: "الأداة التوقيعية ودفترها، صفحة 22"
@@ -103,12 +98,8 @@ export default {
       alt: "خطة الثلاثين يومًا",
       src: "/assets/product/mutafadia/p32.webp",
       cap: "خطة الثلاثين يومًا، صفحة 32"
-    },
-    {
-      alt: "قوس التسعين يومًا",
-      src: "/assets/product/mutafadia/p35.webp",
-      cap: "قوس التسعين يومًا، صفحة 35"
     }
+  
   ],
   outcomes: [
     "تحويل المهمة من سحابة عامة إلى باب محدد في سطر واحد.",
