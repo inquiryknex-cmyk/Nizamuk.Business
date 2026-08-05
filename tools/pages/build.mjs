@@ -68,7 +68,7 @@ function head({ url, title, desc, image, crumbs, extraLd = '' }) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805f">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805g">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">

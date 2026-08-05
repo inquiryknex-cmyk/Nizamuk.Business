@@ -2445,3 +2445,15 @@ html[lang="en"] .ambient-caption { direction: ltr; }
 .book-chapters { margin: 0; padding-inline-start: 1.3rem; color: var(--ink-soft); line-height: 2.05; }
 .book-refs { margin: 0.4rem 0 0.9rem; padding-inline-start: 1.3rem; color: var(--ink-soft); line-height: 2; font-size: 0.9rem; }
 .book-safety { font-size: 0.9rem; color: var(--taupe); border-top: 1px dashed rgba(201, 167, 94, 0.4); padding-top: 0.9rem; }
+
+/* ---------- جولة داخل الكتاب ----------
+   بلاطاتٌ بلا صندوقٍ مكبّر عمدًا: تُقرأ تصميمًا لا نصًّا. */
+.peek-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 760px) { .peek-grid { grid-template-columns: repeat(4, 1fr); } }
+.peek { display: flex; flex-direction: column; gap: 0.5rem; }
+.peek img {
+  width: 100%; height: auto; display: block; border-radius: 8px;
+  border: 1px solid rgba(201, 167, 94, 0.35);
+  box-shadow: 0 6px 18px rgba(42, 24, 50, 0.10);
+}
+.peek-cap { font-size: 0.78rem; color: var(--taupe); line-height: 1.7; }

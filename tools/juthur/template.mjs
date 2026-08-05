@@ -9,7 +9,7 @@
   المراجع. فالصفحة تُري ما في الكتاب بدل أن تَعِد به.
 */
 import { renderCrumbs, jsonLdCrumbs } from '../crumbs.mjs';
-import { JUTHUR, COMMON } from './content.mjs';
+import { JUTHUR, COMMON, PEEK } from './content.mjs';
 
 const ORIGIN = 'https://nizamok.com';
 const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -37,7 +37,7 @@ function shell({ url, title, desc, image, crumbs, extraLd = '', body, nav }) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805f">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805g">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
@@ -64,7 +64,7 @@ function shell({ url, title, desc, image, crumbs, extraLd = '', body, nav }) {
         <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="92" height="92">
         <img class="mr-wordmark" src="/assets/img/wordmark-ink.png" alt="نظامك" width="460" height="150" loading="eager">
       </a>
-      <a class="mr-home" href="/juthur/">كل الجذور</a>
+      <a class="mr-home" href="/">الصفحة الرئيسية</a>
     </header>
 
     ${renderCrumbs(crumbs)}
@@ -209,6 +209,17 @@ export function renderBook(b) {
       <h2>من داخل الكتاب</h2>
       <ul class="book-quotes" role="list">
 ${b.passages.map(q => `        <li>«${esc(q)}»</li>`).join('\n')}
+      </ul>
+    </section>
+
+    <section class="book-sec">
+      <h2>جولة سريعة في الداخل</h2>
+      <p>أربع صفحاتٍ من ${COMMON.pages}. تُري كيف بُني الكتاب، لا ما يقوله.</p>
+      <ul class="peek-grid" role="list">
+${PEEK.map(k => `        <li class="peek">
+          <img src="/assets/juthur/${b.slug}/${k.file}-thumb.webp" alt="${esc(k.cap)}" width="620" height="827" loading="lazy">
+          <span class="peek-cap">${esc(k.cap)}</span>
+        </li>`).join('\n')}
       </ul>
     </section>
 

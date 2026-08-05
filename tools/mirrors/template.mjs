@@ -82,7 +82,7 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805f">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805g">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
   <script type="application/ld+json">
   {
@@ -122,7 +122,7 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
         <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="92" height="92">
         <img class="mr-wordmark" src="/assets/img/wordmark-ink.png" alt="نظامك" width="460" height="150" loading="eager">
       </a>
-      <a class="mr-home" href="/mirrors/">كل المرايا</a>
+      <a class="mr-home" href="/">الصفحة الرئيسية</a>
     </header>
 
     ${renderCrumbs(CRUMBS)}
@@ -230,7 +230,7 @@ export function renderIndex(mirrors) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805f">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805g">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
