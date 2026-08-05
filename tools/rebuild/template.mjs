@@ -742,9 +742,8 @@ ${items.map(p => `      <li class="book-card">
           <p class="book-q">${esc(p.h1)}</p>
           <p class="book-meta">${p.pages} صفحة</p>
           <div class="book-cta">
-            <a class="btn btn-rose" href="${p.dodo}" target="_blank" rel="noopener"
-               data-ev="rebuild_click" data-pattern="${p.slug}" data-level="rebuild" data-section="rebuild_index">اقتني النظام، 109 ريالات</a>
-            <a class="book-more" href="/rebuild/${p.slug}/">ما في النظام؟</a>
+            <a class="btn btn-rose" href="/rebuild/${p.slug}/"
+               data-ev="rebuild_card_click" data-pattern="${p.slug}" data-level="rebuild" data-section="rebuild_index">اطّلعي على النظام، 109 ريالات</a>
           </div>
         </div>
       </li>`).join('\n')}

@@ -458,9 +458,8 @@ ${items.map(p => `      <li class="book-card">
           <p class="book-q">${esc(p.h1a)} ${esc(p.h1b)}</p>
           <p class="book-meta">${p.pages} صفحة، تُقرأ في ${p.minutes} دقائق</p>
           <div class="book-cta">
-            <a class="btn btn-rose" href="${p.dodo}" target="_blank" rel="noopener"
-               data-ev="lamhat_click" data-pattern="${p.slug}" data-level="lamhat" data-section="lamhat_index">افتحي لمحتكِ، 19 ريالًا</a>
-            <a class="book-more" href="/lamhat/${p.slug}/">ما في اللمحة؟</a>
+            <a class="btn btn-rose" href="/lamhat/${p.slug}/"
+               data-ev="lamhat_card_click" data-pattern="${p.slug}" data-level="lamhat" data-section="lamhat_index">اطّلعي على اللمحة، 19 ريالًا</a>
           </div>
         </div>
       </li>`).join('\n')}

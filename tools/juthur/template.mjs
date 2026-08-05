@@ -134,9 +134,8 @@ ${JUTHUR.map(b => `      <li class="book-card">
           <p class="book-q">${esc(b.sub)}</p>
           <p class="book-meta">${COMMON.pages} صفحة، و${b.nrefs} مرجعًا مؤرَّخًا</p>
           <div class="book-cta">
-            <a class="btn btn-rose" href="${b.dodo}" target="_blank" rel="noopener"
-               data-ev="juthur_click" data-pattern="${b.slug}" data-level="juthur" data-section="juthur_index">اقتني الكتاب، ${COMMON.price} ريالًا</a>
-            <a class="book-more" href="/juthur/${b.slug}/">ما في الكتاب؟</a>
+            <a class="btn btn-rose" href="/juthur/${b.slug}/"
+               data-ev="juthur_card_click" data-pattern="${b.slug}" data-level="juthur" data-section="juthur_index">اطّلعي على الكتاب، ${COMMON.price} ريالًا</a>
           </div>
         </div>
       </li>`).join('\n')}
