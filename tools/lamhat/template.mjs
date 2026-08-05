@@ -321,7 +321,7 @@ ${p.faqs.map(f => `      <details>
 </footer>
 
 <script src="/assets/js/config.js"></script>
-<script src="/assets/js/analytics.js?v=20260801a"></script>
+<script src="/assets/js/analytics.js?v=20260805a"></script>
 <script src="/assets/js/lamhat.js?v=20260803a" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 <script src="/assets/js/share-article.js?v=20260804d" defer></script>
@@ -454,7 +454,7 @@ ${items.map(p => `      <li class="mr-card">
   </div>
 </div>
 <script src="/assets/js/config.js"></script>
-<script src="/assets/js/analytics.js?v=20260801a"></script>
+<script src="/assets/js/analytics.js?v=20260805a"></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 <script src="/assets/js/share-article.js?v=20260804d" defer></script>
 </body>

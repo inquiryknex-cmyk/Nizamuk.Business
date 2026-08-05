@@ -70,6 +70,61 @@
 
       var conf = { allow_ad_personalization_signals: false };  /* no pain-signal remarketing */
       if (debugOn) conf.debug_mode = true;
+
+      /* ---------- 1. The buyer coming back from the payment page ----------
+
+         The trip is: our page -> dodo.pe -> back to /shukran/. On the way
+         back GA4 sees a referrer it has never seen, so it ends the session
+         and opens a new one attributed to `dodo.pe / referral`.
+
+         The sale itself survives that: the webhook in src/worker.mjs sends
+         `purchase` with the client_id and session_id captured BEFORE the
+         visitor left, so the money lands in the session that earned it.
+
+         What does not survive is everything around it. One visit is counted
+         as two sessions, and dodo.pe appears in the acquisition report as
+         though it were sending us traffic — when it is a page we send people
+         to. Any real answer to "where do buyers come from" is buried under it.
+
+         `ignore_referrer` tells GA4 to keep the session it already had. It is
+         set only when we actually arrive from a payment host, so an ordinary
+         visit to /shukran/ is untouched.
+
+         This is the same intent as the "unwanted referrals" list in the GA4
+         admin, and both should be set: this one is exact and lives with the
+         code, that one also covers hits this script never sees. */
+      try {
+        var ref = document.referrer ? new URL(document.referrer).hostname : '';
+        var PAY = ['dodo.pe', 'dodopayments.com', 'checkout.dodopayments.com'];
+        for (var i = 0; i < PAY.length; i++) {
+          if (ref === PAY[i] || ref.slice(-(PAY[i].length + 1)) === '.' + PAY[i]) {
+            conf.ignore_referrer = true;
+            break;
+          }
+        }
+      } catch (e) { /* مُحيلٌ غير صالح — يُترك كما هو */ }
+
+      /* ---------- 2. Our own visits ----------
+
+         GA4 filters internal traffic by IP, which does not survive a phone on
+         mobile data, a café, or a router that renews its address. So the mark
+         is put on the device instead, once, and it stays: open any page with
+         ?internal=1 and every event from that browser is labelled internal.
+         ?internal=0 removes it.
+
+         The label alone changes nothing. GA4 only acts on `traffic_type` when
+         the Internal Traffic filter is set to Active in the admin — until
+         then the parameter is carried and ignored. */
+      try {
+        var qi = new URLSearchParams(location.search).get('internal');
+        if (qi === '1' || qi === 'true') localStorage.setItem('nz_internal', '1');
+        if (qi === '0' || qi === 'false') localStorage.removeItem('nz_internal');
+        if (localStorage.getItem('nz_internal') === '1') {
+          conf.traffic_type = 'internal';
+          window.NIZAMOK_INTERNAL = true;
+        }
+      } catch (e) { /* تصفّح خاص — تبقى الزيارة محسوبة، وهو الأسلم */ }
+
       window.gtag('config', ga4Id, conf);
 
       inject('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ga4Id));
