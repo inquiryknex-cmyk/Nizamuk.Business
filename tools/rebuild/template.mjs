@@ -729,15 +729,24 @@ ${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "n
       <p>ولكل نمطٍ نظامه، لأن ما يوقف المبدعة ليس ما يوقف الكفؤة. وإن لم تحسمي أيّها يشبهكِ، فـ<a href="/ikhtibar/">الاختبار</a> ثلاث دقائق بلا دفع.</p>
     </section>
 
-    <ul class="mr-cards" role="list">
-${items.map(p => `      <li class="mr-card">
-        <a href="/rebuild/${p.slug}/" data-ev="rebuild_index_click" data-pattern="${p.slug}">
-          <span class="mr-card-k">${esc(p.kicker)}</span>
-          <b>${esc('نظام ' + p.name)}</b>
-          <span class="mr-card-d">${esc(p.h1)}</span>
-          <span class="mr-card-m">${p.pages} صفحة</span>
-          <span class="mr-card-go">اقرئي التفاصيل، 109 ريالات</span>
+        <ul class="book-grid" role="list">
+${items.map(p => `      <li class="book-card">
+        <a class="book-cover" href="/rebuild/${p.slug}/" aria-label="${esc('نظام ' + p.name)}">
+          <picture>
+            <source srcset="/assets/product/${p.slug}/cover.webp?v=4" type="image/webp">
+            <img src="/assets/product/${p.slug}/cover-og.jpg?v=4" alt="${esc('غلاف نظام ' + p.name)}" width="900" height="1350" loading="lazy">
+          </picture>
         </a>
+        <div class="book-body">
+          <h2><a href="/rebuild/${p.slug}/">${esc('نظام ' + p.name)}</a></h2>
+          <p class="book-q">${esc(p.h1)}</p>
+          <p class="book-meta">${p.pages} صفحة</p>
+          <div class="book-cta">
+            <a class="btn btn-rose" href="${p.dodo}" target="_blank" rel="noopener"
+               data-ev="rebuild_click" data-pattern="${p.slug}" data-level="rebuild" data-section="rebuild_index">اقتني النظام، 109 ريالات</a>
+            <a class="book-more" href="/rebuild/${p.slug}/">ما في النظام؟</a>
+          </div>
+        </div>
       </li>`).join('\n')}
     </ul>
 

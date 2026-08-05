@@ -445,15 +445,24 @@ ${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "n
       <p>وإن لم تحسمي أيّها يشبهكِ، فـ<a href="/ikhtibar/">الاختبار</a> اثنا عشر موقفًا في ثلاث دقائق، بلا دفع، ونمطكِ يظهر فور انتهائكِ.</p>
     </section>
 
-    <ul class="mr-cards" role="list">
-${items.map(p => `      <li class="mr-card">
-        <a href="/lamhat/${p.slug}/" data-ev="lamhat_index_click" data-pattern="${p.slug}">
-          <span class="mr-card-k">${esc(p.kicker)}</span>
-          <b>${esc('لمحة ' + p.name)}</b>
-          <span class="mr-card-d">${esc(p.h1a)} ${esc(p.h1b)}</span>
-          <span class="mr-card-m">${p.pages} صفحة، تُقرأ في ${p.minutes} دقائق</span>
-          <span class="mr-card-go">اقرئي التفاصيل، 19 ريالًا</span>
+        <ul class="book-grid" role="list">
+${items.map(p => `      <li class="book-card">
+        <a class="book-cover" href="/lamhat/${p.slug}/" aria-label="${esc('لمحة ' + p.name)}">
+          <picture>
+            <source srcset="${p.cover}?v=3" type="image/webp">
+            <img src="${p.coverJpg}?v=3" alt="${esc('غلاف لمحة ' + p.name)}" width="700" height="964" loading="lazy">
+          </picture>
         </a>
+        <div class="book-body">
+          <h2><a href="/lamhat/${p.slug}/">${esc('لمحة ' + p.name)}</a></h2>
+          <p class="book-q">${esc(p.h1a)} ${esc(p.h1b)}</p>
+          <p class="book-meta">${p.pages} صفحة، تُقرأ في ${p.minutes} دقائق</p>
+          <div class="book-cta">
+            <a class="btn btn-rose" href="${p.dodo}" target="_blank" rel="noopener"
+               data-ev="lamhat_click" data-pattern="${p.slug}" data-level="lamhat" data-section="lamhat_index">افتحي لمحتكِ، 19 ريالًا</a>
+            <a class="book-more" href="/lamhat/${p.slug}/">ما في اللمحة؟</a>
+          </div>
+        </div>
       </li>`).join('\n')}
     </ul>
 
