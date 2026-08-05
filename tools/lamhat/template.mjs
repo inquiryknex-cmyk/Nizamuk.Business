@@ -143,7 +143,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805a">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
   <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804e">
   <script type="application/ld+json">
   {
@@ -323,6 +323,138 @@ ${p.faqs.map(f => `      <details>
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js?v=20260801a"></script>
 <script src="/assets/js/lamhat.js?v=20260803a" defer></script>
+<script src="/assets/js/main.js?v=20260801b" defer></script>
+<script src="/assets/js/share-article.js?v=20260804d" defer></script>
+</body>
+</html>
+`;
+}
+
+/*
+  فهرس /lamhat/.
+
+  كانت /lamhat/mubdia/ موجودة و/lamhat/ تعطي 404. وهذا يضرّ من جهتين:
+  زائرةٌ تقصّ العنوان فلا تجد شيئًا، وزاحفٌ يتبع بنية المجلدات فلا يجد
+  ما يجمع الأربع. فالفهرس ليس زينةً بل الحلقة الناقصة.
+
+  وهو عاجيّ لا مخمليّ: صفحة اختيارٍ تُقرأ بسرعة، لا صفحة بيعٍ لنمطٍ بعينه.
+*/
+export function renderIndex(items) {
+  const SITE = 'https://nizamok.com';
+  const url = `${SITE}/lamhat/`;
+  const desc = 'أربع قراءات، واحدة لكل نمط. تختارين نمطكِ فتصلكِ لمحته: أين تتوقفين، وما السلوك الذي يخدعكِ، وأول حركة صغيرة. 19 ريالًا للواحدة.';
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  return `<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لمحات نظامك: أربع قراءات، واحدة لكل نمط | نظامك</title>
+  <meta name="description" content="${esc(desc)}">
+  <link rel="canonical" href="${url}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="نظامك">
+  <meta property="og:locale" content="ar_SA">
+  <meta property="og:title" content="لمحات نظامك">
+  <meta property="og:description" content="${esc(desc)}">
+  <meta property="og:url" content="${url}">
+  <meta property="og:image" content="${SITE}/assets/covers/lamhat-mubdia.jpg?v=3">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/assets/img/seal.png">
+  <link rel="apple-touch-icon" href="/assets/img/seal.png">
+  <link rel="stylesheet" href="/assets/fonts/fonts.css">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": "${url}#page",
+        "name": "لمحات نظامك",
+        "url": "${url}",
+        "inLanguage": "ar",
+        "description": "${esc(desc)}",
+        "publisher": { "@type": "Organization", "name": "نظامك", "url": "${SITE}/" }
+      },
+      {
+        "@type": "ItemList",
+        "@id": "${url}#list",
+        "numberOfItems": ${items.length},
+        "itemListElement": [
+${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "name": "${esc('لمحة ' + p.name)}", "url": "${SITE}/lamhat/${p.slug}/" }`).join(',\n')}
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "${url}#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "${SITE}/" },
+          { "@type": "ListItem", "position": 2, "name": "لمحات نظامك" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="mr-body" data-ambient data-lang-alt="/en/">
+<div class="mr-wrap">
+  <div class="container mr-narrow">
+
+    <header class="mr-top">
+      <a class="mr-brand" href="/" aria-label="نظامك، الصفحة الرئيسية">
+        <img class="seal-img" src="/assets/img/seal.png" alt="ختم نظامك" width="92" height="92">
+        <img class="mr-wordmark" src="/assets/img/wordmark-ink.png" alt="نظامك" width="460" height="150" loading="eager">
+      </a>
+      <a class="mr-home" href="/">الصفحة الرئيسية</a>
+    </header>
+
+    <p class="mr-kicker">الدرجة الأولى، 19 ريالًا</p>
+    <h1 class="mr-h1">لمحات نظامك: أربع قراءات، واحدة لكل نمط</h1>
+    <p class="mr-lead">${desc}</p>
+
+    <section class="mr-intro">
+      <p>الأنماط الأربعة تتشابه من الخارج: امرأة تبدأ ولا تكمل. وتختلف في العلاج اختلافًا تامًّا، لأن ما يوقفها ليس واحدًا. فلكل نمطٍ لمحته، ولا تُقرأ لمحة نمطٍ آخر بديلًا عنها.</p>
+      <p>وإن لم تحسمي أيّها يشبهكِ، فـ<a href="/ikhtibar/">الاختبار</a> اثنا عشر موقفًا في ثلاث دقائق، بلا دفع، ونمطكِ يظهر فور انتهائكِ.</p>
+    </section>
+
+    <ul class="mr-cards" role="list">
+${items.map(p => `      <li class="mr-card">
+        <a href="/lamhat/${p.slug}/" data-ev="lamhat_index_click" data-pattern="${p.slug}">
+          <span class="mr-card-k">${esc(p.kicker)}</span>
+          <b>${esc('لمحة ' + p.name)}</b>
+          <span class="mr-card-d">${esc(p.h1a)} ${esc(p.h1b)}</span>
+          <span class="mr-card-go">اقرئي التفاصيل، 19 ريالًا</span>
+        </a>
+      </li>`).join('\n')}
+    </ul>
+
+    <div class="mr-share-sec">
+      <div data-article-share
+           data-share-context="lamhat_index"
+           data-share-h="تعرفين من قد تشبه أحد هذه الأنماط؟"
+           data-share-sub="أرسليها لها، فقد توفّر عليها شهورًا من المحاولة في الاتجاه الخطأ."></div>
+    </div>
+
+    <p class="mr-disc">لمحات نظامك قراءات تعليمية للفهم الذاتي والتنظيم العملي، وليست تشخيصًا نفسيًا ولا بديلًا عن استشارة مختصة.</p>
+
+    <nav class="mr-foot-nav">
+      <a href="/">الرئيسية</a>
+      <a href="/ikhtibar/">الاختبار</a>
+      <a href="/almasar/">المسار</a>
+      <a href="/maqalat/">المقالات</a>
+      <a href="/mirrors/">المرايا</a>
+      <a href="/privacy/">الخصوصية</a>
+    </nav>
+  </div>
+</div>
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/analytics.js?v=20260801a"></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 <script src="/assets/js/share-article.js?v=20260804d" defer></script>
 </body>

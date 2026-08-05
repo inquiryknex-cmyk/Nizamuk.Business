@@ -78,7 +78,7 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805a">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
   <script type="application/ld+json">
   {
@@ -135,8 +135,8 @@ ${m.intro.map(p => `      <p>${p}</p>`).join('\n')}
 
     <!-- ====== الطبقة ٢: التفاعل، وأسئلته في HTML لا في جافاسكربت ====== -->
     <section class="mr-tool" aria-labelledby="toolH">
-      <h2 id="toolH" class="mr-h2">أربعة مواقف، أقلّ من دقيقة</h2>
-      <p class="mr-note">لا بريد، ولا تسجيل. النتيجة تظهر فور الإجابة الرابعة.</p>
+      <h2 id="toolH" class="mr-h2">أربعة مواقف في أقل من دقيقة</h2>
+      <p class="mr-note">لا بريد ولا تسجيل. ستظهر نتيجتكِ فور إجابتكِ عن الموقف الرابع.</p>
 
       <div class="mr-bar" role="presentation"><span data-bar></span></div>
 
@@ -165,7 +165,7 @@ ${results}
       <ul class="mr-mech" role="list">
 ${m.interp.map(i => `        <li><b>${i.t}</b><span>${i.d}</span></li>`).join('\n')}
       </ul>
-      <p class="mr-more">وللقراءة الأطول: <a href="${m.article}">${m.articleName}</a>.</p>
+      <p class="mr-more">وللقراءة بتفصيل أكبر: <a href="${m.article}">${m.articleName}</a>.</p>
     </section>
 
     <!-- تُقرأ الطبقة الثالثة بلا إجابة أي سؤال، فلها مشاركتها المستقلّة عن
@@ -173,8 +173,8 @@ ${m.interp.map(i => `        <li><b>${i.t}</b><span>${i.d}</span></li>`).join('\
     <section class="mr-share-sec">
       <div data-article-share
            data-share-context="mirror_page"
-           data-share-h="تعرفين من تحتاج هذه المرآة؟"
-           data-share-sub="دقيقة واحدة، بلا بريد وبلا تسجيل."></div>
+           data-share-h="تعرفين من قد تحتاج إلى هذه المرآة؟"
+           data-share-sub="شاركيها معها. لن تستغرق أكثر من دقيقة، ولا تحتاج إلى بريد أو تسجيل."></div>
     </section>
 
     <p class="mr-disc">هذه المرآة أداة للفهم الذاتي والتنظيم العملي، وليست تشخيصًا نفسيًا ولا بديلًا عن استشارة مختصة.</p>
@@ -225,7 +225,7 @@ export function renderIndex(mirrors) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805a">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">

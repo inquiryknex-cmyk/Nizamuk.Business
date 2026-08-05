@@ -10,7 +10,7 @@
 import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { renderPage } from './template.mjs';
+import { renderPage, renderIndex } from './template.mjs';
 
 import mubdia from './content/mubdia.mjs';
 import asirat from './content/asirat.mjs';
@@ -59,3 +59,14 @@ if (quoted < 4) {
   console.log('البقية تعرض بنية اللمحة بدل الاقتباس، عمدًا: لا تُنسب إلى كتابٍ جملةٌ لم تُقرأ فيه.');
   console.log('حين يصل ملف أي لمحة، أضيفي passages في ملف محتواها ثم أعيدي البناء.');
 }
+
+/* الفهرس: /lamhat/ كانت تعطي 404 بينما صفحاتها الأربع منشورة. */
+const ALL = [mubdia, asirat, mutafadia, kafua];
+mkdirSync(ROOT, { recursive: true });
+writeFileSync(join(ROOT, 'index.html'), renderIndex(ALL));
+for (const p of ALL) {
+  if (!renderIndex(ALL).includes(`/lamhat/${p.slug}/`)) {
+    throw new Error(`الفهرس لا يذكر ${p.slug}`);
+  }
+}
+console.log(`wrote site/lamhat/index.html  (${ALL.length} لمحات)`);

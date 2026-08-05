@@ -10,7 +10,7 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { renderPage } from './template.mjs';
+import { renderPage, renderIndex } from './template.mjs';
 
 import mubdia from './content/mubdia.mjs';
 import asirat from './content/asirat.mjs';
@@ -24,4 +24,15 @@ for (const p of [mubdia, asirat, kafua, mutafadia]) {
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'index.html'), renderPage(p), 'utf8');
   console.log('wrote site/rebuild/' + p.slug + '/index.html');
+}
+
+/* الفهرس: /rebuild/ كانت تعطي 404 بينما صفحاتها الأربع منشورة. */
+{
+  const ALL = [mubdia, asirat, mutafadia, kafua];
+  const html = renderIndex(ALL);
+  for (const p of ALL) {
+    if (!html.includes(`/rebuild/${p.slug}/`)) throw new Error(`الفهرس لا يذكر ${p.slug}`);
+  }
+  writeFileSync(join(ROOT, "index.html"), html);
+  console.log(`wrote site/rebuild/index.html  (${ALL.length} أنظمة)`);
 }
