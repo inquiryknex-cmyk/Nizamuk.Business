@@ -93,7 +93,7 @@ const page = (p) => `<!doctype html>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>نمط ${p.name} في اختبار نظامك | نظامك</title>
-  <meta name="description" content="${p.name}: ${p.truth} تعرّفي إلى النمط، ثم اكتشفي نمطكِ أنتِ في اثني عشر مشهدًا خلال ثلاث دقائق، بلا بريد وبلا دفع.">
+  <meta name="description" content="${p.name}: ${p.truth} تعرّفي إلى النمط، ثم اكتشفي نمطكِ أنتِ في اثني عشر مشهدًا خلال ثلاث دقائق، بلا دفع، ونمطكِ يظهر فورًا.">
   <link rel="canonical" href="https://nizamok.com/natija/${p.slug}/">
   <link rel="alternate" hreflang="ar" href="https://nizamok.com/natija/${p.slug}/">
   <link rel="alternate" hreflang="x-default" href="https://nizamok.com/natija/${p.slug}/">
@@ -102,7 +102,7 @@ const page = (p) => `<!doctype html>
   <meta property="og:locale" content="ar_SA">
   <meta property="og:site_name" content="نظامك">
   <meta property="og:title" content="نمطي في اختبار نظامك: ${p.name}">
-  <meta property="og:description" content="${p.truth} اكتشفي نمطكِ في ثلاث دقائق، بلا بريد وبلا دفع.">
+  <meta property="og:description" content="${p.truth} اكتشفي نمطكِ في ثلاث دقائق، بلا دفع، ونمطكِ يظهر فورًا.">
   <meta property="og:url" content="https://nizamok.com/natija/${p.slug}/">
   <meta property="og:image" content="https://nizamok.com/assets/share/natija-${p.slug}.jpg?v=${p.cardV}">
   <meta property="og:image:width" content="1200">
@@ -193,7 +193,7 @@ const page = (p) => `<!doctype html>
 
       <div class="art-bridge">
         <span class="art-bridge-h">وما نمطكِ أنتِ؟</span>
-        <p>الأنماط الأربعة تتشابه من الخارج وتختلف في العلاج تمامًا. اثنا عشر مشهدًا من يومكِ في ثلاث دقائق، بلا بريد وبلا دفع، ويقرأ مزيجكِ لا خانتكِ.</p>
+        <p>الأنماط الأربعة تتشابه من الخارج وتختلف في العلاج تمامًا. اثنا عشر مشهدًا من يومكِ في ثلاث دقائق، بلا دفع، ونمطكِ يظهر فور انتهائكِ، ويُطلب بريدكِ لفتح القراءة الكاملة، ويقرأ مزيجكِ لا خانتكِ.</p>
         <a class="btn btn-rose art-bridge-btn" href="/ikhtibar/?source=natija_${p.slug}&amp;origin=share" data-ev="quiz_click_from_share" data-section="natija_${p.slug}">اكتشفي نمطكِ مجانًا خلال 3 دقائق</a>
       </div>
 

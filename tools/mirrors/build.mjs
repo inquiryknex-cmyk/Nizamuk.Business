@@ -14,9 +14,10 @@ import { renderMirror, renderIndex } from './template.mjs';
 import bidayat from './content/bidayat.mjs';
 import irsal from './content/irsal.mjs';
 import muhimma from './content/muhimma.mjs';
+import naam from './content/naam.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'site', 'mirrors');
-const ALL = [bidayat, irsal, muhimma];
+const ALL = [bidayat, irsal, muhimma, naam];
 
 for (const m of ALL) {
   const html = renderMirror(m);
