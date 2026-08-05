@@ -151,7 +151,7 @@ const card = (p, f) => `
   <div class="rule"></div>
   <div class="truth">${p.truth}</div>
   <div class="para">${p.para}</div>
-  ${f.cta ? '<div class="invite">اكتشفي نمطكِ في ثلاث دقائق، بلا بريد وبلا دفع.</div>' : ''}
+  ${f.cta ? '<div class="invite">اكتشفي نمطكِ في ثلاث دقائق، بلا دفع، ونمطكِ يظهر فورًا.</div>' : ''}
   <div class="foot">
     <div class="brand"><img src="/assets/img/wordmark.png" alt=""></div>
     <div class="cta">nizamok.com</div>
