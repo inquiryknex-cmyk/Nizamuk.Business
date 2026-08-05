@@ -30,7 +30,7 @@ const RULES = [
   [/^\/$/,                       1.0, 'weekly'],
   [/^\/ikhtibar\/$/,             0.9, 'monthly'],
   [/^\/(lamhat|rebuild|juthur)\/$/, 0.9, 'weekly'],  // محاور تُضاف إليها منتجات
-  [/^\/(lamhat|rebuild)\/[^/]+\/$/, 0.9, 'monthly'],
+  [/^\/(lamhat|rebuild|juthur)\/[^/]+\/$/, 0.9, 'monthly'],
   [/^\/almasar\/$/,              0.9, 'monthly'],
   [/^\/maqalat\/$/,              0.9, 'weekly'],   // كان 0.7 تحت مقالاته
   [/^\/rukn\/$/,                 0.9, 'weekly'],   // ركن المعرفة، محورُ ما يُقرأ بلا دفع

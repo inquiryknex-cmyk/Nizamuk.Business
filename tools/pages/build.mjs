@@ -68,7 +68,7 @@ function head({ url, title, desc, image, crumbs, extraLd = '' }) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805e">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805f">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
@@ -125,64 +125,8 @@ ${nav.map(([t, h]) => `      <a href="${h}">${t}</a>`).join('\n')}
 </html>
 `;
 
-/* ---------------------------- /juthur/ ---------------------------- */
-for (const b of JUTHUR) {
-  for (const ext of ['jpg', 'webp']) {
-    const f = join(SITE, 'assets', 'covers', `${b.cover}.${ext}`);
-    if (!existsSync(f)) throw new Error(`${b.slug}: الغلاف غير موجود — ${b.cover}.${ext}`);
-  }
-}
-
-const jDesc = 'أربعة كتب، واحد لكل نمط، في أصل النمط لا في مظهره: من أين يبدأ، ولماذا يعود حتى حين تعرفين أنه يؤخّركِ. 49 ريالًا للواحد.';
-const jCrumbs = [{ name: 'الرئيسية', url: '/' }, { name: 'المسار', url: '/almasar/' }, { name: 'جذور نمطكِ' }];
-const jLd = `
-      {
-        "@type": "ItemList",
-        "@id": "${ORIGIN}/juthur/#list",
-        "numberOfItems": ${JUTHUR.length},
-        "itemListElement": [
-${JUTHUR.map((b, i) => `          { "@type": "ListItem", "position": ${i + 1}, "name": "${esc('جذور ' + b.name)}" }`).join(',\n')}
-        ]
-      },`;
-
-const juthur = head({
-  url: '/juthur/', title: 'جذور نمطكِ: أربعة كتب، واحد لكل نمط | نظامك',
-  desc: jDesc, image: '/assets/covers/juthur-mubdia.jpg?v=1', crumbs: jCrumbs, extraLd: jLd
-}) + `
-    <p class="mr-kicker">الدرجة الثالثة، 49 ريالًا</p>
-    <h1 class="mr-h1">جذور نمطكِ: أربعة كتب، واحد لكل نمط</h1>
-    <p class="mr-lead">${jDesc}</p>
-
-    <section class="mr-intro">
-      <p>اللمحة تقول لكِ ما يتكرر. وجذور نمطكِ تقول من أين بدأ: الجذر الخفيّ بين الشعور، والخوف، والعادة التي تعيد نفسها. وهو سؤال «لماذا يعود النمط حتى حين أعرف أنه يؤخّرني؟»، لا سؤال «كيف أنظّم يومي؟».</p>
-      <p>ولكل نمطٍ كتابه، لأن جذر المبدعة ليس جذر الكفؤة. وإن لم تحسمي أيّها يشبهكِ، فـ<a href="/ikhtibar/">الاختبار</a> ثلاث دقائق بلا دفع — وهو مساعدةٌ لمن لم تحسم، لا شرطٌ للشراء.</p>
-    </section>
-
-    <ul class="mr-cards" role="list">
-${JUTHUR.map(b => `      <li class="mr-card">
-        <a href="${b.dodo}" target="_blank" rel="noopener" data-ev="juthur_click" data-pattern="${b.slug}" data-level="juthur" data-section="juthur_index">
-          <span class="mr-card-k">كتابٌ في أصلِ النمط</span>
-          <b>${esc('جذور ' + b.name)}</b>
-          <span class="mr-card-d">${esc(b.line)}</span>
-          <span class="mr-card-go">اقرئي جذوركِ، 49 ريالًا</span>
-        </a>
-      </li>`).join('\n')}
-    </ul>
-
-    <div class="mr-share-sec">
-      <div data-article-share data-share-context="juthur_index"
-           data-share-h="تعرفين من قد تشبه أحد هذه الأنماط؟"
-           data-share-sub="أرسليها لها، فقد توفّر عليها شهورًا من المحاولة في الاتجاه الخطأ."></div>
-    </div>
-
-    <p class="mr-disc">جذور نمطكِ قراءات تعليمية للفهم الذاتي والتنظيم العملي، وليست تشخيصًا نفسيًا ولا بديلًا عن استشارة مختصة.</p>
-` + foot([['الرئيسية', '/'], ['الاختبار', '/ikhtibar/'], ['المسار', '/almasar/'],
-          ['لمحات', '/lamhat/'], ['إعادة البناء', '/rebuild/'], ['ركن المعرفة', '/rukn/'],
-          ['الخصوصية', '/privacy/']]);
-
-mkdirSync(join(SITE, 'juthur'), { recursive: true });
-writeFileSync(join(SITE, 'juthur', 'index.html'), juthur, 'utf8');
-console.log(`wrote site/juthur/index.html  (${JUTHUR.length} كتب)`);
+/* صفحة /juthur/ انتقلت إلى tools/juthur/ حين وصلت الكتب الحقيقية،
+   فصارت أربع صفحاتٍ وفهرسًا بمحتوى الكتب لا بوصفها من الخارج. */
 
 /* ---------------------------- /rukn/ ---------------------------- */
 const rDesc = 'كل ما يُقرأ بلا دفع في نظامك: مقالات أطول في التسويف والبدايات والإنهاك، ومرايا قصيرة تفرّق بين آلياتٍ تتشابه في الشعور وتختلف في العلاج.';

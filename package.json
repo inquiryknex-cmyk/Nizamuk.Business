@@ -18,7 +18,8 @@
     "natija": "node tools/share-cards.mjs && node tools/natija-pages.mjs",
     "share:cards": "node tools/share-cards.mjs",
     "build:sitemap": "node tools/sitemap.mjs && node tools/sitemap-images.mjs",
-    "build:pages": "node tools/pages/build.mjs"
+    "build:pages": "node tools/pages/build.mjs && node tools/juthur/build.mjs",
+    "build:juthur": "node tools/juthur/build.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.110.0"

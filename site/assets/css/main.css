@@ -2404,3 +2404,44 @@ html[lang="en"] .ambient-caption { direction: ltr; }
 .stage-read a { color: var(--gold-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 
 @media (min-width: 760px) { .stage-index { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---------- بطاقات الكتب: جذور ----------
+   على هيئة بطاقات لمحات: غلافٌ حقيقي، وسؤال الكتاب، والسعر، وزرّ شراء. */
+.book-grid { list-style: none; margin: 0 0 2.4rem; padding: 0; display: grid; gap: 1.6rem; }
+@media (min-width: 720px) { .book-grid { grid-template-columns: repeat(2, 1fr); } }
+.book-card {
+  background: var(--card); border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
+  transition: border-color .16s ease, transform .16s ease;
+}
+.book-card:hover { border-color: var(--gold-deep); transform: translateY(-2px); }
+.book-cover { display: block; line-height: 0; background: #2a1832; }
+.book-cover img { width: 100%; height: auto; display: block; }
+.book-body { padding: 1.2rem 1.3rem 1.4rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+.book-body h2 { font-family: var(--font-display); font-size: 1.18rem; margin: 0; }
+.book-body h2 a { color: var(--plum-deep); text-decoration: none; }
+.book-body h2 a:hover { color: var(--gold-deep); }
+.book-q { color: var(--ink-soft); font-size: 0.95rem; line-height: 1.85; margin: 0; }
+.book-meta { color: var(--gold-deep); font-size: 0.8rem; margin: 0; }
+.book-cta { margin-top: auto; padding-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; }
+.book-more { color: var(--gold-deep); font-size: 0.88rem; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- صفحة الكتاب ---------- */
+.book-hero { display: grid; gap: 1.6rem; margin-bottom: 2.4rem; }
+@media (min-width: 760px) { .book-hero { grid-template-columns: 300px 1fr; align-items: start; } }
+.book-hero-cover img { width: 100%; height: auto; border-radius: 14px; display: block; }
+.book-hero-q { font-family: var(--font-display); font-size: 1.12rem; color: var(--gold-deep); line-height: 1.8; margin-bottom: 0.7rem; }
+.book-buy { display: inline-block; margin-top: 0.9rem; }
+.book-assure { font-size: 0.8rem; color: var(--taupe); margin-top: 0.6rem; }
+.book-sec { margin-bottom: 2.2rem; padding-top: 1.6rem; border-top: 1px solid rgba(201, 167, 94, 0.28); }
+.book-sec h2 { font-family: var(--font-display); font-size: 1.22rem; color: var(--plum-deep); margin-bottom: 0.9rem; }
+.book-sec p { color: var(--ink-soft); line-height: 1.95; margin-bottom: 0.7rem; }
+.book-quotes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; }
+.book-quotes li {
+  font-family: var(--font-display); font-size: 1.02rem; color: var(--plum-deep);
+  line-height: 1.9; padding: 0.9rem 1.1rem; background: var(--card);
+  border-inline-start: 3px solid var(--gold-deep); border-radius: 0 10px 10px 0;
+}
+.book-chapters { margin: 0; padding-inline-start: 1.3rem; color: var(--ink-soft); line-height: 2.05; }
+.book-refs { margin: 0.4rem 0 0.9rem; padding-inline-start: 1.3rem; color: var(--ink-soft); line-height: 2; font-size: 0.9rem; }
+.book-safety { font-size: 0.9rem; color: var(--taupe); border-top: 1px dashed rgba(201, 167, 94, 0.4); padding-top: 0.9rem; }
