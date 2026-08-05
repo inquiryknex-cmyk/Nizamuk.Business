@@ -20,12 +20,16 @@
 
   ولا بوابة بريد، ولا سؤال قبل النتيجة، ولا ادعاء تشخيص.
 */
+import { renderCrumbs, jsonLdCrumbs } from '../crumbs.mjs';
+
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 const SITE = 'https://nizamok.com';
 
 export function renderMirror(m) {
+  /* المرايا تحت المقالات، كما هي في شريط التنقّل وفي فهرس المقالات. */
+  const CRUMBS = [{ name: 'الرئيسية', url: '/' }, { name: 'المقالات', url: '/maqalat/' }, { name: 'المرايا', url: '/mirrors/' }, { name: m.slugAr }];
   const url = `${SITE}/mirrors/${m.slug}/`;
   const dims = Object.keys(m.results);
 
@@ -78,7 +82,7 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805c">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
   <script type="application/ld+json">
   {
@@ -101,9 +105,7 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
         "@type": "BreadcrumbList",
         "@id": "${url}#breadcrumb",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "${SITE}/" },
-          { "@type": "ListItem", "position": 2, "name": "المرايا", "item": "${SITE}/mirrors/" },
-          { "@type": "ListItem", "position": 3, "name": "${esc(m.slugAr)}" }
+          ${jsonLdCrumbs(CRUMBS)}
         ]
       }
     ]
@@ -122,6 +124,8 @@ ${dims.map(d => `          <button type="button" class="mr-a" data-dim="${d}" da
       </a>
       <a class="mr-home" href="/mirrors/">كل المرايا</a>
     </header>
+
+    ${renderCrumbs(CRUMBS)}
 
     <p class="mr-kicker">${m.slugAr}، ${m.pattern}</p>
     <h1 class="mr-h1">${m.title}</h1>
@@ -202,6 +206,7 @@ ${m.interp.map(i => `        <li><b>${i.t}</b><span>${i.d}</span></li>`).join('\
 }
 
 export function renderIndex(mirrors) {
+  const ICRUMBS = [{ name: 'الرئيسية', url: '/' }, { name: 'المقالات', url: '/maqalat/' }, { name: 'المرايا' }];
   const url = `${SITE}/mirrors/`;
   const desc = 'مرايا قصيرة من نظامك: أربعة مواقف في أقلّ من دقيقة، تفرّق بين آلياتٍ تتشابه في الشعور وتختلف في العلاج.';
   return `<!DOCTYPE html>
@@ -225,7 +230,7 @@ export function renderIndex(mirrors) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805c">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
@@ -255,8 +260,7 @@ ${mirrors.map((x, i) => `          { "@type": "ListItem", "position": ${i + 1}, 
         "@type": "BreadcrumbList",
         "@id": "${url}#breadcrumb",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "${SITE}/" },
-          { "@type": "ListItem", "position": 2, "name": "المرايا" }
+          ${jsonLdCrumbs(ICRUMBS)}
         ]
       }
     ]
@@ -273,6 +277,8 @@ ${mirrors.map((x, i) => `          { "@type": "ListItem", "position": ${i + 1}, 
       </a>
       <a class="mr-home" href="/">الصفحة الرئيسية</a>
     </header>
+
+    ${renderCrumbs(ICRUMBS)}
 
     <p class="mr-kicker">مرايا نظامك</p>
     <h1 class="mr-h1">أشياء كثيرة تتشابه في الشعور، وتختلف في العلاج.</h1>

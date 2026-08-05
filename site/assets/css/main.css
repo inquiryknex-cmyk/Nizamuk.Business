@@ -2356,3 +2356,20 @@ html[lang="en"] .ambient-caption { direction: ltr; }
 .art-mirror-list b { display: block; color: var(--gold-deep); font-size: 0.98rem; margin-bottom: 0.2rem; }
 .art-mirror-list span { display: block; color: var(--ink-soft); font-size: 0.9rem; line-height: 1.7; }
 .art-mirror-all a { color: var(--gold-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- فتات الخبز، الصيغة القائمية ----------
+   ثلاث وعشرون صفحة كانت تُعلن BreadcrumbList في بياناتها المنظّمة ولا تُظهر
+   للزائرة درجةً واحدة منه. أي أن البنية كانت لجوجل وحده. والمولّدات ترسمها
+   الآن من القائمة نفسها التي تُعلَن، فلا يفترقان.
+
+   وقواعد .crumbs الأساسية موجودة أعلاه وتخدم صفحات النتيجة والمقالات بصيغتها
+   المسطّحة (a + span). فما هنا مقصورٌ على <ol> وحده كي لا يُعاد تنسيق اثنتي
+   عشرة صفحة قائمةً وسليمة. */
+.crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.crumbs ol li { display: flex; align-items: center; gap: 0.4rem; }
+.crumbs ol [aria-current="page"] { color: var(--taupe); }
+/* الفاصل زخرفة، فيُولَّد بـ CSS ولا يصل قارئ الشاشة */
+.crumbs ol li + li::before { content: "‹"; color: rgba(201, 167, 94, 0.65); }
+/* على الأرضية الداكنة */
+.lm-body .crumbs ol a, .rb-body .crumbs ol a { color: var(--gold); }
+.lm-body .crumbs ol [aria-current="page"], .rb-body .crumbs ol [aria-current="page"] { color: rgba(230, 211, 163, 0.9); }

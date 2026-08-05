@@ -17,6 +17,8 @@
   ترتيب الفصول. فحلّت المخرجات محلّ المحتويات، وحُذفت أرقام الصفحات لأنها
   ترسم الخريطة نفسها.
 */
+import { renderCrumbs, jsonLdCrumbs } from '../crumbs.mjs';
+
 
 const PRICE = 19;
 const QUIZ = (src) => `/ikhtibar/?source=${src}&origin=lamhat_page`;
@@ -115,6 +117,10 @@ const quizBlock = (p, pos, variant) => {
 };
 
 export function renderPage(p) {
+  /* قائمةٌ واحدة، منها المرئيّ والمُعلَن. وكانت «لمحات نظامك» تشير إلى
+     /#rebuild — مرساة إعادة البناء في الرئيسية — وهي وجهةٌ خاطئة، ولها
+     الآن وجهةٌ صحيحة. */
+  const CRUMBS = [{ name: 'الرئيسية', url: '/' }, { name: 'لمحات نظامك', url: '/lamhat/' }, { name: p.name }];
   const buy = (pos, label) => `<a class="lm-buy" href="${p.dodo}" rel="nofollow noopener" target="_blank"
              data-lm-cta="buy" data-lm-pos="${pos}" data-level="lamhat" data-price="${PRICE}">${nb(label)}</a>`;
 
@@ -143,7 +149,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805c">
   <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804e">
   <script type="application/ld+json">
   {
@@ -176,9 +182,7 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://nizamok.com/" },
-      { "@type": "ListItem", "position": 2, "name": "لمحات نظامك", "item": "https://nizamok.com/#rebuild" },
-      { "@type": "ListItem", "position": 3, "name": "${esc(p.name)}" }
+      ${jsonLdCrumbs(CRUMBS)}
     ]
   }
   </script>
@@ -202,6 +206,7 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
         الصفحة الرئيسية
       </a>
     </div>
+      ${renderCrumbs(CRUMBS)}
 
     <div class="lm-hero-grid">
       <div class="lm-hero-copy">
@@ -340,6 +345,7 @@ ${p.faqs.map(f => `      <details>
   وهو عاجيّ لا مخمليّ: صفحة اختيارٍ تُقرأ بسرعة، لا صفحة بيعٍ لنمطٍ بعينه.
 */
 export function renderIndex(items) {
+  const ICRUMBS = [{ name: 'الرئيسية', url: '/' }, { name: 'لمحات نظامك' }];
   const SITE = 'https://nizamok.com';
   const url = `${SITE}/lamhat/`;
   const desc = 'أربع قراءات، واحدة لكل نمط. تختارين نمطكِ فتصلكِ لمحته: أين تتوقفين، وما السلوك الذي يخدعكِ، وأول حركة صغيرة. 19 ريالًا للواحدة.';
@@ -366,7 +372,7 @@ export function renderIndex(items) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805c">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
@@ -394,8 +400,7 @@ ${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "n
         "@type": "BreadcrumbList",
         "@id": "${url}#breadcrumb",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "${SITE}/" },
-          { "@type": "ListItem", "position": 2, "name": "لمحات نظامك" }
+          ${jsonLdCrumbs(ICRUMBS)}
         ]
       }
     ]
@@ -413,6 +418,8 @@ ${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "n
       </a>
       <a class="mr-home" href="/">الصفحة الرئيسية</a>
     </header>
+
+    ${renderCrumbs(ICRUMBS)}
 
     <p class="mr-kicker">الدرجة الأولى، 19 ريالًا</p>
     <h1 class="mr-h1">لمحات نظامك: أربع قراءات، واحدة لكل نمط</h1>
