@@ -11,6 +11,7 @@ import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { renderPage, renderIndex } from './template.mjs';
+import { PEEK } from './content/peek.mjs';
 
 import mubdia from './content/mubdia.mjs';
 import asirat from './content/asirat.mjs';
@@ -25,6 +26,13 @@ let quoted = 0;
 for (const p of [mubdia, asirat, kafua, mutafadia]) {
   /* الغلاف يُشار إليه بالاسم لا يُولَّد، فغيابه يجب أن يكسر البناء لا أن يمرّ
      صامتًا إلى صفحةٍ منشورة بصورةٍ مفقودة. */
+  for (const k of PEEK) {
+    for (const suf of ['', '-thumb']) {
+      if (!existsSync(join(SITE, 'assets', 'lamhat', p.slug, `${k.file}${suf}.webp`))) {
+        throw new Error(`${p.slug}: صورة الجولة غائبة — ${k.file}${suf}.webp`);
+      }
+    }
+  }
   for (const img of [p.cover, p.coverJpg]) {
     if (!existsSync(join(SITE, img.replace(/^\//, '')))) {
       throw new Error(`${p.slug}: الغلاف غير موجود — site${img}`);

@@ -2484,3 +2484,9 @@ html[lang="en"] .ambient-caption { direction: ltr; }
   color: #F6EEDF; font-size: 1.5rem; line-height: 1;
 }
 .peek-zoom-close:hover { background: var(--gold-deep); color: #2A2010; }
+/* عدد الصفحات على بطاقات الفهارس، كي تعرف ما تشتريه قبل أن تدخل */
+.mr-card-m { display: block; font-size: 0.78rem; color: var(--gold-deep); margin-top: 0.3rem; }
+/* جولة لمحات، على أرضيتها الداكنة */
+.lm-peek { margin: 2.4rem 0; }
+.lm-peek-sub { color: rgba(230, 211, 163, 0.85); font-size: 0.92rem; line-height: 1.9; margin-bottom: 1.1rem; }
+.lm-peek .peek-cap { color: rgba(230, 211, 163, 0.8); }

@@ -191,7 +191,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805h">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805i">
   <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801j">
 
   <!-- الفتات المُعلَنة من القائمة نفسها التي تُرسم للعين، فلا يفترقان. -->
@@ -671,7 +671,7 @@ export function renderIndex(items) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805h">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805i">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
@@ -735,6 +735,7 @@ ${items.map(p => `      <li class="mr-card">
           <span class="mr-card-k">${esc(p.kicker)}</span>
           <b>${esc('نظام ' + p.name)}</b>
           <span class="mr-card-d">${esc(p.h1)}</span>
+          <span class="mr-card-m">${p.pages} صفحة</span>
           <span class="mr-card-go">اقرئي التفاصيل، 109 ريالات</span>
         </a>
       </li>`).join('\n')}

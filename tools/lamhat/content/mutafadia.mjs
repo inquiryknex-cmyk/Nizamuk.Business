@@ -9,6 +9,8 @@ export default {
   accent: '#C9B08A',
   cover: '/assets/covers/lamhat-mutafadiya.webp',
   coverJpg: '/assets/covers/lamhat-mutafadiya.jpg',
+  pages: 14,          // من الكتاب نفسه
+  minutes: 7,         // «كيف تقرئين هذه اللمحة في ٧ دقائق؟»
   dodo: 'https://dodo.pe/lamhat-mutafadia-inter',
   quizSource: 'mutafadiya',
 

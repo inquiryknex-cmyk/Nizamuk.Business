@@ -18,6 +18,7 @@
   ترسم الخريطة نفسها.
 */
 import { renderCrumbs, jsonLdCrumbs } from '../crumbs.mjs';
+import { PEEK } from './content/peek.mjs';
 
 
 const PRICE = 19;
@@ -50,6 +51,19 @@ const passages = (p) => {
   return `
   <section class="lm-sec lm-quotes" aria-labelledby="quotesH">
     <div class="container lm-narrow">
+      <section class="lm-peek">
+        <h2 class="lm-h2">جولة سريعة في الداخل</h2>
+        <p class="lm-peek-sub">أربع صفحاتٍ من ${p.pages}. انقري لتكبير أيّها. تُري كيف بُنيت اللمحة، لا خريطتكِ أنتِ.</p>
+        <ul class="peek-grid" role="list">
+${PEEK.map(k => `          <li class="peek">
+            <button type="button" data-peek-full="/assets/lamhat/${p.slug}/${k.file}.webp" aria-label="تكبير: ${k.cap}">
+              <img src="/assets/lamhat/${p.slug}/${k.file}-thumb.webp" alt="${k.cap}" width="620" height="827" loading="lazy">
+            </button>
+            <span class="peek-cap">${k.cap}</span>
+          </li>`).join('\n')}
+        </ul>
+      </section>
+
       <h2 id="quotesH" class="lm-h2">${p.passagesH}</h2>
       <p class="lm-note">${p.passagesNote}</p>
       <div class="lm-quote-grid">
@@ -149,7 +163,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805h">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805i">
   <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804e">
   <script type="application/ld+json">
   {
@@ -210,7 +224,7 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
 
     <div class="lm-hero-grid">
       <div class="lm-hero-copy">
-        <p class="lm-kicker">${p.kicker}</p>
+        <p class="lm-kicker">${p.kicker} · ${p.pages} صفحة، تُقرأ في ${p.minutes} دقائق</p>
         <h1 class="lm-h1">${p.h1a}<br><em>${p.h1b}</em></h1>
         <p class="lm-lead">${p.lead}</p>
         <p class="lm-price"><b>${nb('١٩ ر.س')}</b> <span>ملف PDF يصلكِ على بريدكِ بعد الدفع مباشرة</span></p>
@@ -330,6 +344,7 @@ ${p.faqs.map(f => `      <details>
 <script src="/assets/js/lamhat.js?v=20260803a" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 <script src="/assets/js/share-article.js?v=20260804d" defer></script>
+<script src="/assets/js/peek.js?v=20260805a" defer></script>
 </body>
 </html>
 `;
@@ -372,7 +387,7 @@ export function renderIndex(items) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805h">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805i">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
@@ -436,6 +451,7 @@ ${items.map(p => `      <li class="mr-card">
           <span class="mr-card-k">${esc(p.kicker)}</span>
           <b>${esc('لمحة ' + p.name)}</b>
           <span class="mr-card-d">${esc(p.h1a)} ${esc(p.h1b)}</span>
+          <span class="mr-card-m">${p.pages} صفحة، تُقرأ في ${p.minutes} دقائق</span>
           <span class="mr-card-go">اقرئي التفاصيل، 19 ريالًا</span>
         </a>
       </li>`).join('\n')}
@@ -464,6 +480,7 @@ ${items.map(p => `      <li class="mr-card">
 <script src="/assets/js/analytics.js?v=20260805a"></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 <script src="/assets/js/share-article.js?v=20260804d" defer></script>
+<script src="/assets/js/peek.js?v=20260805a" defer></script>
 </body>
 </html>
 `;

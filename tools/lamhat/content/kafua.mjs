@@ -9,6 +9,8 @@ export default {
   accent: '#E8C88A',
   cover: '/assets/covers/lamhat-kafua.webp',
   coverJpg: '/assets/covers/lamhat-kafua.jpg',
+  pages: 14,          // من الكتاب نفسه
+  minutes: 7,         // «كيف تقرئين هذه اللمحة في ٧ دقائق؟»
   dodo: 'https://dodo.pe/lamhat-kafua-inter',
   quizSource: 'kafuaa',
 

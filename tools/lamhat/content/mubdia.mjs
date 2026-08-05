@@ -13,6 +13,8 @@ export default {
   accent: '#E6D3A3',
   cover: '/assets/covers/lamhat-mubdia.webp',
   coverJpg: '/assets/covers/lamhat-mubdia.jpg',
+  pages: 14,          // من الكتاب نفسه
+  minutes: 7,         // «كيف تقرئين هذه اللمحة في ٧ دقائق؟»
   dodo: 'https://dodo.pe/lamhat-mubdia-inter',
   quizSource: 'mubdia',
 
