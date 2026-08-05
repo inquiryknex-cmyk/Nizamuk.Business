@@ -2373,3 +2373,34 @@ html[lang="en"] .ambient-caption { direction: ltr; }
 /* على الأرضية الداكنة */
 .lm-body .crumbs ol a, .rb-body .crumbs ol a { color: var(--gold); }
 .lm-body .crumbs ol [aria-current="page"], .rb-body .crumbs ol [aria-current="page"] { color: rgba(230, 211, 163, 0.9); }
+
+/* ---------- فهرس المراحل في الرئيسية ----------
+   حلّ محلّ خمسة أقسام كانت مبسوطةً بتمامها: تسعمئة وستٌّ وستون كلمة
+   تكرّر صفحاتٍ صارت كلها قائمة. */
+.stage-index { list-style: none; margin: 0 0 2.2rem; padding: 0; display: grid; gap: 0.9rem; }
+.stage-card a {
+  display: grid; grid-template-columns: 46px 1fr; gap: 1.1rem; align-items: start;
+  padding: 1.15rem 1.3rem; border-radius: 14px;
+  background: var(--card); border: 1px solid rgba(201, 167, 94, 0.3);
+  text-decoration: none; transition: border-color .16s ease, transform .16s ease;
+}
+.stage-card a:hover { border-color: var(--gold-deep); transform: translateY(-1px); }
+.stage-card .st-n {
+  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--font-kufi); font-weight: 600;
+  color: var(--gold-deep); border: 1px solid rgba(201, 167, 94, 0.5);
+}
+.stage-card .st-b { display: block; }
+.stage-card strong { display: block; font-family: var(--font-display); font-size: 1.1rem; color: var(--plum-deep); }
+.stage-card .st-p { display: block; font-size: 0.82rem; color: var(--gold-deep); margin: 0.15rem 0 0.4rem; }
+.stage-card .st-d { display: block; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.8; }
+/* ما لم يصدر بعد: بلا تعبئة، ورقمه مفرّغ */
+.stage-card.soon a { background: transparent; border-style: dashed; }
+.stage-card.soon .st-n { border-style: dashed; }
+
+.stage-read { padding-top: 1.6rem; border-top: 1px solid rgba(201, 167, 94, 0.28); }
+.stage-read h3 { font-family: var(--font-display); font-size: 1.05rem; color: var(--plum-deep); margin-bottom: 0.6rem; }
+.stage-read p { color: var(--ink-soft); line-height: 1.9; margin-bottom: 0.4rem; }
+.stage-read a { color: var(--gold-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+@media (min-width: 760px) { .stage-index { grid-template-columns: repeat(2, 1fr); } }
