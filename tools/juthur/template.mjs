@@ -37,7 +37,7 @@ function shell({ url, title, desc, image, crumbs, extraLd = '', body, nav }) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805g">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805h">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
@@ -78,6 +78,7 @@ ${nav.map(([t, h]) => `      <a href="${h}">${t}</a>`).join('\n')}
 <script src="/assets/js/analytics.js?v=20260805a"></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 <script src="/assets/js/share-article.js?v=20260804d" defer></script>
+<script src="/assets/js/peek.js?v=20260805a" defer></script>
 </body>
 </html>
 `;
@@ -117,7 +118,7 @@ ${JUTHUR.map((b, i) => `          { "@type": "ListItem", "position": ${i + 1}, "
 
     <section class="mr-intro">
       <p>اللمحة تقول لكِ ما يتكرر. وجذور نمطكِ تقول من أين بدأ: اللحظة التي وُلد فيها النمط، والحاجة التي وُلد ليخدمها. وهو سؤال «لماذا يعود حتى حين أعرف أنه يؤخّرني؟»، لا سؤال «كيف أنظّم يومي؟».</p>
-      <p>ولكل نمطٍ كتابه، لأن جذر المبدعة ليس جذر الكفؤة. وإن لم تحسمي أيّها يشبهكِ، فـ<a href="/ikhtibar/">الاختبار</a> ثلاث دقائق بلا دفع — مساعدةٌ لمن لم تحسم، لا شرطٌ للشراء.</p>
+      <p>ولكل نمطٍ كتابه، لأن جذر المبدعة ليس جذر الكفؤة. وإن لم تحسمي أيّها يشبهكِ، فـ<a href="/ikhtibar/">الاختبار</a> يدلّكِ في ثلاث دقائق — مساعدةٌ لمن لم تحسم، لا شرطٌ للشراء.</p>
     </section>
 
     <ul class="book-grid" role="list">
@@ -214,10 +215,12 @@ ${b.passages.map(q => `        <li>«${esc(q)}»</li>`).join('\n')}
 
     <section class="book-sec">
       <h2>جولة سريعة في الداخل</h2>
-      <p>أربع صفحاتٍ من ${COMMON.pages}. تُري كيف بُني الكتاب، لا ما يقوله.</p>
+      <p>أربع صفحاتٍ من ${COMMON.pages}. انقري لتكبير أيّها. تُري كيف بُني الكتاب، لا ما يقوله.</p>
       <ul class="peek-grid" role="list">
 ${PEEK.map(k => `        <li class="peek">
-          <img src="/assets/juthur/${b.slug}/${k.file}-thumb.webp" alt="${esc(k.cap)}" width="620" height="827" loading="lazy">
+          <button type="button" data-peek-full="/assets/juthur/${b.slug}/${k.file}.webp" aria-label="تكبير: ${esc(k.cap)}">
+            <img src="/assets/juthur/${b.slug}/${k.file}-thumb.webp" alt="${esc(k.cap)}" width="620" height="827" loading="lazy">
+          </button>
           <span class="peek-cap">${esc(k.cap)}</span>
         </li>`).join('\n')}
       </ul>
@@ -241,7 +244,7 @@ ${b.refs.map(r => `        <li>${esc(r)}</li>`).join('\n')}
 
     <section class="book-sec">
       <h2>لستِ متأكدة أن هذا نمطكِ؟</h2>
-      <p>لكل نمطٍ كتابه، وقراءة كتابِ نمطٍ آخر لا تنفع. و<a href="/ikhtibar/">الاختبار المجاني</a> اثنا عشر موقفًا في ثلاث دقائق، بلا دفع ولا بريد، ونمطكِ يظهر فور انتهائكِ.</p>
+      <p>لكل نمطٍ كتابه، وقراءة كتابِ نمطٍ آخر لا تنفع. و<a href="/ikhtibar/">الاختبار المجاني</a> ثلاث دقائق بلا دفع، ونمطكِ يظهر فور انتهائكِ، ويُطلب بريدكِ لفتح القراءة الكاملة.</p>
       <p>وإن كنتِ تعرفين نمطكِ ولم تقرئي لمحته بعد، فـ<a href="/lamhat/${b.slug}/">لمحة ${esc(b.name)}</a> هي الدرجة التي قبل هذه.</p>
     </section>
 
