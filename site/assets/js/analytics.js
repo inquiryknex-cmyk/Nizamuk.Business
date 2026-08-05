@@ -35,6 +35,27 @@
     var gtmId = (cfg.gtmId || '').trim();
     var ga4Id = (cfg.ga4Id || '').trim();
 
+    /* ---------- Only the real site reports to the real property ----------
+
+       Every branch preview on *.workers.dev serves this same file with the
+       same production measurement id. So each visit to a preview link — and
+       there is one on every pull request — was landing in the live property
+       under a hostname that is not ours. That is the "Additional domains
+       detected" notice in Tag diagnostics, and it is also why a quiet week
+       could look busier than it was.
+
+       The allowlist is the live site alone. Previews and localhost load no
+       tag at all: no requests, no cookies. To test a tag, use the live site
+       with ?debug_mode=1 and watch DebugView.
+
+       Do NOT accept GA4's offer to add a preview host for cross-domain
+       measurement. That endorses the pollution instead of ending it. */
+    var PROD = ['nizamok.com', 'www.nizamok.com'];
+    if (PROD.indexOf(location.hostname) === -1) {
+      window.NIZAMOK_GA_SKIPPED = location.hostname || 'file://';
+      return;
+    }
+
     function inject(src) {
       var el = document.createElement('script');
       el.async = true;

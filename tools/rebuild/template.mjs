@@ -8,6 +8,8 @@
   المخرَج HTML ثابت يُلتزم به في المستودع، الموقع نفسه بلا خطوة بناء.
   للتوليد: npm run build:rebuild
 */
+import { renderCrumbs, jsonLdCrumbs } from '../crumbs.mjs';
+
 
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -138,6 +140,7 @@ const journeyDay7 = 'تختارين أداة واحدة فقط وتطبقينه�
 const journeyDay90 = 'تكررين الاستجابة الجديدة في سياقات أوسع، وتبنين خطة عودة واضحة عندما يظهر شكل الانتكاسة القديم. التسعون يومًا مسار ترسيخ داخل النظام وليست وعدًا بنتيجة مضمونة.';
 
 export function renderPage(p) {
+  const CRUMBS = [{ name: 'الرئيسية', url: '/' }, { name: 'نظام إعادة البناء', url: '/rebuild/' }, { name: p.name }];
   /* U+00A0 keeps «109 ر.س» from splitting across two lines inside a button. */
   const nb = (s) => s.replace(/109 ر\.س/g, '109\u00A0ر.س');
   /* Checkout URL. The dodo.pe shortener DROPS query params, so we link the
@@ -188,8 +191,19 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805m">
   <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801j">
+
+  <!-- الفتات المُعلَنة من القائمة نفسها التي تُرسم للعين، فلا يفترقان. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      ${jsonLdCrumbs(CRUMBS)}
+    ]
+  }
+  </script>
 
   <script type="application/ld+json">
   {
@@ -248,6 +262,7 @@ export function renderPage(p) {
       </a>
       <a class="rb-support" href="mailto:support@nizamok.com">الدعم</a>
     </header>
+    ${renderCrumbs(CRUMBS)}
 
     <div class="rb-stage rb-hero-grid">
       <div class="rb-hero-head">
@@ -629,6 +644,7 @@ ${reads(p.slug)}
   بمعرفة نمطه سلفًا.
 */
 export function renderIndex(items) {
+  const ICRUMBS = [{ name: 'الرئيسية', url: '/' }, { name: 'نظام إعادة البناء' }];
   const SITE = 'https://nizamok.com';
   const url = `${SITE}/rebuild/`;
   const desc = 'أربعة أنظمة، واحد لكل نمط. المرحلة المتقدمة لإعادة بناء علاقتكِ بالطاقة والإنجاز والراحة والقرار. 109 ريالات للواحد.';
@@ -655,7 +671,7 @@ export function renderIndex(items) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805m">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
@@ -683,8 +699,7 @@ ${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "n
         "@type": "BreadcrumbList",
         "@id": "${url}#breadcrumb",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "${SITE}/" },
-          { "@type": "ListItem", "position": 2, "name": "نظام إعادة البناء" }
+          ${jsonLdCrumbs(ICRUMBS)}
         ]
       }
     ]
@@ -703,6 +718,8 @@ ${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "n
       <a class="mr-home" href="/">الصفحة الرئيسية</a>
     </header>
 
+    ${renderCrumbs(ICRUMBS)}
+
     <p class="mr-kicker">الدرجة الأخيرة، 109 ريالات</p>
     <h1 class="mr-h1">نظام إعادة البناء: أربعة أنظمة، واحد لكل نمط</h1>
     <p class="mr-lead">${desc}</p>
@@ -712,14 +729,23 @@ ${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "n
       <p>ولكل نمطٍ نظامه، لأن ما يوقف المبدعة ليس ما يوقف الكفؤة. وإن لم تحسمي أيّها يشبهكِ، فـ<a href="/ikhtibar/">الاختبار</a> ثلاث دقائق بلا دفع.</p>
     </section>
 
-    <ul class="mr-cards" role="list">
-${items.map(p => `      <li class="mr-card">
-        <a href="/rebuild/${p.slug}/" data-ev="rebuild_index_click" data-pattern="${p.slug}">
-          <span class="mr-card-k">${esc(p.kicker)}</span>
-          <b>${esc('نظام ' + p.name)}</b>
-          <span class="mr-card-d">${esc(p.h1)}</span>
-          <span class="mr-card-go">اقرئي التفاصيل، 109 ريالات</span>
+        <ul class="book-grid" role="list">
+${items.map(p => `      <li class="book-card">
+        <a class="book-cover" href="/rebuild/${p.slug}/" aria-label="${esc('نظام ' + p.name)}">
+          <picture>
+            <source srcset="/assets/product/${p.slug}/cover.webp?v=4" type="image/webp">
+            <img src="/assets/product/${p.slug}/cover-og.jpg?v=4" alt="${esc('غلاف نظام ' + p.name)}" width="900" height="1350" loading="lazy">
+          </picture>
         </a>
+        <div class="book-body">
+          <h2><a href="/rebuild/${p.slug}/">${esc('نظام ' + p.name)}</a></h2>
+          <p class="book-q">${esc(p.h1)}</p>
+          <p class="book-meta">${p.pages} صفحة</p>
+          <div class="book-cta">
+            <a class="btn btn-rose" href="/rebuild/${p.slug}/"
+               data-ev="rebuild_card_click" data-pattern="${p.slug}" data-level="rebuild" data-section="rebuild_index">اطّلعي على النظام، 109 ريالات</a>
+          </div>
+        </div>
       </li>`).join('\n')}
     </ul>
 

@@ -26,8 +26,21 @@
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805m">
   <link rel="stylesheet" href="/assets/css/rebuild.css?v=20260801j">
+
+  <!-- الفتات المُعلَنة من القائمة نفسها التي تُرسم للعين، فلا يفترقان. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://nizamok.com/" },
+          { "@type": "ListItem", "position": 2, "name": "نظام إعادة البناء", "item": "https://nizamok.com/rebuild/" },
+          { "@type": "ListItem", "position": 3, "name": "أسيرة الكمال" }
+    ]
+  }
+  </script>
 
   <script type="application/ld+json">
   {
@@ -86,6 +99,13 @@
       </a>
       <a class="rb-support" href="mailto:support@nizamok.com">الدعم</a>
     </header>
+    <nav class="crumbs" aria-label="مسار التصفّح">
+      <ol>
+        <li><a href="/">الرئيسية</a></li>
+        <li><a href="/rebuild/">نظام إعادة البناء</a></li>
+        <li><span aria-current="page">أسيرة الكمال</span></li>
+      </ol>
+    </nav>
 
     <div class="rb-stage rb-hero-grid">
       <div class="rb-hero-head">
@@ -272,10 +292,6 @@
 
       <div class="rb-gallery-grid">
         <figure class="rb-shot" hidden>
-          <button type="button" data-full="/assets/product/asirat/cover.webp"><img alt="الوعد الأساسي" data-src="/assets/product/asirat/cover-thumb.webp" loading="lazy" width="620" height="827"></button>
-          <figcaption>الوعد الأساسي، صفحة 1</figcaption>
-        </figure>
-        <figure class="rb-shot" hidden>
           <button type="button" data-full="/assets/product/asirat/p05.webp"><img alt="الحراسة الثلاثية" data-src="/assets/product/asirat/p05-thumb.webp" loading="lazy" width="620" height="827"></button>
           <figcaption>الحراسة الثلاثية، صفحة 5</figcaption>
         </figure>
@@ -290,10 +306,6 @@
         <figure class="rb-shot" hidden>
           <button type="button" data-full="/assets/product/asirat/p31.webp"><img alt="بداية سريعة وتحدّي سبعة أيام" data-src="/assets/product/asirat/p31-thumb.webp" loading="lazy" width="620" height="827"></button>
           <figcaption>بداية سريعة - تحدّي 7 أيام، صفحة 31</figcaption>
-        </figure>
-        <figure class="rb-shot" hidden>
-          <button type="button" data-full="/assets/product/asirat/p35.webp"><img alt="قوس التسعين يومًا" data-src="/assets/product/asirat/p35-thumb.webp" loading="lazy" width="620" height="827"></button>
-          <figcaption>قوس التسعين يومًا، صفحة 35</figcaption>
         </figure>
       </div>
       <p class="rb-hint">اضغطي أي صفحة لقراءتها بحجمها الكامل.</p>

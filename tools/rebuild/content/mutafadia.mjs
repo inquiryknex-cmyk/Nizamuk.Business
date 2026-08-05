@@ -80,11 +80,6 @@ export default {
   relapse: "الباب البديل: تنجزين مهمة نافعة وأسهل، ثم تسمين ذلك تقدمًا بينما يبقى الباب الأصلي مغلقًا.",
   shots: [
     {
-      alt: "الوعد الأساسي",
-      src: "/assets/product/mutafadia/cover.webp",
-      cap: "الوعد الأساسي، صفحة 1"
-    },
-    {
       alt: "المواجهات الأربع",
       src: "/assets/product/mutafadia/p06.webp",
       cap: "المواجهات الأربع، صفحة 6"
@@ -103,12 +98,8 @@ export default {
       alt: "خطة الثلاثين يومًا",
       src: "/assets/product/mutafadia/p32.webp",
       cap: "خطة الثلاثين يومًا، صفحة 32"
-    },
-    {
-      alt: "قوس التسعين يومًا",
-      src: "/assets/product/mutafadia/p35.webp",
-      cap: "قوس التسعين يومًا، صفحة 35"
     }
+  
   ],
   outcomes: [
     "تحويل المهمة من سحابة عامة إلى باب محدد في سطر واحد.",

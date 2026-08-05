@@ -2356,3 +2356,139 @@ html[lang="en"] .ambient-caption { direction: ltr; }
 .art-mirror-list b { display: block; color: var(--gold-deep); font-size: 0.98rem; margin-bottom: 0.2rem; }
 .art-mirror-list span { display: block; color: var(--ink-soft); font-size: 0.9rem; line-height: 1.7; }
 .art-mirror-all a { color: var(--gold-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- فتات الخبز، الصيغة القائمية ----------
+   ثلاث وعشرون صفحة كانت تُعلن BreadcrumbList في بياناتها المنظّمة ولا تُظهر
+   للزائرة درجةً واحدة منه. أي أن البنية كانت لجوجل وحده. والمولّدات ترسمها
+   الآن من القائمة نفسها التي تُعلَن، فلا يفترقان.
+
+   وقواعد .crumbs الأساسية موجودة أعلاه وتخدم صفحات النتيجة والمقالات بصيغتها
+   المسطّحة (a + span). فما هنا مقصورٌ على <ol> وحده كي لا يُعاد تنسيق اثنتي
+   عشرة صفحة قائمةً وسليمة. */
+.crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.crumbs ol li { display: flex; align-items: center; gap: 0.4rem; }
+.crumbs ol [aria-current="page"] { color: var(--taupe); }
+/* الفاصل زخرفة، فيُولَّد بـ CSS ولا يصل قارئ الشاشة */
+.crumbs ol li + li::before { content: "‹"; color: rgba(201, 167, 94, 0.65); }
+/* على الأرضية الداكنة */
+.lm-body .crumbs ol a, .rb-body .crumbs ol a { color: var(--gold); }
+.lm-body .crumbs ol [aria-current="page"], .rb-body .crumbs ol [aria-current="page"] { color: rgba(230, 211, 163, 0.9); }
+
+/* ---------- فهرس المراحل في الرئيسية ----------
+   حلّ محلّ خمسة أقسام كانت مبسوطةً بتمامها: تسعمئة وستٌّ وستون كلمة
+   تكرّر صفحاتٍ صارت كلها قائمة. */
+.stage-index { list-style: none; margin: 0 0 2.2rem; padding: 0; display: grid; gap: 0.9rem; }
+.stage-card a {
+  display: grid; grid-template-columns: 46px 1fr; gap: 1.1rem; align-items: start;
+  padding: 1.15rem 1.3rem; border-radius: 14px;
+  background: var(--card); border: 1px solid rgba(201, 167, 94, 0.3);
+  text-decoration: none; transition: border-color .16s ease, transform .16s ease;
+}
+.stage-card a:hover { border-color: var(--gold-deep); transform: translateY(-1px); }
+.stage-card .st-n {
+  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--font-kufi); font-weight: 600;
+  color: var(--gold-deep); border: 1px solid rgba(201, 167, 94, 0.5);
+}
+.stage-card .st-b { display: block; }
+.stage-card strong { display: block; font-family: var(--font-display); font-size: 1.1rem; color: var(--plum-deep); }
+.stage-card .st-p { display: block; font-size: 0.82rem; color: var(--gold-deep); margin: 0.15rem 0 0.4rem; }
+.stage-card .st-d { display: block; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.8; }
+/* ما لم يصدر بعد: بلا تعبئة، ورقمه مفرّغ */
+.stage-card.soon a { background: transparent; border-style: dashed; }
+.stage-card.soon .st-n { border-style: dashed; }
+
+.stage-read { padding-top: 1.6rem; border-top: 1px solid rgba(201, 167, 94, 0.28); }
+.stage-read h3 { font-family: var(--font-display); font-size: 1.05rem; color: var(--plum-deep); margin-bottom: 0.6rem; }
+.stage-read p { color: var(--ink-soft); line-height: 1.9; margin-bottom: 0.4rem; }
+.stage-read a { color: var(--gold-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+@media (min-width: 760px) { .stage-index { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---------- بطاقات الكتب: جذور ----------
+   على هيئة بطاقات لمحات: غلافٌ حقيقي، وسؤال الكتاب، والسعر، وزرّ شراء. */
+.book-grid { list-style: none; margin: 0 0 2.4rem; padding: 0; display: grid; gap: 1.6rem; }
+@media (min-width: 720px) { .book-grid { grid-template-columns: repeat(2, 1fr); } }
+.book-card {
+  background: var(--card); border: 1px solid rgba(201, 167, 94, 0.3);
+  border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
+  transition: border-color .16s ease, transform .16s ease;
+}
+.book-card:hover { border-color: var(--gold-deep); transform: translateY(-2px); }
+.book-cover { display: block; line-height: 0; background: #2a1832; }
+.book-cover img { width: 100%; height: auto; display: block; }
+.book-body { padding: 1.2rem 1.3rem 1.4rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+.book-body h2 { font-family: var(--font-display); font-size: 1.18rem; margin: 0; }
+.book-body h2 a { color: var(--plum-deep); text-decoration: none; }
+.book-body h2 a:hover { color: var(--gold-deep); }
+.book-q { color: var(--ink-soft); font-size: 0.95rem; line-height: 1.85; margin: 0; }
+.book-meta { color: var(--gold-deep); font-size: 0.8rem; margin: 0; }
+.book-cta { margin-top: auto; padding-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; }
+.book-more { color: var(--gold-deep); font-size: 0.88rem; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- صفحة الكتاب ---------- */
+.book-hero { display: grid; gap: 1.6rem; margin-bottom: 2.4rem; }
+@media (min-width: 760px) { .book-hero { grid-template-columns: 300px 1fr; align-items: start; } }
+.book-hero-cover img { width: 100%; height: auto; border-radius: 14px; display: block; }
+.book-hero-q { font-family: var(--font-display); font-size: 1.12rem; color: var(--gold-deep); line-height: 1.8; margin-bottom: 0.7rem; }
+.book-buy { display: inline-block; margin-top: 0.9rem; }
+.book-assure { font-size: 0.8rem; color: var(--taupe); margin-top: 0.6rem; }
+.book-sec { margin-bottom: 2.2rem; padding-top: 1.6rem; border-top: 1px solid rgba(201, 167, 94, 0.28); }
+.book-sec h2 { font-family: var(--font-display); font-size: 1.22rem; color: var(--plum-deep); margin-bottom: 0.9rem; }
+.book-sec p { color: var(--ink-soft); line-height: 1.95; margin-bottom: 0.7rem; }
+.book-quotes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; }
+.book-quotes li {
+  font-family: var(--font-display); font-size: 1.02rem; color: var(--plum-deep);
+  line-height: 1.9; padding: 0.9rem 1.1rem; background: var(--card);
+  border-inline-start: 3px solid var(--gold-deep); border-radius: 0 10px 10px 0;
+}
+.book-chapters { margin: 0; padding-inline-start: 1.3rem; color: var(--ink-soft); line-height: 2.05; }
+.book-refs { margin: 0.4rem 0 0.9rem; padding-inline-start: 1.3rem; color: var(--ink-soft); line-height: 2; font-size: 0.9rem; }
+.book-safety { font-size: 0.9rem; color: var(--taupe); border-top: 1px dashed rgba(201, 167, 94, 0.4); padding-top: 0.9rem; }
+
+/* ---------- جولة داخل الكتاب ----------
+   بلاطاتٌ بلا صندوقٍ مكبّر عمدًا: تُقرأ تصميمًا لا نصًّا. */
+.peek-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 760px) { .peek-grid { grid-template-columns: repeat(4, 1fr); } }
+.peek { display: flex; flex-direction: column; gap: 0.5rem; }
+.peek img {
+  width: 100%; height: auto; display: block; border-radius: 8px;
+  border: 1px solid rgba(201, 167, 94, 0.35);
+  box-shadow: 0 6px 18px rgba(42, 24, 50, 0.10);
+}
+.peek-cap { font-size: 0.78rem; color: var(--taupe); line-height: 1.7; }
+
+/* ---------- تكبير صفحات الجولة ---------- */
+.peek button {
+  display: block; width: 100%; padding: 0; border: 0; background: none;
+  cursor: zoom-in; border-radius: 8px;
+}
+.peek button:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
+.peek-zoom {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(26, 14, 32, 0.92);
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(12px, 4vw, 40px);
+}
+.peek-zoom[hidden] { display: none; }
+.peek-zoom figure { margin: 0; max-width: min(860px, 100%); max-height: 100%; display: flex; flex-direction: column; gap: 0.7rem; }
+.peek-zoom img {
+  max-width: 100%; max-height: calc(100vh - 140px); width: auto; height: auto;
+  object-fit: contain; border-radius: 10px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.peek-zoom figcaption { color: rgba(239, 231, 218, 0.85); font-size: 0.85rem; text-align: center; line-height: 1.7; }
+.peek-zoom-close {
+  position: absolute; top: clamp(10px, 3vw, 26px); inset-inline-end: clamp(10px, 3vw, 26px);
+  width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+  border: 1px solid rgba(201, 167, 94, 0.6); background: rgba(42, 24, 50, 0.85);
+  color: #F6EEDF; font-size: 1.5rem; line-height: 1;
+}
+.peek-zoom-close:hover { background: var(--gold-deep); color: #2A2010; }
+/* عدد الصفحات على بطاقات الفهارس، كي تعرف ما تشتريه قبل أن تدخل */
+.mr-card-m { display: block; font-size: 0.78rem; color: var(--gold-deep); margin-top: 0.3rem; }
+/* جولة لمحات، على أرضيتها الداكنة */
+.lm-peek { margin: 2.4rem 0; }
+.lm-peek-sub { color: rgba(230, 211, 163, 0.85); font-size: 0.92rem; line-height: 1.9; margin-bottom: 1.1rem; }
+.lm-peek .peek-cap { color: rgba(230, 211, 163, 0.8); }
+/* جولة اللمحة صفحتان، فتُعرضان أعرض */
+.lm-peek .peek-grid { grid-template-columns: repeat(2, 1fr); max-width: 640px; }

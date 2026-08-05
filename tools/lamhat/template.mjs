@@ -17,6 +17,9 @@
   ترتيب الفصول. فحلّت المخرجات محلّ المحتويات، وحُذفت أرقام الصفحات لأنها
   ترسم الخريطة نفسها.
 */
+import { renderCrumbs, jsonLdCrumbs } from '../crumbs.mjs';
+import { PEEK } from './content/peek.mjs';
+
 
 const PRICE = 19;
 const QUIZ = (src) => `/ikhtibar/?source=${src}&origin=lamhat_page`;
@@ -48,6 +51,19 @@ const passages = (p) => {
   return `
   <section class="lm-sec lm-quotes" aria-labelledby="quotesH">
     <div class="container lm-narrow">
+      <section class="lm-peek">
+        <h2 class="lm-h2">جولة سريعة في الداخل</h2>
+        <p class="lm-peek-sub">أربع صفحاتٍ من ${p.pages}. انقري لتكبير أيّها. تُري كيف بُنيت اللمحة، لا خريطتكِ أنتِ.</p>
+        <ul class="peek-grid" role="list">
+${PEEK.map(k => `          <li class="peek">
+            <button type="button" data-peek-full="/assets/lamhat/${p.slug}/${k.file}.webp" aria-label="تكبير: ${k.cap}">
+              <img src="/assets/lamhat/${p.slug}/${k.file}-thumb.webp" alt="${k.cap}" width="620" height="827" loading="lazy">
+            </button>
+            <span class="peek-cap">${k.cap}</span>
+          </li>`).join('\n')}
+        </ul>
+      </section>
+
       <h2 id="quotesH" class="lm-h2">${p.passagesH}</h2>
       <p class="lm-note">${p.passagesNote}</p>
       <div class="lm-quote-grid">
@@ -115,6 +131,10 @@ const quizBlock = (p, pos, variant) => {
 };
 
 export function renderPage(p) {
+  /* قائمةٌ واحدة، منها المرئيّ والمُعلَن. وكانت «لمحات نظامك» تشير إلى
+     /#rebuild — مرساة إعادة البناء في الرئيسية — وهي وجهةٌ خاطئة، ولها
+     الآن وجهةٌ صحيحة. */
+  const CRUMBS = [{ name: 'الرئيسية', url: '/' }, { name: 'لمحات نظامك', url: '/lamhat/' }, { name: p.name }];
   const buy = (pos, label) => `<a class="lm-buy" href="${p.dodo}" rel="nofollow noopener" target="_blank"
              data-lm-cta="buy" data-lm-pos="${pos}" data-level="lamhat" data-price="${PRICE}">${nb(label)}</a>`;
 
@@ -143,7 +163,7 @@ export function renderPage(p) {
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805m">
   <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804e">
   <script type="application/ld+json">
   {
@@ -176,9 +196,7 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://nizamok.com/" },
-      { "@type": "ListItem", "position": 2, "name": "لمحات نظامك", "item": "https://nizamok.com/#rebuild" },
-      { "@type": "ListItem", "position": 3, "name": "${esc(p.name)}" }
+      ${jsonLdCrumbs(CRUMBS)}
     ]
   }
   </script>
@@ -202,14 +220,15 @@ ${p.faqs.map(f => `      { "@type": "Question", "name": "${esc(f.q)}", "accepted
         الصفحة الرئيسية
       </a>
     </div>
+      ${renderCrumbs(CRUMBS)}
 
     <div class="lm-hero-grid">
       <div class="lm-hero-copy">
-        <p class="lm-kicker">${p.kicker}</p>
+        <p class="lm-kicker">${p.kicker} · ${p.pages} صفحة، تُقرأ في ${p.minutes} دقائق</p>
         <h1 class="lm-h1">${p.h1a}<br><em>${p.h1b}</em></h1>
         <p class="lm-lead">${p.lead}</p>
         <p class="lm-price"><b>${nb('١٩ ر.س')}</b> <span>ملف PDF يصلكِ على بريدكِ بعد الدفع مباشرة</span></p>
-        ${buy('hero', 'خذي اللمحة، ١٩ ر.س')}
+        ${buy('hero', 'اقتني اللمحة، ١٩ ر.س')}
         <p class="lm-assure">السعر شامل الضرائب، ووصولٌ رقميّ فوري</p>
       </div>
       <figure class="lm-cover">
@@ -278,7 +297,7 @@ ${quizBlock(p, 'mid', 'is-mid')}
     <h2 id="buyH" class="lm-h2">لمحات نظامك، ${p.name}</h2>
     <p class="lm-buy-price">${nb('١٩ ر.س')}</p>
     <p class="lm-buy-d">${p.outcomes[p.outcomes.length - 1]}</p>
-    ${buy('final', 'خذي اللمحة الآن')}
+    ${buy('final', 'اقتني اللمحة الآن')}
     <p class="lm-assure">السعر شامل الضرائب، وصولٌ رقميّ فوري، ودعم على support@nizamok.com</p>
   </div>
 </section>
@@ -325,6 +344,7 @@ ${p.faqs.map(f => `      <details>
 <script src="/assets/js/lamhat.js?v=20260803a" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 <script src="/assets/js/share-article.js?v=20260804d" defer></script>
+<script src="/assets/js/peek.js?v=20260805a" defer></script>
 </body>
 </html>
 `;
@@ -340,6 +360,7 @@ ${p.faqs.map(f => `      <details>
   وهو عاجيّ لا مخمليّ: صفحة اختيارٍ تُقرأ بسرعة، لا صفحة بيعٍ لنمطٍ بعينه.
 */
 export function renderIndex(items) {
+  const ICRUMBS = [{ name: 'الرئيسية', url: '/' }, { name: 'لمحات نظامك' }];
   const SITE = 'https://nizamok.com';
   const url = `${SITE}/lamhat/`;
   const desc = 'أربع قراءات، واحدة لكل نمط. تختارين نمطكِ فتصلكِ لمحته: أين تتوقفين، وما السلوك الذي يخدعكِ، وأول حركة صغيرة. 19 ريالًا للواحدة.';
@@ -366,7 +387,7 @@ export function renderIndex(items) {
   <link rel="icon" type="image/png" href="/assets/img/seal.png">
   <link rel="apple-touch-icon" href="/assets/img/seal.png">
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805m">
   <link rel="stylesheet" href="/assets/css/mirrors.css?v=20260804d">
 
   <script type="application/ld+json">
@@ -394,8 +415,7 @@ ${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "n
         "@type": "BreadcrumbList",
         "@id": "${url}#breadcrumb",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "${SITE}/" },
-          { "@type": "ListItem", "position": 2, "name": "لمحات نظامك" }
+          ${jsonLdCrumbs(ICRUMBS)}
         ]
       }
     ]
@@ -414,6 +434,8 @@ ${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "n
       <a class="mr-home" href="/">الصفحة الرئيسية</a>
     </header>
 
+    ${renderCrumbs(ICRUMBS)}
+
     <p class="mr-kicker">الدرجة الأولى، 19 ريالًا</p>
     <h1 class="mr-h1">لمحات نظامك: أربع قراءات، واحدة لكل نمط</h1>
     <p class="mr-lead">${desc}</p>
@@ -423,14 +445,23 @@ ${items.map((p, i) => `          { "@type": "ListItem", "position": ${i + 1}, "n
       <p>وإن لم تحسمي أيّها يشبهكِ، فـ<a href="/ikhtibar/">الاختبار</a> اثنا عشر موقفًا في ثلاث دقائق، بلا دفع، ونمطكِ يظهر فور انتهائكِ.</p>
     </section>
 
-    <ul class="mr-cards" role="list">
-${items.map(p => `      <li class="mr-card">
-        <a href="/lamhat/${p.slug}/" data-ev="lamhat_index_click" data-pattern="${p.slug}">
-          <span class="mr-card-k">${esc(p.kicker)}</span>
-          <b>${esc('لمحة ' + p.name)}</b>
-          <span class="mr-card-d">${esc(p.h1a)} ${esc(p.h1b)}</span>
-          <span class="mr-card-go">اقرئي التفاصيل، 19 ريالًا</span>
+        <ul class="book-grid" role="list">
+${items.map(p => `      <li class="book-card">
+        <a class="book-cover" href="/lamhat/${p.slug}/" aria-label="${esc('لمحة ' + p.name)}">
+          <picture>
+            <source srcset="${p.cover}?v=3" type="image/webp">
+            <img src="${p.coverJpg}?v=3" alt="${esc('غلاف لمحة ' + p.name)}" width="700" height="964" loading="lazy">
+          </picture>
         </a>
+        <div class="book-body">
+          <h2><a href="/lamhat/${p.slug}/">${esc('لمحة ' + p.name)}</a></h2>
+          <p class="book-q">${esc(p.h1a)} ${esc(p.h1b)}</p>
+          <p class="book-meta">${p.pages} صفحة، تُقرأ في ${p.minutes} دقائق</p>
+          <div class="book-cta">
+            <a class="btn btn-rose" href="/lamhat/${p.slug}/"
+               data-ev="lamhat_card_click" data-pattern="${p.slug}" data-level="lamhat" data-section="lamhat_index">اطّلعي على اللمحة، 19 ريالًا</a>
+          </div>
+        </div>
       </li>`).join('\n')}
     </ul>
 
@@ -457,6 +488,7 @@ ${items.map(p => `      <li class="mr-card">
 <script src="/assets/js/analytics.js?v=20260805a"></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 <script src="/assets/js/share-article.js?v=20260804d" defer></script>
+<script src="/assets/js/peek.js?v=20260805a" defer></script>
 </body>
 </html>
 `;

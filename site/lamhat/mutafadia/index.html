@@ -21,7 +21,7 @@
   <link rel="preload" href="/assets/fonts/almarai-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/el-messiri-700-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/fonts/fonts.css">
-  <link rel="stylesheet" href="/assets/css/main.css?v=20260805b">
+  <link rel="stylesheet" href="/assets/css/main.css?v=20260805m">
   <link rel="stylesheet" href="/assets/css/lamhat.css?v=20260804e">
   <script type="application/ld+json">
   {
@@ -59,8 +59,8 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://nizamok.com/" },
-      { "@type": "ListItem", "position": 2, "name": "لمحات نظامك", "item": "https://nizamok.com/#rebuild" },
-      { "@type": "ListItem", "position": 3, "name": "المتفادية الذكية" }
+          { "@type": "ListItem", "position": 2, "name": "لمحات نظامك", "item": "https://nizamok.com/lamhat/" },
+          { "@type": "ListItem", "position": 3, "name": "المتفادية الذكية" }
     ]
   }
   </script>
@@ -84,15 +84,22 @@
         الصفحة الرئيسية
       </a>
     </div>
+      <nav class="crumbs" aria-label="مسار التصفّح">
+      <ol>
+        <li><a href="/">الرئيسية</a></li>
+        <li><a href="/lamhat/">لمحات نظامك</a></li>
+        <li><span aria-current="page">المتفادية الذكية</span></li>
+      </ol>
+    </nav>
 
     <div class="lm-hero-grid">
       <div class="lm-hero-copy">
-        <p class="lm-kicker">لمحات نظامك، الدرجة الأولى</p>
+        <p class="lm-kicker">لمحات نظامك، الدرجة الأولى · 14 صفحة، تُقرأ في 7 دقائق</p>
         <h1 class="lm-h1">تنجزين أشياء كثيرة…<br><em>فلماذا يبقى البابُ الأهمّ مغلقًا؟</em></h1>
         <p class="lm-lead">ليست هذه محاضرة عن التسويف. إنها قراءة لما يحدث في يومكِ حين يتحول الإنجاز الجانبي إلى مهربٍ مهذّب: ما الشعور الذي تحرسينه فعلًا خلف المهمة، وما العلامة التي تسبق التفادي.</p>
         <p class="lm-price"><b>١٩ ر.س</b> <span>ملف PDF يصلكِ على بريدكِ بعد الدفع مباشرة</span></p>
         <a class="lm-buy" href="https://dodo.pe/lamhat-mutafadia-inter" rel="nofollow noopener" target="_blank"
-             data-lm-cta="buy" data-lm-pos="hero" data-level="lamhat" data-price="19">خذي اللمحة، ١٩ ر.س</a>
+             data-lm-cta="buy" data-lm-pos="hero" data-level="lamhat" data-price="19">اقتني اللمحة، ١٩ ر.س</a>
         <p class="lm-assure">السعر شامل الضرائب، ووصولٌ رقميّ فوري</p>
       </div>
       <figure class="lm-cover">
@@ -136,6 +143,25 @@
 
   <section class="lm-sec lm-quotes" aria-labelledby="quotesH">
     <div class="container lm-narrow">
+      <section class="lm-peek">
+        <h2 class="lm-h2">جولة سريعة في الداخل</h2>
+        <p class="lm-peek-sub">أربع صفحاتٍ من 14. انقري لتكبير أيّها. تُري كيف بُنيت اللمحة، لا خريطتكِ أنتِ.</p>
+        <ul class="peek-grid" role="list">
+          <li class="peek">
+            <button type="button" data-peek-full="/assets/lamhat/mutafadia/p05.webp" aria-label="تكبير: خريطة الفجوات الخمس التي يعمل عليها نمطكِ">
+              <img src="/assets/lamhat/mutafadia/p05-thumb.webp" alt="خريطة الفجوات الخمس التي يعمل عليها نمطكِ" width="620" height="827" loading="lazy">
+            </button>
+            <span class="peek-cap">خريطة الفجوات الخمس التي يعمل عليها نمطكِ</span>
+          </li>
+          <li class="peek">
+            <button type="button" data-peek-full="/assets/lamhat/mutafadia/p12.webp" aria-label="تكبير: من القراءة إلى الحركة: خطة ثلاثة أيام">
+              <img src="/assets/lamhat/mutafadia/p12-thumb.webp" alt="من القراءة إلى الحركة: خطة ثلاثة أيام" width="620" height="827" loading="lazy">
+            </button>
+            <span class="peek-cap">من القراءة إلى الحركة: خطة ثلاثة أيام</span>
+          </li>
+        </ul>
+      </section>
+
       <h2 id="quotesH" class="lm-h2">من داخل اللمحة</h2>
       <p class="lm-note">ثلاث جملٍ منقولة حرفيًا من الكتاب.</p>
       <div class="lm-quote-grid">
@@ -248,7 +274,7 @@
     <p class="lm-buy-price">١٩ ر.س</p>
     <p class="lm-buy-d">أن تجرّبي ٣ أيامٍ تشعرين فيها بالفرق بين يومٍ يقوده النمط ويومٍ تقودينه أنتِ.</p>
     <a class="lm-buy" href="https://dodo.pe/lamhat-mutafadia-inter" rel="nofollow noopener" target="_blank"
-             data-lm-cta="buy" data-lm-pos="final" data-level="lamhat" data-price="19">خذي اللمحة الآن</a>
+             data-lm-cta="buy" data-lm-pos="final" data-level="lamhat" data-price="19">اقتني اللمحة الآن</a>
     <p class="lm-assure">السعر شامل الضرائب، وصولٌ رقميّ فوري، ودعم على support@nizamok.com</p>
   </div>
 </section>
@@ -311,5 +337,6 @@
 <script src="/assets/js/lamhat.js?v=20260803a" defer></script>
 <script src="/assets/js/main.js?v=20260801b" defer></script>
 <script src="/assets/js/share-article.js?v=20260804d" defer></script>
+<script src="/assets/js/peek.js?v=20260805a" defer></script>
 </body>
 </html>

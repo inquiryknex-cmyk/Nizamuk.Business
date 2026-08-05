@@ -31,3 +31,20 @@
 # Bare /natija/ has no index of its own; the quiz is where a pattern is found.
 /natija   /ikhtibar/  302
 /natija/  /ikhtibar/  302
+
+# اسم النمط وحده، واسم الكتاب وحده. لا شيء في الموقع يشير إليها، لكن
+# تشخيص GA4 أظهر /juthur و/mubdia بين العناوين المطروقة — أي أن أحدًا
+# يكتبها أو يصل إليها من خارج، فيقع على 404. ومن يكتب /mubdia سيكتب
+# /kafua، فعولجت الأربعة ومعها مفتاحا الاختبار الداخليان.
+/mubdia      /lamhat/mubdia/       301
+/mubdia/     /lamhat/mubdia/       301
+/asirat      /lamhat/asirat/       301
+/asirat/     /lamhat/asirat/       301
+/kafua       /lamhat/kafua/        301
+/kafua/      /lamhat/kafua/        301
+/mutafadia   /lamhat/mutafadia/    301
+/mutafadia/  /lamhat/mutafadia/    301
+/asira       /lamhat/asirat/       301
+/asira/      /lamhat/asirat/       301
+/mutafadiya  /lamhat/mutafadia/    301
+/mutafadiya/ /lamhat/mutafadia/    301

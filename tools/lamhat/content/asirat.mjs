@@ -9,6 +9,8 @@ export default {
   accent: '#F0E9DC',
   cover: '/assets/covers/lamhat-asira.webp',
   coverJpg: '/assets/covers/lamhat-asira.jpg',
+  pages: 14,          // من الكتاب نفسه
+  minutes: 7,         // «كيف تقرئين هذه اللمحة في ٧ دقائق؟»
   dodo: 'https://dodo.pe/lamhat-asirat-inter',
   quizSource: 'asirat',
 
